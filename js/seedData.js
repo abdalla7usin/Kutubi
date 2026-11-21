@@ -71,7 +71,7 @@ export const INITIAL_BOOKS = [
     totalPages: 352,
     currentPage: 98,
     rating: 5,
-    coverUrl: 'https://lh3.googleusercontent.com/aida/ALJJyrB4YBKrELe3Koni0qEbje23jbQd29tcH00C-jb8epIyFGpKgUgguiGrfIqu1QiSHpKfwYgfr5GDtQD_g2JdVpciKCvtdhd3ZW0sMi0BOVrI4Oyi48688hckfn6Pdn2h2dAfs000MSFQjMklH0fYeaNcln5Ta6OKFaycv5RCSDWmCkyDuz-NFzPU0sHE-O3aqPYkROvGBLLWATs3cz5UHOJaasYn_bKR1LP_Ab0pKPZtCKbH-j0KV7gPTOmhGI6ywg8jbNuP',
+    coverUrl: '',
     dateAdded: 'Oct 09, 2026',
     notes: '20th Anniversary Edition. Classic guidance on software craftsmanship, orthogonality, and DRY principles. The concept of "Stone Soup and Boiled Frogs" remains as relevant as ever for managing software entropy.'
   },

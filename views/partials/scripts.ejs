@@ -15,22 +15,71 @@
     const mobileDrawerBackdrop = document.getElementById('mobile-drawer-backdrop');
 
     if (sidebar) {
+      function setSidebarCollapsed(collapsed) {
+        // Cleanly apply overflow-hidden during collapse/expand transition
+        sidebar.classList.add('overflow-hidden');
+        sidebar.classList.add('transitioning');
+
+        let cleanedUp = false;
+        const cleanupTransition = () => {
+          if (cleanedUp) return;
+          cleanedUp = true;
+          sidebar.classList.remove('transitioning');
+          if (!sidebar.classList.contains('collapsed')) {
+            sidebar.classList.remove('overflow-hidden');
+          }
+        };
+
+        const onTransitionEnd = (e) => {
+          if (e.target === sidebar && (e.propertyName === 'width' || e.propertyName === 'max-width')) {
+            sidebar.removeEventListener('transitionend', onTransitionEnd);
+            cleanupTransition();
+          }
+        };
+        sidebar.addEventListener('transitionend', onTransitionEnd);
+        // Fallback safety timeout matching transition duration
+        setTimeout(cleanupTransition, 260);
+
+        if (collapsed) {
+          sidebar.classList.add('collapsed');
+          sidebar.classList.remove('w-60');
+          sidebar.classList.add('w-16');
+          sidebar.classList.add('overflow-hidden');
+          localStorage.setItem('kutubi_sidebar_collapsed_v1', 'true');
+        } else {
+          sidebar.classList.remove('collapsed');
+          sidebar.classList.remove('w-16');
+          sidebar.classList.add('w-60');
+          localStorage.setItem('kutubi_sidebar_collapsed_v1', 'false');
+        }
+      }
+
+      // Initial state: default is expanded (w-60), collapse only if explicitly stored as 'true'
       const isCollapsed = localStorage.getItem('kutubi_sidebar_collapsed_v1') === 'true';
       if (isCollapsed) {
         sidebar.classList.add('collapsed');
+        sidebar.classList.remove('w-60');
+        sidebar.classList.add('w-16');
+        sidebar.classList.add('overflow-hidden');
+      } else {
+        sidebar.classList.remove('collapsed');
+        sidebar.classList.remove('w-16');
+        sidebar.classList.add('w-60');
+        sidebar.classList.remove('overflow-hidden');
       }
 
       if (collapseBtn) {
-        collapseBtn.addEventListener('click', () => {
-          sidebar.classList.add('collapsed');
-          localStorage.setItem('kutubi_sidebar_collapsed_v1', 'true');
+        collapseBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const shouldCollapse = !sidebar.classList.contains('collapsed');
+          setSidebarCollapsed(shouldCollapse);
         });
       }
 
       if (expandBtn) {
-        expandBtn.addEventListener('click', () => {
-          sidebar.classList.remove('collapsed');
-          localStorage.setItem('kutubi_sidebar_collapsed_v1', 'false');
+        expandBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          setSidebarCollapsed(false);
         });
       }
     }

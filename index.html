@@ -106,10 +106,10 @@
   <!-- Main Application Layout Shell -->
   <div id="app-layout">
     <!-- Persistent Collapsible Sidebar -->
-    <aside class="app-sidebar" id="app-sidebar" aria-label="Main Navigation">
+    <aside class="app-sidebar w-60 shrink-0 h-full border-r border-border bg-surface flex flex-col justify-between transition-[width] duration-sidebar ease-sidebar pt-8 px-4 pb-4" id="app-sidebar" aria-label="Main Navigation">
       <!-- Top Header -->
-      <div class="sidebar-header">
-        <span class="sidebar-title font-headline">Kutubi</span>
+      <div class="sidebar-header flex items-center justify-between min-h-[36px] h-9">
+        <span class="sidebar-title font-headline text-[18px] font-semibold text-text-primary tracking-tight leading-none">Kutubi</span>
         <button
           type="button"
           id="sidebar-collapse-btn"
@@ -138,7 +138,7 @@
       </div>
 
       <!-- Navigation Links -->
-      <nav aria-label="Primary" class="sidebar-nav">
+      <nav aria-label="Primary" class="sidebar-nav flex flex-col gap-xs">
         <a href="#dashboard" class="sidebar-link active" data-nav="dashboard">
           <span class="material-symbols-outlined nav-icon" aria-hidden="true">grid_view</span>
           <span class="nav-label">Dashboard</span>
@@ -167,7 +167,7 @@
     </aside>
 
     <!-- Main View Container -->
-    <main class="app-main" id="app-main" tabindex="-1">
+    <main class="app-main flex-1 overflow-y-auto pt-8 px-6 lg:px-8 pb-8" id="app-main" tabindex="-1">
       <!-- Dynamic view injected here by router -->
     </main>
   </div>

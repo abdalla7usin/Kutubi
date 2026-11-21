@@ -159,8 +159,14 @@ d:\THE DECAGON\OTHER\Kutubi\
 3. **Live Dashboard Metrics (`services/dashboard.service.js`):**
    - Total books, distinct category counts, reading, completed (with exact rounded percentage), and to-read counts are queried dynamically with aggregate SQLite functions (`COUNT(*)`, `SUM(CASE ...)`). Zero books condition is guarded to prevent `NaN` or division by zero.
 4. **Reader Profile & Dynamic Initials (`services/profile.service.js`):**
-   - Dynamically calculates initials from multi-word names (e.g. `'Sarah Jenkins'` -> `'SJ'`, `'ابن خلدون'` -> `'اخ'`).
-   - Calculates reader milestones: Total books read, total pages completed, and average rating across the collection.
+   - Dynamically calculates initials using consistent Unicode rules across server and client:
+     - Multi-word names: First character of the first two non-empty words (e.g. `'Ahmed Khaled'` → `'AK'`, `'Sarah Jenkins'` → `'SJ'`, `'ابن خلدون'` → `'اخ'`).
+     - Single-word names: First two characters of the word (e.g. `'Ahmed'` → `'AH'`, `'Kutubi'` → `'KU'`, `'أحمد'` → `'أح'`).
+     - Empty/whitespace fallback: `'K'`.
+   - Calculates reading milestone statistics matching the original specification:
+     1. **Books Completed:** Count of books where `status = 'Completed'`.
+     2. **Total Pages Read:** Sum of `current_page` across all books in the database (`SELECT COALESCE(SUM(current_page), 0) AS total_pages_read FROM books`).
+     3. **Favorite Category:** The category with the highest number of associated books (`SELECT c.name, COUNT(b.id) AS book_count FROM categories c JOIN books b ON b.category_id = c.id GROUP BY c.id ORDER BY book_count DESC LIMIT 1`).
 5. **Library Export & Sample Data Reset (`services/settings.service.js`):**
    - Full catalog backup exported as UTF-8 JSON attachment with timestamped filename.
    - Sample Data Reset transaction clears books, resets the SQLite sequence (`DELETE FROM sqlite_sequence WHERE name = 'books'`), restores default categories, and re-seeds the pristine 24 sample titles.

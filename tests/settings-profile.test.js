@@ -73,4 +73,37 @@ describe('Settings & Profile Persistence and Features', () => {
     assert.strictEqual(profileData.stats.totalPagesRead, 6948);
     assert.strictEqual(profileData.stats.favoriteCategory, 'Engineering');
   });
+
+  it('should generate consistent avatar initials according to Unicode and word-count rules', () => {
+    const { getInitials } = require('../utils/formatting');
+
+    // English multi-word names
+    assert.strictEqual(getInitials('Ahmed Khaled'), 'AK');
+    assert.strictEqual(getInitials('Sarah Jenkins'), 'SJ');
+    assert.strictEqual(getInitials('John Fitzgerald Kennedy'), 'JF');
+
+    // English single-word names (first two characters)
+    assert.strictEqual(getInitials('Ahmed'), 'AH');
+    assert.strictEqual(getInitials('Kutubi'), 'KU');
+    assert.strictEqual(getInitials('A'), 'A');
+
+    // Arabic multi-word names
+    assert.strictEqual(getInitials('ابن خلدون'), 'اخ');
+    assert.strictEqual(getInitials('نجيب محفوظ'), 'نم');
+
+    // Arabic single-word names (first two Unicode characters)
+    assert.strictEqual(getInitials('أحمد'), 'أح');
+    assert.strictEqual(getInitials('كتبي'), 'كت');
+
+    // Leading / trailing whitespace & multiple spaces
+    assert.strictEqual(getInitials('   Ahmed   Khaled   '), 'AK');
+    assert.strictEqual(getInitials('   Kutubi   '), 'KU');
+    assert.strictEqual(getInitials('  ابن   خلدون  '), 'اخ');
+
+    // Empty input, whitespace-only, and non-string fallbacks
+    assert.strictEqual(getInitials(''), 'K');
+    assert.strictEqual(getInitials('   '), 'K');
+    assert.strictEqual(getInitials(null), 'K');
+    assert.strictEqual(getInitials(undefined), 'K');
+  });
 });

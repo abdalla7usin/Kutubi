@@ -66,21 +66,24 @@ a {
   border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
-  padding: var(--space-lg);
+  padding: var(--space-2xl) var(--space-lg) var(--space-lg) var(--space-lg);
   gap: var(--space-xl);
   transition: width var(--duration-sidebar) var(--ease-modal), padding var(--duration-sidebar) var(--ease-modal);
   position: sticky;
   top: 0;
   height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
   z-index: 40;
+}
+
+.app-sidebar.transitioning {
+  overflow: hidden !important;
 }
 
 .app-sidebar.collapsed {
   width: var(--sidebar-collapsed-width);
-  padding: var(--space-lg) var(--space-sm);
+  padding: var(--space-2xl) var(--space-xs) var(--space-lg) var(--space-xs);
   align-items: center;
+  overflow: hidden;
 }
 
 /* Sidebar Header */
@@ -88,8 +91,9 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-xs);
+  padding: 0 var(--space-xs);
   min-height: 36px;
+  height: 36px;
 }
 
 .sidebar-title {
@@ -98,6 +102,7 @@ a {
   color: var(--text-primary);
   letter-spacing: -0.01em;
   white-space: nowrap;
+  line-height: 1;
 }
 
 .sidebar-collapse-btn {
@@ -157,11 +162,11 @@ a {
 
 .app-sidebar.collapsed .sidebar-title,
 .app-sidebar.collapsed .sidebar-collapse-btn {
-  display: none;
+  display: none !important;
 }
 
 .app-sidebar.collapsed .sidebar-monogram-btn {
-  display: inline-flex;
+  display: inline-flex !important;
 }
 
 /* Sidebar Nav */
@@ -198,7 +203,8 @@ a {
   background-color: var(--surface-elevated);
 }
 
-.sidebar-link .nav-icon {
+.sidebar-link .nav-icon,
+.sidebar-link .sidebar-icon {
   font-size: 18px;
   flex-shrink: 0;
 }
@@ -216,16 +222,24 @@ a {
   align-items: center;
 }
 
+.app-sidebar.collapsed .sidebar-item-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .app-sidebar.collapsed .sidebar-link {
   width: 36px;
   height: 36px;
   padding: 0;
   justify-content: center;
+  margin: 0 auto;
 }
 
 .app-sidebar.collapsed .sidebar-link .nav-label,
+.app-sidebar.collapsed .sidebar-link .sidebar-label,
 .app-sidebar.collapsed .sidebar-link .sidebar-badge {
-  display: none;
+  display: none !important;
 }
 
 /* Sidebar Tooltip */

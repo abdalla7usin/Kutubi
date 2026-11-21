@@ -1,13 +1,13 @@
 <div class="main-container">
   <!-- Header -->
-  <header class="flex items-center justify-between gap-lg">
+  <header class="flex items-center justify-between gap-lg min-h-[36px] h-9">
     <div class="flex items-baseline gap-sm">
-      <h1 class="font-headline text-headline-lg text-text-primary">My Library</h1>
+      <h1 class="font-headline text-headline-lg text-text-primary leading-none">My Library</h1>
       <span class="font-body text-body-md text-text-secondary tabular-nums" id="library-book-count">
         <%= books.length %> <%= books.length === 1 ? 'book' : 'books' %>
       </span>
     </div>
-    <a href="/books/new" class="btn btn-primary">
+    <a href="/books/new" class="btn btn-primary h-9 flex items-center justify-center gap-sm">
       <span class="material-symbols-outlined text-[16px]" aria-hidden="true">add</span>
       <span>Add Book</span>
     </a>

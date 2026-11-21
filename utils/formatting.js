@@ -20,6 +20,10 @@ function formatDate(date) {
 
 /**
  * Extract 1-2 uppercase initials from a display name
+ * - Multi-word: First character of the first two non-empty words
+ * - Single-word: First two characters of the single word
+ * - Empty / whitespace fallback: 'K'
+ * Handles Unicode (English & Arabic) safely
  * @param {string} name
  * @returns {string}
  */
@@ -27,8 +31,12 @@ function getInitials(name) {
   if (!name || typeof name !== 'string') return 'K';
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return 'K';
-  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  if (parts.length === 1) {
+    return Array.from(parts[0]).slice(0, 2).join('').toUpperCase();
+  }
+  const char1 = Array.from(parts[0])[0] || '';
+  const char2 = Array.from(parts[1])[0] || '';
+  return (char1 + char2).toUpperCase();
 }
 
 /**

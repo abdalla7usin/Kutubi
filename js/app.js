@@ -26,9 +26,56 @@ const sidebarTooltipLibrary = document.getElementById('sidebar-tooltip-library')
 
 // Initial setup
 function initApp() {
+  function setSidebarCollapsed(collapsed) {
+    if (!sidebar) return;
+    sidebar.classList.add('overflow-hidden');
+    sidebar.classList.add('transitioning');
+
+    let cleanedUp = false;
+    const cleanupTransition = () => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      sidebar.classList.remove('transitioning');
+      if (!sidebar.classList.contains('collapsed')) {
+        sidebar.classList.remove('overflow-hidden');
+      }
+    };
+
+    const onTransitionEnd = (e) => {
+      if (e.target === sidebar && (e.propertyName === 'width' || e.propertyName === 'max-width')) {
+        sidebar.removeEventListener('transitionend', onTransitionEnd);
+        cleanupTransition();
+      }
+    };
+    sidebar.addEventListener('transitionend', onTransitionEnd);
+    setTimeout(cleanupTransition, 260);
+
+    if (collapsed) {
+      sidebar.classList.add('collapsed');
+      sidebar.classList.remove('w-60');
+      sidebar.classList.add('w-16');
+      sidebar.classList.add('overflow-hidden');
+      store.setSidebarCollapsed(true);
+    } else {
+      sidebar.classList.remove('collapsed');
+      sidebar.classList.remove('w-16');
+      sidebar.classList.add('w-60');
+      sidebar.classList.remove('overflow-hidden');
+      store.setSidebarCollapsed(false);
+    }
+  }
+
   // Sidebar state
   if (store.isSidebarCollapsed()) {
     sidebar.classList.add('collapsed');
+    sidebar.classList.remove('w-60');
+    sidebar.classList.add('w-16');
+    sidebar.classList.add('overflow-hidden');
+  } else {
+    sidebar.classList.remove('collapsed');
+    sidebar.classList.remove('w-16');
+    sidebar.classList.add('w-60');
+    sidebar.classList.remove('overflow-hidden');
   }
 
   updateSidebarBadge();
@@ -45,15 +92,20 @@ function initApp() {
   });
 
   // Event Listeners for Sidebar
-  collapseBtn.addEventListener('click', () => {
-    sidebar.classList.add('collapsed');
-    store.setSidebarCollapsed(true);
-  });
+  if (collapseBtn) {
+    collapseBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const shouldCollapse = !sidebar.classList.contains('collapsed');
+      setSidebarCollapsed(shouldCollapse);
+    });
+  }
 
-  expandBtn.addEventListener('click', () => {
-    sidebar.classList.remove('collapsed');
-    store.setSidebarCollapsed(false);
-  });
+  if (expandBtn) {
+    expandBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      setSidebarCollapsed(false);
+    });
+  }
 
   // Mobile drawer
   if (mobileMenuBtn && mobileDrawerBackdrop) {
