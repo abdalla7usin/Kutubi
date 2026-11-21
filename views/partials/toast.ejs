@@ -1,0 +1,15 @@
+<!-- Toast Feedback Container -->
+<div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true">
+  <% if (typeof toast !== 'undefined' && toast) { %>
+    <div class="toast animate-slide-up" role="status">
+      <span class="material-symbols-outlined text-[16px] text-text-primary">check_circle</span>
+      <span><%= toast %></span>
+    </div>
+  <% } %>
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="toast toast-error animate-slide-up" role="alert">
+      <span class="material-symbols-outlined text-[16px] text-danger">error</span>
+      <span><%= error %></span>
+    </div>
+  <% } %>
+</div>

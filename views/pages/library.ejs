@@ -1,0 +1,285 @@
+<div class="main-container">
+  <!-- Header -->
+  <header class="flex items-center justify-between gap-lg">
+    <div class="flex items-baseline gap-sm">
+      <h1 class="font-headline text-headline-lg text-text-primary">My Library</h1>
+      <span class="font-body text-body-md text-text-secondary tabular-nums" id="library-book-count">
+        <%= books.length %> <%= books.length === 1 ? 'book' : 'books' %>
+      </span>
+    </div>
+    <a href="/books/new" class="btn btn-primary">
+      <span class="material-symbols-outlined text-[16px]" aria-hidden="true">add</span>
+      <span>Add Book</span>
+    </a>
+  </header>
+
+  <!-- Live Filter & Sort Toolbar Form -->
+  <form id="library-toolbar-form" action="/library" method="GET" class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-md">
+    <input type="hidden" name="view" id="library-view-input" value="<%= filters.view %>" />
+    <div class="flex flex-1 flex-wrap items-center gap-sm">
+      <!-- Search Input -->
+      <div class="relative flex-1 min-w-[200px] max-w-sm">
+        <span class="material-symbols-outlined text-[18px] text-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+          search
+        </span>
+        <input
+          id="library-search-input"
+          name="search"
+          type="search"
+          value="<%= filters.search %>"
+          placeholder="Search by title or author..."
+          class="form-input"
+          style="padding-left: 36px;"
+          dir="auto"
+        />
+      </div>
+
+      <!-- Status Dropdown -->
+      <select id="library-status-select" name="status" class="form-select w-auto" data-prefix="Status: ">
+        <option value="All" <%= filters.status === 'All' ? 'selected' : '' %>>All</option>
+        <option value="Reading" <%= filters.status === 'Reading' ? 'selected' : '' %>>Reading</option>
+        <option value="Completed" <%= filters.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+        <option value="To Read" <%= filters.status === 'To Read' ? 'selected' : '' %>>To Read</option>
+      </select>
+
+      <!-- Category Dropdown -->
+      <select id="library-category-select" name="category" class="form-select w-auto" data-prefix="Category: ">
+        <option value="All" <%= filters.category === 'All' ? 'selected' : '' %>>All</option>
+        <% categories.forEach(cat => { %>
+          <option value="<%= cat.name %>" <%= filters.category === cat.name ? 'selected' : '' %>>
+            <%= cat.name %>
+          </option>
+        <% }); %>
+      </select>
+
+      <!-- Sort Dropdown -->
+      <select id="library-sort-select" name="sort" class="form-select w-auto" data-prefix="Sort: ">
+        <option value="recently-added" <%= filters.sort === 'recently-added' ? 'selected' : '' %>>Recently Added</option>
+        <option value="title" <%= filters.sort === 'title' ? 'selected' : '' %>>Title (A–Z)</option>
+        <option value="progress" <%= filters.sort === 'progress' ? 'selected' : '' %>>Progress</option>
+        <option value="rating" <%= filters.sort === 'rating' ? 'selected' : '' %>>Highest Rated</option>
+      </select>
+    </div>
+
+    <!-- Segmented Grid/List Toggle -->
+    <div role="group" aria-label="View mode" class="inline-flex items-center p-xs rounded-control bg-surface border border-border shrink-0 self-start md:self-auto">
+      <button
+        type="button"
+        id="toggle-grid-view"
+        aria-pressed="<%= filters.view === 'grid' ? 'true' : 'false' %>"
+        class="inline-flex items-center gap-xs px-sm py-xs rounded-cover <%= filters.view === 'grid' ? 'bg-surface-elevated text-text-primary' : 'text-text-secondary hover:text-text-primary' %> font-label text-label-md transition-colors"
+      >
+        <span class="material-symbols-outlined text-[16px]">grid_view</span>
+        <span>Grid</span>
+      </button>
+      <button
+        type="button"
+        id="toggle-list-view"
+        aria-pressed="<%= filters.view === 'list' ? 'true' : 'false' %>"
+        class="inline-flex items-center gap-xs px-sm py-xs rounded-cover <%= filters.view === 'list' ? 'bg-surface-elevated text-text-primary' : 'text-text-secondary hover:text-text-primary' %> font-label text-label-md transition-colors"
+      >
+        <span class="material-symbols-outlined text-[16px]">view_list</span>
+        <span>List</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Book Content or Empty State -->
+  <% if (!books || books.length === 0) { %>
+    <!-- Empty State Card -->
+    <div class="flex justify-center pt-xl">
+      <article class="card card-padded max-w-md w-full flex flex-col items-center text-center gap-md">
+        <div class="w-10 h-10 rounded-control bg-background border border-border flex items-center justify-center">
+          <span class="material-symbols-outlined text-[20px] text-text-muted">search_off</span>
+        </div>
+        <header class="flex flex-col items-center gap-xs">
+          <h3 class="font-title text-title-lg text-text-primary">No books match your filters</h3>
+          <p class="font-body text-body-md text-text-secondary">Try adjusting your search query or selected filters.</p>
+        </header>
+        <footer class="pt-xs">
+          <a href="/library" id="clear-filters-btn" class="btn btn-elevated">
+            <span>Clear Filters</span>
+          </a>
+        </footer>
+      </article>
+    </div>
+  <% } else if (filters.view === 'grid') { %>
+    <!-- 4-Column Book Grid -->
+    <section aria-label="Books Grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg items-stretch">
+      <% books.forEach(book => { %>
+        <% const dir = isArabic(book.title) ? 'rtl' : 'ltr'; %>
+        <% const percent = calculatePercentage(book.currentPage, book.totalPages); %>
+        <% const statusClass = book.status === 'Reading' ? 'badge-status-reading text-text-primary' : 'badge-status-completed text-text-secondary'; %>
+        
+        <a href="/books/<%= book.id %>" class="card card-interactive p-md flex flex-col justify-between gap-md h-full">
+          <div class="flex flex-col gap-md">
+            <%- renderBookCover(book) %>
+            <div class="flex flex-col gap-xs" dir="<%= dir %>">
+              <h2 class="font-title text-title-md text-text-primary leading-snug line-clamp-2" dir="<%= dir %>">
+                <%= book.title %>
+              </h2>
+              <p class="font-body text-body-md text-text-secondary line-clamp-1" dir="<%= dir %>">
+                <%= book.author %>
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-sm">
+            <% if (book.status === 'Reading') { %>
+              <div class="flex flex-col gap-xs">
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: <%= percent %>%;"></div>
+                </div>
+                <div class="flex items-center justify-between font-label text-label-sm text-text-secondary tabular-nums">
+                  <span><%= book.currentPage %> / <%= book.totalPages %> p.</span>
+                  <span><%= percent %>%</span>
+                </div>
+              </div>
+            <% } %>
+
+            <div class="flex items-center justify-between gap-xs pt-xs border-t border-border">
+              <span class="badge badge-category"><%= book.category %></span>
+              <span class="badge <%= statusClass %>"><%= book.status %></span>
+            </div>
+          </div>
+        </a>
+      <% }); %>
+    </section>
+  <% } else { %>
+    <!-- List View Table -->
+    <section aria-label="Books List" class="card overflow-x-auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col" style="width: 44%;">Book</th>
+            <th scope="col" style="width: 14%;">Category</th>
+            <th scope="col" style="width: 12%;">Status</th>
+            <th scope="col" style="width: 16%;">Progress</th>
+            <th scope="col" style="width: 8%;">Rating</th>
+            <th scope="col" style="width: 6%; text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% books.forEach(book => { %>
+            <% const dir = isArabic(book.title) ? 'rtl' : 'ltr'; %>
+            <% const percent = calculatePercentage(book.currentPage, book.totalPages); %>
+            <% const statusClass = book.status === 'Reading' ? 'badge-status-reading text-text-primary' : 'badge-status-completed text-text-secondary'; %>
+
+            <tr>
+              <td>
+                <a href="/books/<%= book.id %>" class="flex items-center gap-md group text-inherit">
+                  <%- renderListThumbnail(book) %>
+                  <div class="min-w-0">
+                    <p class="font-title text-title-md text-text-primary group-hover:text-text-primary truncate" dir="<%= dir %>">
+                      <%= book.title %>
+                    </p>
+                    <p class="font-body text-body-md text-text-secondary truncate" dir="<%= dir %>">
+                      <%= book.author %>
+                    </p>
+                  </div>
+                </a>
+              </td>
+              <td>
+                <span class="badge badge-category"><%= book.category %></span>
+              </td>
+              <td>
+                <span class="badge <%= statusClass %>"><%= book.status %></span>
+              </td>
+              <td>
+                <div class="flex flex-col gap-xs max-w-[140px]">
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width: <%= percent %>%;"></div>
+                  </div>
+                  <span class="font-label text-label-sm text-text-secondary tabular-nums">
+                    <%= book.currentPage %>/<%= book.totalPages %> (<%= percent %>%)
+                  </span>
+                </div>
+              </td>
+              <td class="tabular-nums">
+                <% if (book.rating) { %>
+                  <span class="text-text-primary font-medium" title="<%= book.rating %> out of 5 stars">
+                    <%= '★'.repeat(book.rating) %><%= '☆'.repeat(5 - book.rating) %>
+                  </span>
+                <% } else { %>
+                  <span class="text-text-muted">—</span>
+                <% } %>
+              </td>
+              <td class="text-right">
+                <div class="flex items-center justify-end gap-xs">
+                  <a
+                    href="/books/<%= book.id %>/edit"
+                    class="btn-icon"
+                    aria-label="Edit <%= book.title %>"
+                    title="Edit book"
+                  >
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">edit</span>
+                  </a>
+                  <button
+                    type="button"
+                    class="btn-icon text-text-secondary hover:text-danger"
+                    data-delete-book-id="<%= book.id %>"
+                    data-delete-book-title="<%= book.title %>"
+                    aria-label="Delete <%= book.title %>"
+                    title="Delete book"
+                  >
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </section>
+  <% } %>
+</div>
+
+<script>
+  // Automatic Toolbar Submission & View Toggles
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('library-toolbar-form');
+    if (!form) return;
+
+    const searchInput = document.getElementById('library-search-input');
+    const statusSelect = document.getElementById('library-status-select');
+    const categorySelect = document.getElementById('library-category-select');
+    const sortSelect = document.getElementById('library-sort-select');
+    const viewInput = document.getElementById('library-view-input');
+    const toggleGridBtn = document.getElementById('toggle-grid-view');
+    const toggleListBtn = document.getElementById('toggle-list-view');
+
+    // Debounced search input
+    let searchTimeout;
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          form.submit();
+        }, 350);
+      });
+    }
+
+    // Dropdown change submissions
+    [statusSelect, categorySelect, sortSelect].forEach(select => {
+      if (select) {
+        select.addEventListener('change', () => {
+          form.submit();
+        });
+      }
+    });
+
+    // View toggle handlers
+    if (toggleGridBtn && viewInput) {
+      toggleGridBtn.addEventListener('click', () => {
+        viewInput.value = 'grid';
+        form.submit();
+      });
+    }
+    if (toggleListBtn && viewInput) {
+      toggleListBtn.addEventListener('click', () => {
+        viewInput.value = 'list';
+        form.submit();
+      });
+    }
+  });
+</script>

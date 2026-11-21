@@ -1,0 +1,139 @@
+<div class="main-container">
+  <!-- Header -->
+  <header class="flex items-center justify-between gap-lg">
+    <h1 class="font-headline text-headline-lg text-text-primary">Dashboard</h1>
+    <a href="/books/new" class="btn btn-primary" id="dashboard-add-book-btn">
+      <span class="material-symbols-outlined text-[16px]" aria-hidden="true">add</span>
+      <span>Add Book</span>
+    </a>
+  </header>
+
+  <!-- 4 Top Metrics -->
+  <section aria-label="Library Summary" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg items-stretch">
+    <article class="card card-padded flex flex-col justify-between gap-sm h-full">
+      <span class="font-label text-label-md text-text-secondary">Total Books</span>
+      <div class="flex flex-col gap-xs">
+        <span class="font-headline text-headline-lg text-text-primary tabular-nums" id="metric-total-books"><%= metrics.totalBooks %></span>
+        <span class="font-body text-body-md text-text-secondary">Across <%= metrics.categoriesCount %> categories</span>
+      </div>
+    </article>
+
+    <article class="card card-padded flex flex-col justify-between gap-sm h-full">
+      <span class="font-label text-label-md text-text-secondary">Currently Reading</span>
+      <div class="flex flex-col gap-xs">
+        <span class="font-headline text-headline-lg text-text-primary tabular-nums" id="metric-reading-books"><%= metrics.reading %></span>
+        <span class="font-body text-body-md text-text-secondary">Active books in progress</span>
+      </div>
+    </article>
+
+    <article class="card card-padded flex flex-col justify-between gap-sm h-full">
+      <span class="font-label text-label-md text-text-secondary">Completed</span>
+      <div class="flex flex-col gap-xs">
+        <span class="font-headline text-headline-lg text-text-primary tabular-nums" id="metric-completed-books"><%= metrics.completed %></span>
+        <span class="font-body text-body-md text-text-secondary tabular-nums"><%= metrics.completedPercent %>% of library</span>
+      </div>
+    </article>
+
+    <article class="card card-padded flex flex-col justify-between gap-sm h-full">
+      <span class="font-label text-label-md text-text-secondary">To Read</span>
+      <div class="flex flex-col gap-xs">
+        <span class="font-headline text-headline-lg text-text-primary tabular-nums" id="metric-toread-books"><%= metrics.toRead %></span>
+        <span class="font-body text-body-md text-text-secondary">Queued next</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- Currently Reading Section -->
+  <section id="currently-reading-section" class="flex flex-col gap-lg">
+    <div class="flex items-center justify-between">
+      <h2 class="font-title text-title-lg text-text-primary">Currently Reading</h2>
+      <a href="/library?status=Reading" class="font-label text-label-md text-text-secondary hover:text-text-primary transition-colors">View all</a>
+    </div>
+
+    <% if (!currentlyReading || currentlyReading.length === 0) { %>
+      <div class="card card-padded text-center">
+        <p class="font-body text-body-md text-text-secondary">No books currently in progress.</p>
+      </div>
+    <% } else { %>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg items-stretch">
+        <% currentlyReading.forEach(book => { %>
+          <% const dir = isArabic(book.title) ? 'rtl' : 'ltr'; %>
+          <a href="/books/<%= book.id %>" class="card card-interactive p-lg flex gap-lg h-full">
+            <div class="w-[68px] aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background shrink-0 book-cover-container">
+              <% if (book.coverUrl) { %>
+                <img
+                  src="<%= book.coverUrl %>"
+                  alt="<%= book.title %> cover"
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                  onerror="window.handleCoverError && window.handleCoverError(this, '<%= book.title.replace(/'/g, "\\'") %>', '<%= book.author.replace(/'/g, "\\'") %>')"
+                />
+              <% } else { %>
+                <%- renderTypographicCover(book.title, book.author, true) %>
+              <% } %>
+            </div>
+            <div class="flex-1 min-w-0 flex flex-col justify-between gap-md" dir="<%= dir %>">
+              <div class="flex flex-col gap-xs">
+                <span class="self-start inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary">
+                  <%= book.category %>
+                </span>
+                <h3 class="font-title text-title-md text-text-primary leading-snug line-clamp-2" dir="<%= dir %>">
+                  <%= book.title %>
+                </h3>
+                <p class="font-body text-body-md text-text-secondary line-clamp-1" dir="<%= dir %>">
+                  <%= book.author %>
+                </p>
+              </div>
+              <div class="flex flex-col gap-xs" dir="ltr">
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: <%= book.progressPercent %>%;"></div>
+                </div>
+                <p class="font-label text-label-md text-text-secondary tabular-nums">
+                  <%= book.currentPage %> / <%= book.totalPages %> pages · <%= book.progressPercent %>%
+                </p>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } %>
+  </section>
+
+  <!-- Recently Added Section -->
+  <section id="recently-added-section" class="flex flex-col gap-lg">
+    <div class="flex items-center justify-between">
+      <h2 class="font-title text-title-lg text-text-primary">Recently Added</h2>
+    </div>
+
+    <% if (!recentlyAdded || recentlyAdded.length === 0) { %>
+      <div class="card card-padded text-center">
+        <p class="font-body text-body-md text-text-secondary">No books added yet.</p>
+      </div>
+    <% } else { %>
+      <div class="card divide-y divide-border overflow-hidden">
+        <% recentlyAdded.forEach(book => { %>
+          <% const dir = isArabic(book.title) ? 'rtl' : 'ltr'; %>
+          <% const statusClass = book.status === 'Reading' ? 'badge-status-reading text-text-primary' : 'badge-status-completed text-text-secondary'; %>
+          <a href="/books/<%= book.id %>" class="flex items-center justify-between gap-lg px-lg py-md hover:bg-surface-elevated transition-colors text-inherit">
+            <div class="flex items-center gap-md min-w-0">
+              <%- renderListThumbnail(book) %>
+              <div class="min-w-0">
+                <p class="font-title text-title-md text-text-primary truncate" dir="<%= dir %>">
+                  <%= book.title %>
+                </p>
+                <p class="font-body text-body-md text-text-secondary truncate" dir="<%= dir %>">
+                  <%= book.author %>
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-md sm:gap-lg shrink-0">
+              <span class="badge badge-category hidden sm:inline-flex"><%= book.category %></span>
+              <span class="badge <%= statusClass %>"><%= book.status %></span>
+              <span class="font-body text-body-md text-text-secondary tabular-nums w-[88px] text-right"><%= book.dateAdded %></span>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } %>
+  </section>
+</div>

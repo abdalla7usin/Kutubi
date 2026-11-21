@@ -1,0 +1,101 @@
+<div class="main-container narrow">
+  <!-- Header -->
+  <header class="flex flex-col gap-xs">
+    <h1 class="font-headline text-[22px] font-semibold leading-snug text-text-primary">Profile</h1>
+    <p class="font-body text-body-md text-text-secondary">Your personal reader identity and library overview.</p>
+  </header>
+
+  <!-- Card 1: Reader Identity -->
+  <section class="card card-padded flex flex-col gap-xl">
+    <div class="flex items-center gap-lg">
+      <div id="profile-avatar" class="w-[56px] h-[56px] rounded-full bg-surface-elevated border border-border flex items-center justify-center shrink-0">
+        <span class="font-title text-title-lg text-text-primary" id="avatar-initials" data-testid="profile-avatar-initials"><%= profile.initials %></span>
+      </div>
+      <div class="flex flex-col gap-xs">
+        <h2 class="font-title text-title-lg text-text-primary">Reader Identity</h2>
+        <p class="font-body text-body-md text-text-secondary">Displayed across your personal reading workspace.</p>
+      </div>
+    </div>
+
+    <form id="profile-form" action="/profile" method="POST" class="flex flex-col gap-lg">
+      <label class="form-group">
+        <span class="form-label">Display Name</span>
+        <input
+          id="profile-display-name"
+          name="displayName"
+          type="text"
+          required
+          value="<%= profile.displayName %>"
+          class="form-input"
+        />
+      </label>
+
+      <label class="form-group">
+        <span class="form-label">Bio / Reading Goal</span>
+        <textarea
+          id="profile-bio"
+          name="bio"
+          rows="3"
+          class="form-textarea"
+        ><%= profile.bio %></textarea>
+      </label>
+
+      <div class="flex justify-end pt-sm border-t border-border">
+        <button type="submit" class="btn btn-primary" id="save-profile-btn">
+          <span>Save Profile</span>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Card 2: Reading Milestone Summary -->
+  <section class="card card-padded flex flex-col gap-lg">
+    <h2 class="font-title text-title-lg text-text-primary">Reading Milestone Summary</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-lg">
+      <div class="bg-background border border-border rounded-control p-lg flex flex-col gap-xs">
+        <span class="font-label text-label-md text-text-secondary">Books Completed</span>
+        <span class="font-headline text-headline-lg text-text-primary tabular-nums" id="milestone-completed">
+          <%= stats.completedBooks %>
+        </span>
+      </div>
+
+      <div class="bg-background border border-border rounded-control p-lg flex flex-col gap-xs">
+        <span class="font-label text-label-md text-text-secondary">Total Pages Read</span>
+        <span class="font-headline text-headline-lg text-text-primary tabular-nums" id="milestone-pages">
+          <%= stats.totalPagesRead.toLocaleString() %>
+        </span>
+      </div>
+
+      <div class="bg-background border border-border rounded-control p-lg flex flex-col gap-xs">
+        <span class="font-label text-label-md text-text-secondary">Favorite Category</span>
+        <span class="font-headline text-headline-md text-text-primary" id="milestone-favorite">
+          <%= stats.favoriteCategory %>
+        </span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  // Live initials calculation as user types in Display Name
+  document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('profile-display-name');
+    const initialsEl = document.getElementById('avatar-initials');
+    if (!input || !initialsEl) return;
+
+    input.addEventListener('input', () => {
+      const val = input.value.trim();
+      if (!val) {
+        initialsEl.textContent = 'K';
+        return;
+      }
+      const parts = val.split(/\s+/).filter(Boolean);
+      if (parts.length === 1) {
+        initialsEl.textContent = parts[0].slice(0, 2).toUpperCase();
+      } else {
+        initialsEl.textContent = (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
+    });
+  });
+</script>

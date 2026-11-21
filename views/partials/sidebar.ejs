@@ -1,0 +1,90 @@
+<aside id="app-sidebar" class="app-sidebar shrink-0 h-full border-r border-border bg-surface flex flex-col justify-between transition-[width] duration-sidebar ease-sidebar">
+  <!-- Top: Brand Header & Main Navigation -->
+  <div class="flex flex-col gap-lg">
+    <!-- Sidebar Header -->
+    <header class="sidebar-header flex items-center justify-between">
+      <!-- Expanded Title (Plain bold text 'Kutubi', NO logo, NO Arabic subtitle) -->
+      <h1 class="sidebar-title font-headline text-[18px] font-semibold text-text-primary tracking-tight">
+        Kutubi
+      </h1>
+
+      <!-- Collapse Toggle Icon Button (PanelLeftClose) -->
+      <button
+        type="button"
+        id="sidebar-collapse-btn"
+        class="sidebar-collapse-btn"
+        aria-label="Collapse sidebar"
+        title="Collapse sidebar"
+      >
+        <span class="material-symbols-outlined text-[18px]" aria-hidden="true">left_panel_close</span>
+      </button>
+
+      <!-- Collapsed State 'K' Monogram Button (Clicking 'K' itself expands sidebar) -->
+      <button
+        type="button"
+        id="sidebar-expand-btn"
+        class="sidebar-monogram-btn"
+        aria-label="Expand sidebar"
+        title="Expand sidebar"
+      >
+        <span>K</span>
+      </button>
+    </header>
+
+    <!-- Navigation Menu Items -->
+    <nav aria-label="Main Navigation" class="flex flex-col gap-xs px-sm">
+      <!-- 1. Dashboard -->
+      <div class="sidebar-item-container">
+        <a
+          href="/dashboard"
+          class="sidebar-link <%= activeNav === 'dashboard' ? 'active' : '' %>"
+          data-nav="dashboard"
+        >
+          <span class="material-symbols-outlined sidebar-icon text-[18px]" aria-hidden="true">dashboard</span>
+          <span class="sidebar-label">Dashboard</span>
+        </a>
+        <div class="sidebar-tooltip">Dashboard</div>
+      </div>
+
+      <!-- 2. My Library -->
+      <div class="sidebar-item-container">
+        <a
+          href="/library"
+          class="sidebar-link <%= activeNav === 'library' ? 'active' : '' %>"
+          data-nav="library"
+        >
+          <span class="material-symbols-outlined sidebar-icon text-[18px]" aria-hidden="true">menu_book</span>
+          <span class="sidebar-label">My Library</span>
+          <span id="sidebar-total-badge" class="sidebar-badge tabular-nums"><%= totalBooksCount %></span>
+        </a>
+        <div id="sidebar-tooltip-library" class="sidebar-tooltip">My Library · <%= totalBooksCount %></div>
+      </div>
+
+      <!-- 3. Settings -->
+      <div class="sidebar-item-container">
+        <a
+          href="/settings"
+          class="sidebar-link <%= activeNav === 'settings' ? 'active' : '' %>"
+          data-nav="settings"
+        >
+          <span class="material-symbols-outlined sidebar-icon text-[18px]" aria-hidden="true">settings</span>
+          <span class="sidebar-label">Settings</span>
+        </a>
+        <div class="sidebar-tooltip">Settings</div>
+      </div>
+
+      <!-- 4. Profile -->
+      <div class="sidebar-item-container">
+        <a
+          href="/profile"
+          class="sidebar-link <%= activeNav === 'profile' ? 'active' : '' %>"
+          data-nav="profile"
+        >
+          <span class="material-symbols-outlined sidebar-icon text-[18px]" aria-hidden="true">person</span>
+          <span class="sidebar-label">Profile</span>
+        </a>
+        <div class="sidebar-tooltip">Profile</div>
+      </div>
+    </nav>
+  </div>
+</aside>

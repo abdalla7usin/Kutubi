@@ -1,0 +1,24 @@
+<div class="main-container narrow text-center pt-2xl">
+  <div class="card card-padded max-w-lg mx-auto flex flex-col items-center gap-lg">
+    <div class="w-12 h-12 rounded-control bg-background border border-border flex items-center justify-center">
+      <span class="material-symbols-outlined text-[24px] text-danger">error_outline</span>
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <span class="font-label text-label-md text-text-secondary tabular-nums">Error <%= errorCode || 404 %></span>
+      <h1 class="font-headline text-headline-lg text-text-primary"><%= title || 'Error' %></h1>
+      <p class="font-body text-body-md text-text-secondary mt-xs">
+        <%= errorMessage || 'An unexpected error occurred.' %>
+      </p>
+    </div>
+
+    <div class="flex items-center gap-sm pt-xs">
+      <a href="/dashboard" class="btn btn-secondary">
+        <span>Go to Dashboard</span>
+      </a>
+      <a href="/library" class="btn btn-primary">
+        <span>My Library</span>
+      </a>
+    </div>
+  </div>
+</div>

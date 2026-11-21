@@ -1,0 +1,198 @@
+<script type="module">
+  import { initCustomDropdowns } from '/js/dropdown.js';
+  import { openDeleteModal, openRenameModal } from '/js/modal.js';
+  import { showToast } from '/js/toast.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize Custom Minimalist Dropdowns
+    initCustomDropdowns(document);
+
+    // 2. Sidebar Collapsed State Persistence (Local UI state)
+    const sidebar = document.getElementById('app-sidebar');
+    const collapseBtn = document.getElementById('sidebar-collapse-btn');
+    const expandBtn = document.getElementById('sidebar-expand-btn');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileDrawerBackdrop = document.getElementById('mobile-drawer-backdrop');
+
+    if (sidebar) {
+      const isCollapsed = localStorage.getItem('kutubi_sidebar_collapsed_v1') === 'true';
+      if (isCollapsed) {
+        sidebar.classList.add('collapsed');
+      }
+
+      if (collapseBtn) {
+        collapseBtn.addEventListener('click', () => {
+          sidebar.classList.add('collapsed');
+          localStorage.setItem('kutubi_sidebar_collapsed_v1', 'true');
+        });
+      }
+
+      if (expandBtn) {
+        expandBtn.addEventListener('click', () => {
+          sidebar.classList.remove('collapsed');
+          localStorage.setItem('kutubi_sidebar_collapsed_v1', 'false');
+        });
+      }
+    }
+
+    // 3. Mobile Navigation Drawer
+    if (mobileMenuBtn && sidebar && mobileDrawerBackdrop) {
+      mobileMenuBtn.addEventListener('click', () => {
+        sidebar.classList.add('mobile-open');
+        mobileDrawerBackdrop.classList.add('open');
+      });
+
+      mobileDrawerBackdrop.addEventListener('click', () => {
+        sidebar.classList.remove('mobile-open');
+        mobileDrawerBackdrop.classList.remove('open');
+      });
+    }
+
+    // 4. Global Event Delegation for Delete Book Modals
+    document.addEventListener('click', (e) => {
+      const deleteBtn = e.target.closest('[data-delete-book-id]');
+      if (deleteBtn) {
+        e.preventDefault();
+        const bookId = deleteBtn.getAttribute('data-delete-book-id');
+        const bookTitle = deleteBtn.getAttribute('data-delete-book-title') || 'this book';
+
+        openDeleteModal({
+          title: bookTitle,
+          onConfirm: () => {
+            // Create and submit a real POST request to delete endpoint
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/books/${bookId}/delete`;
+            document.body.appendChild(form);
+            form.submit();
+          }
+        });
+        return;
+      }
+
+      // Rename Category Modal Trigger
+      const renameBtn = e.target.closest('[data-action="rename-category"]');
+      if (renameBtn) {
+        e.preventDefault();
+        const catId = renameBtn.getAttribute('data-category-id');
+        const catName = renameBtn.getAttribute('data-category-name');
+
+        openRenameModal({
+          currentName: catName,
+          onConfirm: (newName) => {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/categories/${catId}/edit`;
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'name';
+            input.value = newName;
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+          }
+        });
+        return;
+      }
+
+      // Delete Category Modal Trigger
+      const deleteCatBtn = e.target.closest('[data-action="delete-category"]');
+      if (deleteCatBtn) {
+        e.preventDefault();
+        const catId = deleteCatBtn.getAttribute('data-category-id');
+        const catName = deleteCatBtn.getAttribute('data-category-name');
+
+        openDeleteModal({
+          title: `Delete category "${catName}"?`,
+          message: 'All books in this category will be safely reassigned to Uncategorized. This action cannot be undone.',
+          confirmText: 'Delete Category',
+          onConfirm: () => {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/categories/${catId}/delete`;
+            document.body.appendChild(form);
+            form.submit();
+          }
+        });
+        return;
+      }
+
+      // Reset Sample Data Confirmation Trigger
+      const resetBtn = e.target.closest('#reset-sample-btn');
+      if (resetBtn) {
+        e.preventDefault();
+        openDeleteModal({
+          title: 'Reset sample library to factory defaults?',
+          confirmText: 'Reset Sample Data',
+          onConfirm: () => {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/settings/reset';
+            document.body.appendChild(form);
+            form.submit();
+          }
+        });
+        return;
+      }
+    });
+
+    // 5. Add / Edit Book Form: Live Cover Preview & Rating
+    const coverUrlInput = document.getElementById('book-cover-url');
+    const previewBox = document.getElementById('cover-preview-box');
+    if (coverUrlInput && previewBox) {
+      coverUrlInput.addEventListener('input', (e) => {
+        const url = e.target.value.trim();
+        if (url) {
+          previewBox.innerHTML = `
+            <img
+              src="${url}"
+              alt="Preview"
+              class="w-full h-full object-cover"
+              onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'material-symbols-outlined text-[18px] text-text-muted\\'>menu_book</span>';"
+            />
+          `;
+        } else {
+          previewBox.innerHTML = `<span class="material-symbols-outlined text-[18px] text-text-muted" aria-hidden="true">menu_book</span>`;
+        }
+      });
+    }
+
+    // Interactive Star Rating Selector
+    const starBtns = document.querySelectorAll('[data-star-rating]');
+    const ratingInput = document.getElementById('book-rating');
+    if (starBtns.length > 0 && ratingInput) {
+      starBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const selected = Number(btn.getAttribute('data-star-rating'));
+          const current = Number(ratingInput.value);
+          const newRating = (current === selected) ? '' : selected;
+          ratingInput.value = newRating;
+
+          starBtns.forEach(b => {
+            const r = Number(b.getAttribute('data-star-rating'));
+            const icon = b.querySelector('.material-symbols-outlined');
+            if (newRating && r <= newRating) {
+              icon.classList.add('star-filled');
+              icon.textContent = 'star';
+            } else {
+              icon.classList.remove('star-filled');
+              icon.textContent = 'star';
+            }
+          });
+        });
+      });
+    }
+
+    // Auto-dismiss static server toasts after 4 seconds
+    const toasts = document.querySelectorAll('#toast-container .toast');
+    toasts.forEach(toast => {
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(8px)';
+        toast.style.transition = 'opacity 200ms ease, transform 200ms ease';
+        setTimeout(() => toast.remove(), 200);
+      }, 4000);
+    });
+  });
+</script>

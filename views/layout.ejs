@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <%- include('partials/head') %>
+  <body class="bg-background text-text-primary antialiased font-sans selection:bg-surface-elevated selection:text-text-primary">
+    <div id="app-layout" class="flex h-screen overflow-hidden bg-background">
+      <!-- Persistent Collapsible Sidebar -->
+      <%- include('partials/sidebar') %>
+
+      <!-- Main Application Container -->
+      <div id="app-content" class="flex-1 flex flex-col h-full overflow-hidden">
+        <!-- Responsive Mobile Header (< 768px) -->
+        <%- include('partials/mobile-header') %>
+
+        <!-- Scrollable Main View Outlet -->
+        <main id="app-main" class="flex-1 overflow-y-auto">
+          <%- body %>
+        </main>
+
+        <!-- Mobile Drawer Backdrop -->
+        <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- Modals & Toasts -->
+    <%- include('partials/modal') %>
+    <%- include('partials/toast') %>
+
+    <!-- Client-side Scripts -->
+    <%- include('partials/scripts') %>
+  </body>
+</html>

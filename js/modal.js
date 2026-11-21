@@ -7,10 +7,13 @@ import { escapeHtml } from './covers.js';
 let activeModal = null;
 let previousActiveElement = null;
 
-export function openDeleteModal({ title, onConfirm }) {
+export function openDeleteModal({ title, message, confirmText = 'Delete Book', onConfirm }) {
   previousActiveElement = document.activeElement;
   const container = document.getElementById('modal-container');
   if (!container) return;
+
+  const desc = message || 'This will permanently remove the book and your reading notes from your library. This action cannot be undone.';
+  const heading = title.startsWith('Delete') || title.startsWith('Reset') ? escapeHtml(title) : `Delete '${escapeHtml(title)}'?`;
 
   container.innerHTML = `
     <div class="modal-backdrop open" id="delete-modal-backdrop">
@@ -24,13 +27,13 @@ export function openDeleteModal({ title, onConfirm }) {
       >
         <header class="flex items-start justify-between gap-md">
           <h2 id="modal-alert-title" class="font-title text-title-lg text-text-primary">
-            Delete '${escapeHtml(title)}'?
+            ${heading}
           </h2>
         </header>
 
         <div id="modal-alert-desc">
           <p class="font-body text-body-md text-text-secondary">
-            This will permanently remove the book and your reading notes from your library. This action cannot be undone.
+            ${escapeHtml(desc)}
           </p>
         </div>
 
@@ -39,7 +42,7 @@ export function openDeleteModal({ title, onConfirm }) {
             <span>Cancel</span>
           </button>
           <button type="button" id="modal-confirm-btn" class="btn btn-destructive-solid">
-            <span>Delete Book</span>
+            <span>${escapeHtml(confirmText)}</span>
           </button>
         </footer>
       </div>

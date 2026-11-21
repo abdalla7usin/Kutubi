@@ -1,0 +1,23 @@
+<div class="main-container narrow text-center pt-2xl">
+  <div class="card card-padded max-w-md mx-auto flex flex-col items-center gap-lg">
+    <div class="w-12 h-12 rounded-control bg-background border border-border flex items-center justify-center">
+      <span class="material-symbols-outlined text-[24px] text-danger">delete</span>
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <h1 class="font-headline text-headline-lg text-text-primary">Delete '<%= book.title %>'?</h1>
+      <p class="font-body text-body-md text-text-secondary mt-xs">
+        This action cannot be undone. This book will be permanently removed from your library.
+      </p>
+    </div>
+
+    <form action="/books/<%= book.id %>/delete" method="POST" class="flex items-center gap-sm pt-xs w-full justify-center">
+      <a href="/books/<%= book.id %>" class="btn btn-secondary">
+        <span>Cancel</span>
+      </a>
+      <button type="submit" class="btn btn-destructive">
+        <span>Delete Book</span>
+      </button>
+    </form>
+  </div>
+</div>

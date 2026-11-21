@@ -1,0 +1,315 @@
+<% const initialTitle = (typeof formData !== 'undefined' && formData.title) ? formData.title : (book ? book.title : ''); %>
+<% const initialAuthor = (typeof formData !== 'undefined' && formData.author) ? formData.author : (book ? book.author : ''); %>
+<% const initialCategory = (typeof formData !== 'undefined' && (formData.category || formData.categoryId)) ? (formData.category || formData.categoryId) : (book ? book.category : (categories[0]?.name || 'Uncategorized')); %>
+<% const initialStatus = (typeof formData !== 'undefined' && formData.status) ? formData.status : (book ? book.status : 'To Read'); %>
+<% const initialTotalPages = (typeof formData !== 'undefined' && formData.totalPages !== undefined) ? formData.totalPages : (book ? book.totalPages : ''); %>
+<% const initialCurrentPage = (typeof formData !== 'undefined' && formData.currentPage !== undefined) ? formData.currentPage : (book ? book.currentPage : 0); %>
+<% const initialCoverUrl = (typeof formData !== 'undefined' && formData.coverUrl) ? formData.coverUrl : (book ? book.coverUrl : ''); %>
+<% const initialRating = (typeof formData !== 'undefined' && formData.rating !== undefined) ? formData.rating : (book ? book.rating : ''); %>
+<% const initialNotes = (typeof formData !== 'undefined' && (formData.notes || formData.description)) ? (formData.notes || formData.description) : (book ? (book.notes || book.description) : ''); %>
+
+<div class="main-container form-container">
+  <!-- Breadcrumb & Header -->
+  <header class="flex flex-col gap-sm">
+    <nav aria-label="Breadcrumb" class="flex items-center gap-sm">
+      <a href="/library" class="font-label text-label-md text-text-secondary hover:text-text-primary transition-colors">
+        My Library
+      </a>
+      <span class="font-label text-label-md text-text-secondary">/</span>
+      <span class="font-label text-label-md text-text-primary">
+        <%= isEdit ? 'Edit Book' : 'Add Book' %>
+      </span>
+    </nav>
+    <h1 class="font-headline text-headline-lg text-text-primary">
+      <%= isEdit ? 'Edit Book' : 'Add a New Book' %>
+    </h1>
+  </header>
+
+  <!-- Form Card -->
+  <form
+    id="book-form"
+    action="<%= isEdit ? `/books/${book.id}/edit` : '/books' %>"
+    method="POST"
+    data-mode="<%= isEdit ? 'edit' : 'add' %>"
+    class="card card-padded flex flex-col gap-lg"
+    novalidate
+  >
+    <!-- Title Input -->
+    <label class="form-group">
+      <span class="form-label">Title *</span>
+      <input
+        id="book-title"
+        name="title"
+        type="text"
+        required
+        value="<%= initialTitle %>"
+        placeholder="e.g. Designing Data-Intensive Applications"
+        class="form-input <%= errors && errors.title ? 'is-invalid' : '' %>"
+        dir="auto"
+      />
+      <% if (errors && errors.title) { %>
+        <span id="title-error" class="form-error-msg"><%= errors.title %></span>
+      <% } else { %>
+        <span id="title-error" class="form-error-msg hidden"></span>
+      <% } %>
+    </label>
+
+    <!-- Author Input -->
+    <label class="form-group">
+      <span class="form-label">Author *</span>
+      <input
+        id="book-author"
+        name="author"
+        type="text"
+        required
+        value="<%= initialAuthor %>"
+        placeholder="e.g. Martin Kleppmann"
+        class="form-input <%= errors && errors.author ? 'is-invalid' : '' %>"
+        dir="auto"
+      />
+      <% if (errors && errors.author) { %>
+        <span id="author-error" class="form-error-msg"><%= errors.author %></span>
+      <% } else { %>
+        <span id="author-error" class="form-error-msg hidden"></span>
+      <% } %>
+    </label>
+
+    <!-- Category & Reading Status -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+      <label class="form-group">
+        <span class="form-label">Category *</span>
+        <select id="book-category" name="category" class="form-select">
+          <% categories.forEach(cat => { %>
+            <% const isSelected = (initialCategory === cat.name || String(initialCategory) === String(cat.id)); %>
+            <option value="<%= cat.name %>" <%= isSelected ? 'selected' : '' %>>
+              <%= cat.name %>
+            </option>
+          <% }); %>
+        </select>
+      </label>
+
+      <label class="form-group">
+        <span class="form-label">Reading Status *</span>
+        <select id="book-status" name="status" class="form-select">
+          <option value="To Read" <%= initialStatus === 'To Read' ? 'selected' : '' %>>To Read</option>
+          <option value="Reading" <%= initialStatus === 'Reading' ? 'selected' : '' %>>Reading</option>
+          <option value="Completed" <%= initialStatus === 'Completed' ? 'selected' : '' %>>Completed</option>
+        </select>
+      </label>
+    </div>
+
+    <!-- Total Pages & Current Page -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+      <label class="form-group">
+        <span class="form-label">Total Pages *</span>
+        <input
+          id="book-total-pages"
+          name="totalPages"
+          type="number"
+          required
+          min="1"
+          value="<%= initialTotalPages %>"
+          placeholder="e.g. 420"
+          class="form-input tabular-nums <%= errors && errors.totalPages ? 'is-invalid' : '' %>"
+        />
+        <% if (errors && errors.totalPages) { %>
+          <span id="total-pages-error" class="form-error-msg"><%= errors.totalPages %></span>
+        <% } else { %>
+          <span id="total-pages-error" class="form-error-msg hidden"></span>
+        <% } %>
+      </label>
+
+      <label class="form-group">
+        <span class="form-label">Current Page</span>
+        <input
+          id="book-current-page"
+          name="currentPage"
+          type="number"
+          min="0"
+          value="<%= initialCurrentPage %>"
+          placeholder="0"
+          class="form-input tabular-nums <%= errors && errors.currentPage ? 'is-invalid' : '' %>"
+        />
+        <% if (errors && errors.currentPage) { %>
+          <span id="current-page-error" class="form-error-msg"><%= errors.currentPage %></span>
+        <% } else { %>
+          <span id="current-page-error" class="form-error-msg hidden"></span>
+        <% } %>
+      </label>
+    </div>
+
+    <!-- Cover Image URL + 48x72 Live Preview Box -->
+    <div class="flex items-end gap-lg">
+      <label class="form-group flex-1">
+        <span class="form-label">
+          Cover Image URL <span class="optional">(Optional)</span>
+        </span>
+        <input
+          id="book-cover-url"
+          name="coverUrl"
+          type="url"
+          value="<%= initialCoverUrl %>"
+          placeholder="https://..."
+          class="form-input <%= errors && errors.coverUrl ? 'is-invalid' : '' %>"
+        />
+        <% if (errors && errors.coverUrl) { %>
+          <span id="cover-url-error" class="form-error-msg"><%= errors.coverUrl %></span>
+        <% } %>
+      </label>
+      <div
+        id="cover-preview-box"
+        class="w-[48px] h-[72px] rounded-cover border border-border bg-background flex items-center justify-center shrink-0 overflow-hidden"
+        aria-label="Cover preview"
+      >
+        <% if (initialCoverUrl) { %>
+          <img
+            src="<%= initialCoverUrl %>"
+            alt="Preview"
+            class="w-full h-full object-cover"
+            onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'material-symbols-outlined text-[18px] text-text-muted\'>menu_book</span>';"
+          />
+        <% } else { %>
+          <span class="material-symbols-outlined text-[18px] text-text-muted" aria-hidden="true">menu_book</span>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Interactive 1-5 Star Rating -->
+    <div class="form-group">
+      <span class="form-label">
+        Rating <span class="optional">(Optional)</span>
+      </span>
+      <input type="hidden" name="rating" id="book-rating" value="<%= initialRating || '' %>" />
+      <div id="star-selector" class="flex items-center gap-xs" role="radiogroup" aria-label="Book rating" data-rating="<%= initialRating || '' %>">
+        <% [1, 2, 3, 4, 5].forEach(num => { %>
+          <% const isFilled = initialRating && num <= Number(initialRating); %>
+          <button
+            type="button"
+            data-star-rating="<%= num %>"
+            aria-label="<%= num %> star<%= num > 1 ? 's' : '' %>"
+            class="p-xs rounded-control star-btn <%= isFilled ? 'text-text-primary' : 'text-text-secondary' %> hover:text-text-primary transition-colors"
+          >
+            <span class="material-symbols-outlined text-[20px] <%= isFilled ? 'star-filled' : '' %>">star</span>
+          </button>
+        <% }); %>
+      </div>
+    </div>
+
+    <!-- Description & Personal Notes -->
+    <label class="form-group">
+      <span class="form-label">
+        Description / Personal Notes <span class="optional">(Optional)</span>
+      </span>
+      <textarea
+        id="book-notes"
+        name="notes"
+        rows="4"
+        placeholder="Write a short summary or your reading notes..."
+        class="form-textarea"
+        dir="auto"
+      ><%= initialNotes %></textarea>
+    </label>
+
+    <!-- Footer Actions -->
+    <footer class="flex items-center <%= isEdit ? 'justify-between' : 'justify-end' %> gap-md pt-md border-t border-border">
+      <% if (isEdit) { %>
+        <button
+          type="button"
+          id="form-delete-book-btn"
+          data-delete-book-id="<%= book.id %>"
+          data-delete-book-title="<%= book.title %>"
+          class="btn btn-destructive"
+        >
+          <span>Delete Book</span>
+        </button>
+      <% } %>
+
+      <div class="flex items-center gap-sm">
+        <a href="<%= isEdit ? `/books/${book.id}` : '/library' %>" class="btn btn-secondary">
+          <span>Cancel</span>
+        </a>
+        <button type="submit" class="btn btn-primary" id="save-book-btn">
+          <span><%= isEdit ? 'Save Changes' : 'Save Book' %></span>
+        </button>
+      </div>
+    </footer>
+  </form>
+</div>
+
+<script>
+  // Client-side auto-sync between Status and Page inputs + Validation
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('book-form');
+    if (!form) return;
+
+    const statusSelect = document.getElementById('book-status');
+    const totalPagesInput = document.getElementById('book-total-pages');
+    const currentPageInput = document.getElementById('book-current-page');
+
+    if (statusSelect && totalPagesInput && currentPageInput) {
+      statusSelect.addEventListener('change', () => {
+        if (statusSelect.value === 'Completed' && Number(totalPagesInput.value) > 0) {
+          currentPageInput.value = totalPagesInput.value;
+        } else if (statusSelect.value === 'To Read') {
+          currentPageInput.value = 0;
+        }
+      });
+    }
+
+    // Client-side pre-submit validation check
+    form.addEventListener('submit', (e) => {
+      const titleInput = document.getElementById('book-title');
+      const authorInput = document.getElementById('book-author');
+      const totalPages = Number(totalPagesInput?.value || 0);
+      const currentPage = Number(currentPageInput?.value || 0);
+
+      let hasError = false;
+
+      // Title check
+      const titleError = document.getElementById('title-error');
+      if (titleInput && !titleInput.value.trim()) {
+        titleInput.classList.add('is-invalid');
+        if (titleError) {
+          titleError.textContent = 'Title is required';
+          titleError.classList.remove('hidden');
+        }
+        hasError = true;
+      } else if (titleInput) {
+        titleInput.classList.remove('is-invalid');
+        if (titleError) titleError.classList.add('hidden');
+      }
+
+      // Author check
+      const authorError = document.getElementById('author-error');
+      if (authorInput && !authorInput.value.trim()) {
+        authorInput.classList.add('is-invalid');
+        if (authorError) {
+          authorError.textContent = 'Author is required';
+          authorError.classList.remove('hidden');
+        }
+        hasError = true;
+      } else if (authorInput) {
+        authorInput.classList.remove('is-invalid');
+        if (authorError) authorError.classList.add('hidden');
+      }
+
+      // Pages validation
+      const cpError = document.getElementById('current-page-error');
+      if (currentPageInput && totalPages > 0 && currentPage > totalPages) {
+        currentPageInput.classList.add('is-invalid');
+        if (cpError) {
+          cpError.textContent = 'Current page cannot exceed total pages';
+          cpError.classList.remove('hidden');
+        }
+        hasError = true;
+      } else if (currentPageInput) {
+        currentPageInput.classList.remove('is-invalid');
+        if (cpError) cpError.classList.add('hidden');
+      }
+
+      if (hasError) {
+        e.preventDefault();
+      }
+    });
+  });
+</script>
