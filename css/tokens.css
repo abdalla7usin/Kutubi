@@ -1,0 +1,49 @@
+/* ==========================================================================
+   Kutubi Design System - Tokens (Strict Grayscale Hierarchy)
+   Inspired by Linear & Raycast. Zero color bleed, zero glow, zero shadows.
+   ========================================================================== */
+
+:root {
+  /* Strict Grayscale Palette */
+  --bg-primary: #0B0B0C;
+  --surface-primary: #121214;
+  --surface-elevated: #1A1A1E;
+  --border-subtle: #242429;
+  --border-focus: #3F3F46;
+  --text-primary: #F4F4F5;
+  --text-secondary: #A1A1AA;
+  --text-muted: #6E6E77;
+  --accent-primary: #EDEDEF;
+  --accent-text: #0B0B0C;
+  --danger: #E5484D;
+  --danger-text: #0B0B0C;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-arabic: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Corner Radii */
+  --radius-cover: 4px;
+  --radius-control: 6px;
+  --radius-card: 8px;
+  --radius-full: 9999px;
+
+  /* Spacing Scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+
+  /* Transitions & Motion */
+  --ease-interactive: ease-out;
+  --ease-modal: cubic-bezier(0.2, 0, 0, 1);
+  --duration-interactive: 120ms;
+  --duration-modal: 160ms;
+  --duration-sidebar: 200ms;
+
+  /* Layout dimensions */
+  --sidebar-width: 220px;
+  --sidebar-collapsed-width: 64px;
+}

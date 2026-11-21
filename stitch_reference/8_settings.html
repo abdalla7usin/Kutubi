@@ -1,0 +1,274 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Kutubi</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config" data-stitch-original-src="db6e7611d673fffe===../../tailwind.config.js">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'background': '#0B0B0C',
+        'surface': '#121214',
+        'on-surface': '#F4F4F5',
+        'surface-elevated': '#1A1A1E',
+        'on-surface-elevated': '#F4F4F5',
+        'border': '#242429',
+        'border-focus': '#3F3F46',
+        'text-primary': '#F4F4F5',
+        'text-secondary': '#A1A1AA',
+        'text-muted': '#6E6E77',
+        'primary': '#EDEDEF',
+        'on-primary': '#0B0B0C',
+        'error': '#E5484D',
+        'on-error': '#0B0B0C',
+      },
+      borderRadius: {
+        'cover': '4px',
+        'control': '6px',
+        'card': '8px',
+        'full': '9999px',
+      },
+      spacing: {
+        'xs': '4px',
+        'sm': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '24px',
+        '2xl': '32px',
+      },
+      fontFamily: {
+        'headline': ['"Inter"', 'sans-serif'],
+        'title': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'arabic': ['"IBM Plex Sans Arabic"', 'sans-serif'],
+      },
+      fontSize: {
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'headline-md': ['20px', { lineHeight: '28px', letterSpacing: '-0.015em', fontWeight: '600' }],
+        'title-lg': ['16px', { lineHeight: '24px', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'title-md': ['14px', { lineHeight: '20px', fontWeight: '500' }],
+        'body-lg': ['14px', { lineHeight: '22px', fontWeight: '400' }],
+        'body-md': ['13px', { lineHeight: '20px', fontWeight: '400' }],
+        'label-lg': ['13px', { lineHeight: '18px', fontWeight: '500' }],
+        'label-md': ['12px', { lineHeight: '16px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.01em', fontWeight: '500' }],
+        'arabic-lg': ['22px', { lineHeight: '34px', fontWeight: '600' }],
+        'arabic-md': ['14px', { lineHeight: '22px', fontWeight: '500' }],
+        'arabic-sm': ['13px', { lineHeight: '22px', fontWeight: '400' }],
+      },
+      transitionDuration: {
+        'interactive': '120ms',
+        'modal': '160ms',
+      },
+      transitionDelay: {
+        'interactive': '0ms',
+        'modal': '0ms',
+      },
+      transitionTimingFunction: {
+        'interactive': 'ease-out',
+        'modal': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>.material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }</style>
+</head>
+<body class="bg-background text-text-primary font-body antialiased">
+  <div class="min-h-screen flex bg-background">
+    <!-- Expanded 220px Left Sidebar -->
+    <aside class="w-[220px] shrink-0 bg-surface border-r border-border min-h-screen flex flex-col p-lg gap-xl">
+      <div class="flex items-center justify-between px-xs pt-xs">
+        <span class="font-headline text-[18px] font-semibold leading-none text-text-primary">Kutubi</span>
+        <button type="button" aria-label="Collapse sidebar" title="Collapse sidebar" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+            <path d="M9 3v18"></path>
+            <path d="m16 15-3-3 3-3"></path>
+          </svg>
+        </button>
+      </div>
+
+      <nav aria-label="Primary" class="flex flex-col gap-xs">
+        <a href="#" class="h-[36px] flex items-center gap-md px-md rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">grid_view</span>
+          <span data-design-text-token="label-lg">Dashboard</span>
+        </a>
+        <a href="#" class="h-[36px] flex items-center justify-between px-md rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="flex items-center gap-md">
+            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">menu_book</span>
+            <span data-design-text-token="label-lg">My Library</span>
+          </span>
+          <span data-design-text-token="label-sm" class="font-label text-label-sm text-text-secondary tabular-nums">24</span>
+        </a>
+        <a href="#" aria-current="page" class="h-[36px] flex items-center gap-md px-md rounded-control bg-surface-elevated text-text-primary font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px] text-text-primary" aria-hidden="true">settings</span>
+          <span data-design-text-token="label-lg">Settings</span>
+        </a>
+        <a href="#" class="h-[36px] flex items-center gap-md px-md rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">person</span>
+          <span data-design-text-token="label-lg">Profile</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0 p-2xl">
+      <div class="max-w-[720px] mx-auto flex flex-col gap-2xl">
+        <!-- Header -->
+        <header class="flex flex-col gap-xs">
+          <h1 class="font-headline text-[22px] font-semibold leading-snug text-text-primary">Settings</h1>
+          <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Manage application preferences and library categories.</p>
+        </header>
+
+        <!-- Section 1: Library Categories Management -->
+        <section data-component-id="card-elevated" data-component-type="card" data-component-variant="outlined" class="bg-surface border border-border rounded-card p-xl flex flex-col gap-lg">
+          <div class="flex flex-col gap-xs">
+            <h2 data-design-text-token="title-lg" class="font-title text-title-lg text-text-primary">Categories</h2>
+          </div>
+
+          <!-- Inline Add Category Bar -->
+          <form class="flex items-center gap-sm">
+            <label for="new-category" class="sr-only">New category name</label>
+            <input id="new-category" type="text" placeholder="New category name..." class="flex-1 px-md py-sm rounded-control bg-background border border-border text-text-primary placeholder:text-text-secondary font-body text-body-md focus:outline-none focus:border-border-focus focus:ring-0 transition-colors duration-interactive ease-interactive">
+            <button data-component-id="button-with-icon" data-component-type="button" data-component-variant="with-icon" type="submit" class="inline-flex items-center justify-center gap-xs px-md py-sm rounded-control bg-primary text-on-primary font-label text-label-lg hover:opacity-90 transition-colors duration-interactive ease-interactive shrink-0">
+              <span class="material-symbols-outlined text-[16px]" aria-hidden="true">add</span>
+              <span data-design-text-token="label-lg">Add</span>
+            </button>
+          </form>
+
+          <!-- Compact Bordered Rows -->
+          <div class="border border-border rounded-control divide-y divide-border overflow-hidden bg-background">
+            <div class="flex items-center justify-between gap-md px-lg py-md hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+              <div class="flex items-center gap-sm">
+                <span data-design-text-token="title-md" class="font-title text-title-md text-text-primary">Engineering</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums">(8)</span>
+              </div>
+              <div class="flex items-center gap-xs">
+                <button type="button" aria-label="Rename Engineering" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-text-primary hover:bg-surface transition-colors duration-interactive ease-interactive">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">edit</span>
+                </button>
+                <button type="button" aria-label="Delete Engineering" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-error hover:bg-surface transition-colors duration-interactive ease-interactive">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-md px-lg py-md hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+              <div class="flex items-center gap-sm">
+                <span data-design-text-token="title-md" class="font-title text-title-md text-text-primary">Arabic Literature</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums">(6)</span>
+              </div>
+              <div class="flex items-center gap-xs">
+                <button type="button" aria-label="Rename Arabic Literature" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-text-primary hover:bg-surface transition-colors duration-interactive ease-interactive">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">edit</span>
+                </button>
+                <button type="button" aria-label="Delete Arabic Literature" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-error hover:bg-surface transition-colors duration-interactive ease-interactive">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-md px-lg py-md hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+              <div class="flex items-center gap-sm">
+                <span data-design-text-token="title-md" class="font-title text-title-md text-text-primary">Fiction &amp; Sci-Fi</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums">(5)</span>
+              </div>
+              <div class="flex items-center gap-xs">
+                <button type="button" aria-label="Rename Fiction &amp; Sci-Fi" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-text-primary hover:bg-surface transition-colors duration-interactive ease-interactive">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">edit</span>
+                </button>
+                <button type="button" aria-label="Delete Fiction &amp; Sci-Fi" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-error hover:bg-surface transition-colors duration-interactive ease-interactive">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-md px-lg py-md hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+              <div class="flex items-center gap-sm">
+                <span data-design-text-token="title-md" class="font-title text-title-md text-text-primary">Self-Development</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums">(3)</span>
+              </div>
+              <div class="flex items-center gap-xs">
+                <button type="button" aria-label="Rename Self-Development" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-text-primary hover:bg-surface transition-colors duration-interactive ease-interactive">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">edit</span>
+                </button>
+                <button type="button" aria-label="Delete Self-Development" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-error hover:bg-surface transition-colors duration-interactive ease-interactive">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-md px-lg py-md">
+              <div class="flex items-center gap-sm">
+                <span data-design-text-token="title-md" class="font-title text-title-md text-text-secondary">Uncategorized</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums">(2 · System default)</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Reading & Display Preferences -->
+        <section data-component-id="card-elevated" data-component-type="card" data-component-variant="outlined" class="bg-surface border border-border rounded-card p-xl flex flex-col gap-lg">
+          <h2 data-design-text-token="title-lg" class="font-title text-title-lg text-text-primary">Reading &amp; Display Preferences</h2>
+
+          <div class="flex flex-col divide-y divide-border">
+            <!-- Default Library View -->
+            <div class="flex items-center justify-between gap-lg py-md first:pt-0">
+              <div class="flex flex-col gap-xs">
+                <span data-design-text-token="title-md" class="font-title text-title-md text-text-primary">Default Library View</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Choose how books are laid out when opening My Library.</span>
+              </div>
+              <div role="group" aria-label="Default Library View" class="inline-flex items-center p-xs rounded-control bg-background border border-border shrink-0">
+                <button type="button" aria-pressed="true" class="px-md py-xs rounded-cover bg-surface-elevated text-text-primary font-label text-label-md">
+                  <span data-design-text-token="label-md">Grid View</span>
+                </button>
+                <button type="button" aria-pressed="false" class="px-md py-xs rounded-cover text-text-secondary hover:text-text-primary font-label text-label-md transition-colors duration-interactive ease-interactive">
+                  <span data-design-text-token="label-md">List View</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Default Sort Order -->
+            <div class="flex items-center justify-between gap-lg py-md">
+              <div class="flex flex-col gap-xs">
+                <label for="default-sort" data-design-text-token="title-md" class="font-title text-title-md text-text-primary">Default Sort Order</label>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Initial ordering applied to your book collection.</span>
+              </div>
+              <select id="default-sort" class="px-md py-sm pr-2xl rounded-control bg-background border border-border text-text-primary font-label text-label-md focus:outline-none focus:border-border-focus focus:ring-0 shrink-0">
+                <option selected>Recently Added</option>
+                <option>Title A–Z</option>
+                <option>Progress</option>
+              </select>
+            </div>
+
+            <!-- Data Management -->
+            <div class="flex items-center justify-between gap-lg pt-md">
+              <div class="flex flex-col gap-xs">
+                <span data-design-text-token="title-md" class="font-title text-title-md text-text-primary">Data Management</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Back up your catalog or restore sample titles.</span>
+              </div>
+              <div class="flex items-center gap-sm shrink-0">
+                <button data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="inline-flex items-center justify-center px-md py-sm rounded-control bg-surface border border-border text-text-primary font-label text-label-lg hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive">
+                  <span data-design-text-token="label-lg">Export Library (JSON)</span>
+                </button>
+                <button data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="inline-flex items-center justify-center px-md py-sm rounded-control bg-surface border border-border text-text-primary font-label text-label-lg hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive">
+                  <span data-design-text-token="label-lg">Reset Sample Data</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+
+</body></html>

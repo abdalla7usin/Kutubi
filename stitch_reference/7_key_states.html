@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Key Interaction States — Kutubi</title>
+</head>
+<body class="bg-background text-text-primary font-body antialiased p-xl">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-xl items-start">
+    <!-- 1. Empty Search Result State Card -->
+    <article data-component-id="card-action" data-component-type="card" data-component-variant="action" class="bg-surface border border-border rounded-card p-2xl flex flex-col items-center text-center gap-md">
+      <div class="w-10 h-10 rounded-control bg-background border border-border flex items-center justify-center">
+        <span class="material-symbols-outlined text-[20px] text-text-muted" aria-hidden="true">search_off</span>
+      </div>
+      <header class="flex flex-col items-center gap-xs">
+        <h3 data-design-text-token="title-lg" class="font-title text-title-lg text-text-primary">No books match your filters</h3>
+        <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Try adjusting your search query or selected filters.</p>
+      </header>
+      <footer class="pt-xs">
+        <button data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="inline-flex items-center justify-center px-lg py-sm rounded-control bg-surface-elevated border border-border text-text-primary font-label text-label-lg hover:border-border-focus transition-colors duration-interactive ease-interactive">
+          <span data-design-text-token="label-lg">Clear Filters</span>
+        </button>
+      </footer>
+    </article>
+
+    <!-- 2. Form Validation Error State -->
+    <div class="bg-surface border border-border rounded-card p-xl flex flex-col gap-md">
+      <label data-component-id="input-field-error" data-component-type="input-field" data-component-variant="text" class="flex flex-col gap-xs">
+        <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Current Page</span>
+        <input type="number" value="700" aria-invalid="true" aria-describedby="state-page-error" class="w-full px-md py-sm rounded-control bg-background border border-error text-text-primary font-body text-body-md tabular-nums focus:outline-none focus:border-error focus:ring-0">
+        <span id="state-page-error" role="alert" data-design-text-token="label-md" class="font-label text-label-md text-error">
+          Current page cannot exceed total pages
+        </span>
+      </label>
+    </div>
+
+    <!-- 3. Delete Confirmation Modal Dialog -->
+    <div role="alertdialog" data-component-id="modal-alert" data-component-type="modal" data-component-variant="alert" aria-labelledby="state-modal-title" aria-describedby="state-modal-body" class="bg-surface border border-border rounded-card p-xl flex flex-col gap-lg">
+      <header class="flex items-start justify-between gap-md">
+        <h2 id="state-modal-title" data-design-text-token="title-lg" class="font-title text-title-lg text-text-primary">Delete 'Atomic Habits'?</h2>
+      </header>
+
+      <div id="state-modal-body">
+        <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">
+          This will permanently remove the book and your reading notes from your library.
+        </p>
+      </div>
+
+      <footer class="flex items-center justify-end gap-sm pt-xs">
+        <button data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="inline-flex items-center justify-center px-lg py-sm rounded-control bg-surface-elevated border border-border text-text-primary font-label text-label-lg hover:border-border-focus transition-colors duration-interactive ease-interactive">
+          <span data-design-text-token="label-lg">Cancel</span>
+        </button>
+        <button data-component-id="button-destructive" data-component-type="button" data-component-variant="destructive" type="button" class="inline-flex items-center justify-center px-lg py-sm rounded-control bg-error text-on-error font-label text-label-lg hover:opacity-90 transition-colors duration-interactive ease-interactive">
+          <span data-design-text-token="label-lg">Delete Book</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+</body></html>

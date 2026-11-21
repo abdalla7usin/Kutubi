@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Book — ثلاثية غرناطة — Kutubi</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config" data-stitch-original-src="db6e7611d673fffe===../../tailwind.config.js">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'background': '#0B0B0C',
+        'surface': '#121214',
+        'on-surface': '#F4F4F5',
+        'surface-elevated': '#1A1A1E',
+        'on-surface-elevated': '#F4F4F5',
+        'border': '#242429',
+        'border-focus': '#3F3F46',
+        'text-primary': '#F4F4F5',
+        'text-secondary': '#A1A1AA',
+        'text-muted': '#6E6E77',
+        'primary': '#EDEDEF',
+        'on-primary': '#0B0B0C',
+        'error': '#E5484D',
+        'on-error': '#0B0B0C',
+      },
+      borderRadius: {
+        'cover': '4px',
+        'control': '6px',
+        'card': '8px',
+        'full': '9999px',
+      },
+      spacing: {
+        'xs': '4px',
+        'sm': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '24px',
+        '2xl': '32px',
+      },
+      fontFamily: {
+        'headline': ['"Inter"', 'sans-serif'],
+        'title': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'arabic': ['"IBM Plex Sans Arabic"', 'sans-serif'],
+      },
+      fontSize: {
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'headline-md': ['20px', { lineHeight: '28px', letterSpacing: '-0.015em', fontWeight: '600' }],
+        'title-lg': ['16px', { lineHeight: '24px', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'title-md': ['14px', { lineHeight: '20px', fontWeight: '500' }],
+        'body-lg': ['14px', { lineHeight: '22px', fontWeight: '400' }],
+        'body-md': ['13px', { lineHeight: '20px', fontWeight: '400' }],
+        'label-lg': ['13px', { lineHeight: '18px', fontWeight: '500' }],
+        'label-md': ['12px', { lineHeight: '16px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.01em', fontWeight: '500' }],
+        'arabic-lg': ['22px', { lineHeight: '34px', fontWeight: '600' }],
+        'arabic-md': ['14px', { lineHeight: '22px', fontWeight: '500' }],
+        'arabic-sm': ['13px', { lineHeight: '22px', fontWeight: '400' }],
+      },
+      transitionDuration: {
+        'interactive': '120ms',
+        'modal': '160ms',
+      },
+      transitionDelay: {
+        'interactive': '0ms',
+        'modal': '0ms',
+      },
+      transitionTimingFunction: {
+        'interactive': 'ease-out',
+        'modal': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>.material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }</style>
+</head>
+<body class="bg-background text-text-primary font-body antialiased">
+  <div class="min-h-screen flex bg-background">
+    <!-- Expanded 220px Left Sidebar -->
+    <aside class="w-[220px] shrink-0 bg-surface border-r border-border min-h-screen flex flex-col p-lg gap-xl">
+      <div class="flex items-center justify-between px-xs pt-xs">
+        <span class="font-headline text-[18px] font-semibold leading-none text-text-primary">Kutubi</span>
+        <button type="button" aria-label="Collapse sidebar" title="Collapse sidebar" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+            <path d="M9 3v18"></path>
+            <path d="m16 15-3-3 3-3"></path>
+          </svg>
+        </button>
+      </div>
+
+      <nav aria-label="Primary" class="flex flex-col gap-xs">
+        <a href="#" class="h-[36px] flex items-center gap-md px-md rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">grid_view</span>
+          <span data-design-text-token="label-lg">Dashboard</span>
+        </a>
+        <a href="#" aria-current="page" class="h-[36px] flex items-center justify-between px-md rounded-control bg-surface-elevated text-text-primary font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="flex items-center gap-md">
+            <span class="material-symbols-outlined text-[18px] text-text-primary" aria-hidden="true">menu_book</span>
+            <span data-design-text-token="label-lg">My Library</span>
+          </span>
+          <span data-design-text-token="label-sm" class="font-label text-label-sm text-text-secondary tabular-nums">24</span>
+        </a>
+        <a href="#" class="h-[36px] flex items-center gap-md px-md rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">settings</span>
+          <span data-design-text-token="label-lg">Settings</span>
+        </a>
+        <a href="#" class="h-[36px] flex items-center gap-md px-md rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">person</span>
+          <span data-design-text-token="label-lg">Profile</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0 p-2xl">
+      <div class="max-w-[640px] mx-auto flex flex-col gap-xl">
+        <!-- Breadcrumb & Title -->
+        <header class="flex flex-col gap-sm">
+          <nav aria-label="Breadcrumb" class="flex items-center gap-sm">
+            <a href="#" data-design-text-token="label-md" class="font-label text-label-md text-text-secondary hover:text-text-primary transition-colors duration-interactive ease-interactive">My Library</a>
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-secondary">/</span>
+            <span data-design-text-token="arabic-sm" dir="rtl" class="font-arabic text-arabic-sm text-text-secondary">ثلاثية غرناطة</span>
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-secondary">/</span>
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Edit</span>
+          </nav>
+          <h1 data-design-text-token="headline-lg" class="font-headline text-headline-lg text-text-primary">Edit Book</h1>
+        </header>
+
+        <!-- Form Card -->
+        <form class="bg-surface border border-border rounded-card p-2xl flex flex-col gap-lg">
+          <label class="flex flex-col gap-xs">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Title *</span>
+            <input type="text" required dir="rtl" value="ثلاثية غرناطة" class="w-full px-md py-sm rounded-control bg-background border border-border text-text-primary font-arabic text-arabic-md text-right focus:outline-none focus:border-border-focus focus:ring-0 transition-colors duration-interactive ease-interactive">
+          </label>
+
+          <label class="flex flex-col gap-xs">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Author *</span>
+            <input type="text" required dir="rtl" value="رضوى عاشور" class="w-full px-md py-sm rounded-control bg-background border border-border text-text-primary font-arabic text-arabic-md text-right focus:outline-none focus:border-border-focus focus:ring-0 transition-colors duration-interactive ease-interactive">
+          </label>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+            <label class="flex flex-col gap-xs">
+              <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Category *</span>
+              <select class="w-full px-md py-sm rounded-control bg-background border border-border text-text-primary font-body text-body-md focus:outline-none focus:border-border-focus focus:ring-0">
+                <option>Engineering</option>
+                <option selected>Arabic Literature</option>
+                <option>Fiction &amp; Sci-Fi</option>
+                <option>Self-Development</option>
+                <option>Uncategorized</option>
+              </select>
+            </label>
+
+            <label class="flex flex-col gap-xs">
+              <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Reading Status *</span>
+              <select class="w-full px-md py-sm rounded-control bg-background border border-border text-text-primary font-body text-body-md focus:outline-none focus:border-border-focus focus:ring-0">
+                <option>To Read</option>
+                <option selected>Reading</option>
+                <option>Completed</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+            <label class="flex flex-col gap-xs">
+              <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Total Pages *</span>
+              <input type="number" required min="1" value="504" class="w-full px-md py-sm rounded-control bg-background border border-border text-text-primary font-body text-body-md tabular-nums focus:outline-none focus:border-border-focus focus:ring-0">
+            </label>
+
+            <label class="flex flex-col gap-xs">
+              <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Current Page</span>
+              <input type="number" min="0" value="240" class="w-full px-md py-sm rounded-control bg-background border border-border text-text-primary font-body text-body-md tabular-nums focus:outline-none focus:border-border-focus focus:ring-0">
+            </label>
+          </div>
+
+          <!-- Cover Image URL + Loaded 48x72 Live Preview -->
+          <div class="flex items-end gap-lg">
+            <label class="flex-1 flex flex-col gap-xs">
+              <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Cover Image URL <span class="text-text-secondary font-normal">(Optional)</span></span>
+              <input type="url" value="https://kutubi.library/covers/granada-trilogy.jpg" class="w-full px-md py-sm rounded-control bg-background border border-border text-text-primary font-body text-body-md focus:outline-none focus:border-border-focus focus:ring-0">
+            </label>
+            <div class="w-[48px] h-[72px] rounded-cover overflow-hidden border border-border bg-background shrink-0">
+              <img src="https://lh3.googleusercontent.com/aida/ALJJyrDQQ8Ki3DJyNhXNdbBp2-w60l-FBQQdf1qQ1n6pqYmtf-iIF2NtLpWNqC9mqdge7Eq36hzVLbJZnmcpBfd3Zt0SXiyQvQiVM0nQy5cczdqHKUi8F024EawvfTrNfR7UwYixSDdIeLJN3kB-1LinFv0pPUAlNcjpjtaVPiJP_soAoqj2ACqv166jMpXvLwe1OOdVspZZypusjFkpma0gfrK_n5ljMtmldTzRXUHCd4D5JNwpLywJecVjwF9F6HhI27-HaQ" alt="ثلاثية غرناطة cover preview" class="w-full h-full object-cover" data-stitch-original-src="8c8fd0bd5b14671f===../../images/cover_granada.jpg">
+            </div>
+          </div>
+
+          <!-- 5/5 Monochrome Star Selector -->
+          <div class="flex flex-col gap-xs">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Rating <span class="text-text-secondary font-normal">(Optional)</span></span>
+            <div class="flex items-center gap-xs" role="radiogroup" aria-label="Book rating: 5 out of 5">
+              <button type="button" aria-label="1 star" class="p-xs rounded-control text-text-primary"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: &#39;FILL&#39; 1;">star</span></button>
+              <button type="button" aria-label="2 stars" class="p-xs rounded-control text-text-primary"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: &#39;FILL&#39; 1;">star</span></button>
+              <button type="button" aria-label="3 stars" class="p-xs rounded-control text-text-primary"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: &#39;FILL&#39; 1;">star</span></button>
+              <button type="button" aria-label="4 stars" class="p-xs rounded-control text-text-primary"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: &#39;FILL&#39; 1;">star</span></button>
+              <button type="button" aria-label="5 stars" class="p-xs rounded-control text-text-primary"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: &#39;FILL&#39; 1;">star</span></button>
+            </div>
+          </div>
+
+          <!-- Description / Personal Notes (Arabic) -->
+          <label class="flex flex-col gap-xs">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-primary">Description / Personal Notes <span class="text-text-secondary font-normal">(Optional)</span></span>
+            <textarea rows="4" dir="rtl" class="w-full px-md py-sm rounded-control bg-background border border-border text-text-primary font-arabic text-arabic-sm text-right focus:outline-none focus:border-border-focus focus:ring-0 resize-y">رواية تاريخية بديعة ترصد تحولات الحياة في غرناطة بعد سقوطها من خلال سيرة عائلة أبي جعفر الوراق. لغة رضوى عاشور شاعرية ومكثفة، وتفاصيل المخطوطات واللغة العربية تمنح النص ثقلاً إنسانياً عميقاً.</textarea>
+          </label>
+
+          <!-- Footer: Left Delete Book, Right Cancel + Save Changes -->
+          <footer class="flex items-center justify-between gap-md pt-md border-t border-border">
+            <button data-component-id="button-destructive" data-component-type="button" data-component-variant="destructive" type="button" class="inline-flex items-center justify-center px-lg py-sm rounded-control bg-surface border border-border text-error font-label text-label-lg hover:bg-surface-elevated hover:border-error transition-colors duration-interactive ease-interactive">
+              <span data-design-text-token="label-lg">Delete Book</span>
+            </button>
+
+            <div class="flex items-center gap-sm">
+              <button data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="inline-flex items-center justify-center px-lg py-sm rounded-control bg-surface border border-border text-text-primary font-label text-label-lg hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive">
+                <span data-design-text-token="label-lg">Cancel</span>
+              </button>
+              <button data-component-id="button-primary" data-component-type="button" data-component-variant="primary" type="submit" class="inline-flex items-center justify-center px-lg py-sm rounded-control bg-primary text-on-primary font-label text-label-lg hover:opacity-90 transition-colors duration-interactive ease-interactive">
+                <span data-design-text-token="label-lg">Save Changes</span>
+              </button>
+            </div>
+          </footer>
+        </form>
+      </div>
+    </main>
+  </div>
+
+
+</body></html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Library — Grid View (Collapsed Sidebar) — Kutubi</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config" data-stitch-original-src="db6e7611d673fffe===../../tailwind.config.js">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'background': '#0B0B0C',
+        'surface': '#121214',
+        'on-surface': '#F4F4F5',
+        'surface-elevated': '#1A1A1E',
+        'on-surface-elevated': '#F4F4F5',
+        'border': '#242429',
+        'border-focus': '#3F3F46',
+        'text-primary': '#F4F4F5',
+        'text-secondary': '#A1A1AA',
+        'text-muted': '#6E6E77',
+        'primary': '#EDEDEF',
+        'on-primary': '#0B0B0C',
+        'error': '#E5484D',
+        'on-error': '#0B0B0C',
+      },
+      borderRadius: {
+        'cover': '4px',
+        'control': '6px',
+        'card': '8px',
+        'full': '9999px',
+      },
+      spacing: {
+        'xs': '4px',
+        'sm': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '24px',
+        '2xl': '32px',
+      },
+      fontFamily: {
+        'headline': ['"Inter"', 'sans-serif'],
+        'title': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'arabic': ['"IBM Plex Sans Arabic"', 'sans-serif'],
+      },
+      fontSize: {
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'headline-md': ['20px', { lineHeight: '28px', letterSpacing: '-0.015em', fontWeight: '600' }],
+        'title-lg': ['16px', { lineHeight: '24px', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'title-md': ['14px', { lineHeight: '20px', fontWeight: '500' }],
+        'body-lg': ['14px', { lineHeight: '22px', fontWeight: '400' }],
+        'body-md': ['13px', { lineHeight: '20px', fontWeight: '400' }],
+        'label-lg': ['13px', { lineHeight: '18px', fontWeight: '500' }],
+        'label-md': ['12px', { lineHeight: '16px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.01em', fontWeight: '500' }],
+        'arabic-lg': ['22px', { lineHeight: '34px', fontWeight: '600' }],
+        'arabic-md': ['14px', { lineHeight: '22px', fontWeight: '500' }],
+        'arabic-sm': ['13px', { lineHeight: '22px', fontWeight: '400' }],
+      },
+      transitionDuration: {
+        'interactive': '120ms',
+        'modal': '160ms',
+      },
+      transitionDelay: {
+        'interactive': '0ms',
+        'modal': '0ms',
+      },
+      transitionTimingFunction: {
+        'interactive': 'ease-out',
+        'modal': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>.material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }</style>
+</head>
+<body class="bg-background text-text-primary font-body antialiased">
+  <div class="min-h-screen flex bg-background">
+    <!-- Collapsed 64px Icon-Only Rail -->
+    <aside class="w-[64px] shrink-0 bg-surface border-r border-border min-h-screen flex flex-col items-center py-lg px-sm gap-xl">
+      <button type="button" aria-label="Expand sidebar" title="Expand sidebar" class="group relative w-[36px] h-[36px] inline-flex items-center justify-center rounded-control text-text-primary hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+        <span class="font-headline text-[18px] font-semibold leading-none">K</span>
+        <span class="pointer-events-none opacity-0 group-hover:opacity-100 absolute left-[48px] px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-md text-text-primary whitespace-nowrap z-20 transition-opacity duration-interactive ease-interactive">Expand sidebar</span>
+      </button>
+
+      <nav aria-label="Primary" class="flex flex-col items-center gap-xs">
+        <a href="#" aria-label="Dashboard" title="Dashboard" class="group relative w-[36px] h-[36px] flex items-center justify-center rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">grid_view</span>
+          <span class="pointer-events-none opacity-0 group-hover:opacity-100 absolute left-[48px] px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-md text-text-primary whitespace-nowrap z-20 transition-opacity duration-interactive ease-interactive">Dashboard</span>
+        </a>
+        <a href="#" aria-current="page" aria-label="My Library" title="My Library (24)" class="group relative w-[36px] h-[36px] flex items-center justify-center rounded-control bg-surface-elevated text-text-primary transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px] text-text-primary" aria-hidden="true">menu_book</span>
+          <span class="pointer-events-none opacity-0 group-hover:opacity-100 absolute left-[48px] px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-md text-text-primary whitespace-nowrap z-20 transition-opacity duration-interactive ease-interactive">My Library · 24</span>
+        </a>
+        <a href="#" aria-label="Settings" title="Settings" class="group relative w-[36px] h-[36px] flex items-center justify-center rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">settings</span>
+          <span class="pointer-events-none opacity-0 group-hover:opacity-100 absolute left-[48px] px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-md text-text-primary whitespace-nowrap z-20 transition-opacity duration-interactive ease-interactive">Settings</span>
+        </a>
+        <a href="#" aria-label="Profile" title="Profile" class="group relative w-[36px] h-[36px] flex items-center justify-center rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">person</span>
+          <span class="pointer-events-none opacity-0 group-hover:opacity-100 absolute left-[48px] px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-md text-text-primary whitespace-nowrap z-20 transition-opacity duration-interactive ease-interactive">Profile</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0 p-2xl">
+      <div class="max-w-[1120px] mx-auto flex flex-col gap-xl">
+        <!-- Header -->
+        <header class="flex items-center justify-between gap-lg">
+          <div class="flex items-baseline gap-md">
+            <h1 data-design-text-token="headline-lg" class="font-headline text-headline-lg text-text-primary">My Library</h1>
+            <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums">24 books</span>
+          </div>
+          <button data-component-id="button-with-icon" data-component-type="button" data-component-variant="with-icon" type="button" class="inline-flex items-center justify-center gap-sm px-md py-sm rounded-control bg-primary text-on-primary font-label text-label-lg hover:opacity-90 transition-colors duration-interactive ease-interactive">
+            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">add</span>
+            <span data-design-text-token="label-lg">Add Book</span>
+          </button>
+        </header>
+
+        <!-- Toolbar -->
+        <div class="flex flex-wrap items-center justify-between gap-md">
+          <div class="flex flex-wrap items-center gap-sm flex-1 min-w-[260px]">
+            <label data-component-id="input-field-icon" data-component-type="input-field" data-component-variant="with-icon" class="relative flex items-center w-full max-w-[300px]">
+              <span class="sr-only">Search by title or author</span>
+              <span class="material-symbols-outlined text-[18px] text-text-muted absolute left-md pointer-events-none" aria-hidden="true">search</span>
+              <input type="search" placeholder="Search by title or author..." class="w-full pl-2xl pr-md py-sm rounded-control bg-surface border border-border text-text-primary placeholder:text-text-secondary font-body text-body-md focus:outline-none focus:border-border-focus focus:ring-0 transition-colors duration-interactive ease-interactive">
+            </label>
+
+            <select aria-label="Filter by status" class="px-md py-sm pr-2xl rounded-control bg-surface border border-border text-text-secondary font-label text-label-md focus:outline-none focus:border-border-focus focus:ring-0">
+              <option>Status: All</option>
+              <option>Reading</option>
+              <option>Completed</option>
+              <option>To Read</option>
+            </select>
+
+            <select aria-label="Filter by category" class="px-md py-sm pr-2xl rounded-control bg-surface border border-border text-text-secondary font-label text-label-md focus:outline-none focus:border-border-focus focus:ring-0">
+              <option>Category: All</option>
+              <option>Engineering</option>
+              <option>Arabic Literature</option>
+              <option>Fiction &amp; Sci-Fi</option>
+              <option>Self-Development</option>
+            </select>
+
+            <select aria-label="Sort books" class="px-md py-sm pr-2xl rounded-control bg-surface border border-border text-text-secondary font-label text-label-md focus:outline-none focus:border-border-focus focus:ring-0">
+              <option>Sort: Recently Added</option>
+              <option>Title (A–Z)</option>
+              <option>Progress</option>
+            </select>
+          </div>
+
+          <!-- Segmented Grid/List Toggle -->
+          <div role="group" aria-label="View mode" class="inline-flex items-center p-xs rounded-control bg-surface border border-border shrink-0">
+            <button type="button" aria-pressed="true" aria-label="Grid view" class="inline-flex items-center gap-xs px-sm py-xs rounded-cover bg-surface-elevated text-text-primary font-label text-label-md">
+              <span class="material-symbols-outlined text-[16px]" aria-hidden="true">grid_view</span>
+              <span data-design-text-token="label-md">Grid</span>
+            </button>
+            <button type="button" aria-pressed="false" aria-label="List view" class="inline-flex items-center gap-xs px-sm py-xs rounded-cover text-text-secondary hover:text-text-primary font-label text-label-md transition-colors duration-interactive ease-interactive">
+              <span class="material-symbols-outlined text-[16px]" aria-hidden="true">view_list</span>
+              <span data-design-text-token="label-md">List</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4-Column Book Grid -->
+        <section aria-label="Books" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg items-stretch">
+          <!-- 1. Designing Data-Intensive Applications -->
+          <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-md flex flex-col justify-between gap-md hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+            <div class="flex flex-col gap-md">
+              <div class="w-full aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrB1Hr8vPt1v-5V88nfvOtFH_RbBY5876FQ0hteDxQlHrcegbG581-jbNOiXznkfXhaSqImMwRZDnzYJ_cYzKTHhXb6nO7U6ry1iS0PEVXyVvtd18M1aWUgek54NCCkB2NuNAoF2vEMAbi1_RczoGOd45-PbvhteKg2CM5EAz8Jj_eYybfYqjZQvuhQMBiXaGMPlKvQldf26Itgabp-p8A7LrZyjxdTFRocYPJpxcJff5CZH3gaaDmFLFYVhflLo" alt="Designing Data-Intensive Applications" class="w-full h-full object-cover" data-stitch-original-src="3f9be48d8c514b6a===../../images/cover_ddia.jpg">
+              </div>
+              <div class="flex flex-col gap-xs">
+                <h2 data-design-text-token="title-md" class="font-title text-title-md text-text-primary leading-snug">Designing Data-Intensive Applications</h2>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Martin Kleppmann</p>
+              </div>
+            </div>
+            <div class="flex flex-col gap-sm">
+              <div class="w-full h-xs rounded-full bg-surface-elevated overflow-hidden">
+                <div class="h-full bg-primary rounded-full" style="width: 51%"></div>
+              </div>
+              <div class="flex items-center justify-between gap-xs">
+                <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Engineering</span>
+                <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-sm text-text-primary whitespace-nowrap">Reading</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 2. ثلاثية غرناطة -->
+          <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-md flex flex-col justify-between gap-md hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+            <div class="flex flex-col gap-md">
+              <div class="w-full aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrDQQ8Ki3DJyNhXNdbBp2-w60l-FBQQdf1qQ1n6pqYmtf-iIF2NtLpWNqC9mqdge7Eq36hzVLbJZnmcpBfd3Zt0SXiyQvQiVM0nQy5cczdqHKUi8F024EawvfTrNfR7UwYixSDdIeLJN3kB-1LinFv0pPUAlNcjpjtaVPiJP_soAoqj2ACqv166jMpXvLwe1OOdVspZZypusjFkpma0gfrK_n5ljMtmldTzRXUHCd4D5JNwpLywJecVjwF9F6HhI27-HaQ" alt="ثلاثية غرناطة" class="w-full h-full object-cover" data-stitch-original-src="8c8fd0bd5b14671f===../../images/cover_granada.jpg">
+              </div>
+              <div class="flex flex-col gap-xs text-right" dir="rtl">
+                <h2 data-design-text-token="arabic-md" class="font-arabic text-arabic-md text-text-primary leading-snug">ثلاثية غرناطة</h2>
+                <p data-design-text-token="arabic-sm" class="font-arabic text-arabic-sm text-text-secondary">رضوى عاشور</p>
+              </div>
+            </div>
+            <div class="flex flex-col gap-sm">
+              <div class="w-full h-xs rounded-full bg-surface-elevated overflow-hidden">
+                <div class="h-full bg-primary rounded-full" style="width: 48%"></div>
+              </div>
+              <div class="flex items-center justify-between gap-xs">
+                <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Arabic Literature</span>
+                <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-sm text-text-primary whitespace-nowrap">Reading</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 3. Clean Architecture -->
+          <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-md flex flex-col justify-between gap-md hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+            <div class="flex flex-col gap-md">
+              <div class="w-full aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrDENJkPhkHWepDBXMcw7XaBd5-U0PDgfgV9QsaEcykmjEVz5kcJTkLGIw2YeWur5tq2KxzCYe4iiS1Ku6QOahV-HLz4HGi1lOhOk8vOyqI7NSseg7BeKkL76wxB8A-dpIWUtywXHs_a5eEUw0S0yqXFH0zKsJdYVSQXCRfkaMRFyAQXcrI1PInETcynjXmTCcEJys7mepnflEEJeSAstxiUqLXPeyYxt-lLfsbkuEZPmdj5llLMCGS1NVnWbuJVnTA_Y7Cs" alt="Clean Architecture" class="w-full h-full object-cover" data-stitch-original-src="2c2159e89353afa3===../../images/cover_clean_arch.jpg">
+              </div>
+              <div class="flex flex-col gap-xs">
+                <h2 data-design-text-token="title-md" class="font-title text-title-md text-text-primary leading-snug">Clean Architecture</h2>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Robert C. Martin</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-xs">
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Engineering</span>
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Completed</span>
+            </div>
+          </a>
+
+          <!-- 4. يوتوبيا (Typographic Fallback Cover) -->
+          <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-md flex flex-col justify-between gap-md hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+            <div class="flex flex-col gap-md">
+              <div class="w-full aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background flex relative">
+                <div class="w-md h-full border-r border-border bg-surface shrink-0"></div>
+                <div class="flex-1 p-lg flex flex-col justify-between text-right" dir="rtl">
+                  <span data-design-text-token="label-sm" class="font-label text-label-sm text-text-secondary text-left" dir="ltr">KUTUBI</span>
+                  <div class="flex flex-col gap-xs">
+                    <span data-design-text-token="arabic-lg" class="font-arabic text-arabic-lg text-text-primary">يوتوبيا</span>
+                    <span data-design-text-token="arabic-sm" class="font-arabic text-arabic-sm text-text-secondary">أحمد خالد توفيق</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-xs text-right" dir="rtl">
+                <h2 data-design-text-token="arabic-md" class="font-arabic text-arabic-md text-text-primary leading-snug">يوتوبيا</h2>
+                <p data-design-text-token="arabic-sm" class="font-arabic text-arabic-sm text-text-secondary">أحمد خالد توفيق</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-xs">
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Arabic Literature</span>
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Completed</span>
+            </div>
+          </a>
+
+          <!-- 5. Atomic Habits -->
+          <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-md flex flex-col justify-between gap-md hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+            <div class="flex flex-col gap-md">
+              <div class="w-full aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrCeOoh18LuiwOd7QM1X5hLzRgiCL5QXKkNXRTrEgnIKzVSAmH3dNNAbVIaSJ7BeQh4taIpw4DkdxMJdyO4IrTQC6KH2emVNNWDLCxUyMK3wcYLf4_xl2keac3ECsrBP0ZVlt1-qmxQH4Pb_jJvHF_xYyR7AMTtsV9vEeWh7581WGFfF-tfp9d_WiWDpOt6HSqzKGGtvWDykOATwSKHLpbkUG5faFdn__0FlR0Jfzky97LyWvginAipUSVItOFoQeUxJuWaFKz1oJQ" alt="Atomic Habits" class="w-full h-full object-cover" data-stitch-original-src="288c2d15295bd7fe===../../images/cover_atomic_habits.jpg">
+              </div>
+              <div class="flex flex-col gap-xs">
+                <h2 data-design-text-token="title-md" class="font-title text-title-md text-text-primary leading-snug">Atomic Habits</h2>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">James Clear</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-xs">
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Self-Development</span>
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Completed</span>
+            </div>
+          </a>
+
+          <!-- 6. Dune -->
+          <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-md flex flex-col justify-between gap-md hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+            <div class="flex flex-col gap-md">
+              <div class="w-full aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrDX9SGN3JXK05qAGXmoJ58nUAhaRt69RSWJZ1JbqeyFBlX8lXnrZ1myzJa7nmZ_ROz72vNQYV0Qh1AGJZ6aP1fLfJDUwC7e0oAQ60cqlxx9VgdJ77M9pkwqS8o1kVu2twvIQuCNjVNoRputIlTGkz59ozmMTWXfJbJzllrLPrPUjiHyuZ7sa6GvAOjwi7NVbTrw5bIyCNcpqNOX8B0Kco-apOvFO8XmH36cQ_fhhRN9MZ9cP94rBmGSj4ZiHXCwdA" alt="Dune" class="w-full h-full object-cover" data-stitch-original-src="becd5ead6a89b097===../../images/cover_dune.jpg">
+              </div>
+              <div class="flex flex-col gap-xs">
+                <h2 data-design-text-token="title-md" class="font-title text-title-md text-text-primary leading-snug">Dune</h2>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Frank Herbert</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-xs">
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Fiction &amp; Sci-Fi</span>
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">To Read</span>
+            </div>
+          </a>
+
+          <!-- 7. مدن الملح (Typographic Fallback Cover) -->
+          <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-md flex flex-col justify-between gap-md hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+            <div class="flex flex-col gap-md">
+              <div class="w-full aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background flex relative">
+                <div class="w-md h-full border-r border-border bg-surface shrink-0"></div>
+                <div class="flex-1 p-lg flex flex-col justify-between text-right" dir="rtl">
+                  <span data-design-text-token="label-sm" class="font-label text-label-sm text-text-secondary text-left" dir="ltr">KUTUBI</span>
+                  <div class="flex flex-col gap-xs">
+                    <span data-design-text-token="arabic-lg" class="font-arabic text-arabic-lg text-text-primary">مدن الملح</span>
+                    <span data-design-text-token="arabic-sm" class="font-arabic text-arabic-sm text-text-secondary">عبد الرحمن منيف</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-xs text-right" dir="rtl">
+                <h2 data-design-text-token="arabic-md" class="font-arabic text-arabic-md text-text-primary leading-snug">مدن الملح</h2>
+                <p data-design-text-token="arabic-sm" class="font-arabic text-arabic-sm text-text-secondary">عبد الرحمن منيف</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-xs">
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Arabic Literature</span>
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">To Read</span>
+            </div>
+          </a>
+
+          <!-- 8. Refactoring -->
+          <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-md flex flex-col justify-between gap-md hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+            <div class="flex flex-col gap-md">
+              <div class="w-full aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrAvuS9TojC6PITuxXEQEkRTRI58QayUOeIAf_QASnkqK5V5DI3Pj8uxZ9FPkVVKA_RH8HI1Eg0XjBAWQ0puv6XMSPgVPWO7-rw-t_54OMyuJYQvPCkdDNQuGkGQtlfthW_DC7QiqpqRBfWzS-dRq73NyqQH_fR9ENeSj13om8TV25tc-J6cCeEHTlel86r4aNkkqXYXmIPgKuV_K4QHxohB5QWk4n7V4318GzEBJZ1OcCaIxYPYl9aQoHg-ezm90nAahY-jrA" alt="Refactoring" class="w-full h-full object-cover" data-stitch-original-src="7bec3b66689c9899===../../images/cover_refactoring.jpg">
+              </div>
+              <div class="flex flex-col gap-xs">
+                <h2 data-design-text-token="title-md" class="font-title text-title-md text-text-primary leading-snug">Refactoring</h2>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Martin Fowler</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-xs">
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Engineering</span>
+              <span data-design-text-token="label-sm" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-sm text-text-secondary whitespace-nowrap">Completed</span>
+            </div>
+          </a>
+        </section>
+      </div>
+    </main>
+  </div>
+
+
+</body></html>

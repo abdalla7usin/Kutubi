@@ -1,0 +1,324 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Kutubi</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config" data-stitch-original-src="db6e7611d673fffe===../../tailwind.config.js">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'background': '#0B0B0C',
+        'surface': '#121214',
+        'on-surface': '#F4F4F5',
+        'surface-elevated': '#1A1A1E',
+        'on-surface-elevated': '#F4F4F5',
+        'border': '#242429',
+        'border-focus': '#3F3F46',
+        'text-primary': '#F4F4F5',
+        'text-secondary': '#A1A1AA',
+        'text-muted': '#6E6E77',
+        'primary': '#EDEDEF',
+        'on-primary': '#0B0B0C',
+        'error': '#E5484D',
+        'on-error': '#0B0B0C',
+      },
+      borderRadius: {
+        'cover': '4px',
+        'control': '6px',
+        'card': '8px',
+        'full': '9999px',
+      },
+      spacing: {
+        'xs': '4px',
+        'sm': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '24px',
+        '2xl': '32px',
+      },
+      fontFamily: {
+        'headline': ['"Inter"', 'sans-serif'],
+        'title': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'arabic': ['"IBM Plex Sans Arabic"', 'sans-serif'],
+      },
+      fontSize: {
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'headline-md': ['20px', { lineHeight: '28px', letterSpacing: '-0.015em', fontWeight: '600' }],
+        'title-lg': ['16px', { lineHeight: '24px', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'title-md': ['14px', { lineHeight: '20px', fontWeight: '500' }],
+        'body-lg': ['14px', { lineHeight: '22px', fontWeight: '400' }],
+        'body-md': ['13px', { lineHeight: '20px', fontWeight: '400' }],
+        'label-lg': ['13px', { lineHeight: '18px', fontWeight: '500' }],
+        'label-md': ['12px', { lineHeight: '16px', fontWeight: '500' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.01em', fontWeight: '500' }],
+        'arabic-lg': ['22px', { lineHeight: '34px', fontWeight: '600' }],
+        'arabic-md': ['14px', { lineHeight: '22px', fontWeight: '500' }],
+        'arabic-sm': ['13px', { lineHeight: '22px', fontWeight: '400' }],
+      },
+      transitionDuration: {
+        'interactive': '120ms',
+        'modal': '160ms',
+      },
+      transitionDelay: {
+        'interactive': '0ms',
+        'modal': '0ms',
+      },
+      transitionTimingFunction: {
+        'interactive': 'ease-out',
+        'modal': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>.material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }</style>
+</head>
+<body class="bg-background text-text-primary font-body antialiased">
+  <div class="min-h-screen flex bg-background">
+    <!-- Expanded 220px Left Sidebar -->
+    <aside class="w-[220px] shrink-0 bg-surface border-r border-border min-h-screen flex flex-col p-lg gap-xl">
+      <div class="flex items-center justify-between px-xs pt-xs">
+        <span class="font-headline text-[18px] font-semibold leading-none text-text-primary">Kutubi</span>
+        <button type="button" aria-label="Collapse sidebar" title="Collapse sidebar" class="w-2xl h-2xl inline-flex items-center justify-center rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+            <path d="M9 3v18"></path>
+            <path d="m16 15-3-3 3-3"></path>
+          </svg>
+        </button>
+      </div>
+
+      <nav aria-label="Primary" class="flex flex-col gap-xs">
+        <a href="#" aria-current="page" class="h-[36px] flex items-center gap-md px-md rounded-control bg-surface-elevated text-text-primary font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px] text-text-primary" aria-hidden="true">grid_view</span>
+          <span data-design-text-token="label-lg">Dashboard</span>
+        </a>
+        <a href="#" class="h-[36px] flex items-center justify-between px-md rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="flex items-center gap-md">
+            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">menu_book</span>
+            <span data-design-text-token="label-lg">My Library</span>
+          </span>
+          <span data-design-text-token="label-sm" class="font-label text-label-sm text-text-secondary tabular-nums">24</span>
+        </a>
+        <a href="#" class="h-[36px] flex items-center gap-md px-md rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">settings</span>
+          <span data-design-text-token="label-lg">Settings</span>
+        </a>
+        <a href="#" class="h-[36px] flex items-center gap-md px-md rounded-control text-text-secondary hover:text-text-primary hover:bg-surface-elevated font-label text-label-lg transition-colors duration-interactive ease-interactive">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">person</span>
+          <span data-design-text-token="label-lg">Profile</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0 p-2xl">
+      <div class="max-w-[1040px] mx-auto flex flex-col gap-2xl">
+        <!-- Header -->
+        <header class="flex items-center justify-between gap-lg">
+          <h1 data-design-text-token="headline-lg" class="font-headline text-headline-lg text-text-primary">Dashboard</h1>
+          <button data-component-id="button-with-icon" data-component-type="button" data-component-variant="with-icon" type="button" class="inline-flex items-center justify-center gap-sm px-md py-sm rounded-control bg-primary text-on-primary font-label text-label-lg hover:opacity-90 transition-colors duration-interactive ease-interactive">
+            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">add</span>
+            <span data-design-text-token="label-lg">Add Book</span>
+          </button>
+        </header>
+
+        <!-- Top Metrics Row -->
+        <section aria-label="Library Summary" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg items-stretch">
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="outlined" class="bg-surface border border-border rounded-card p-xl flex flex-col justify-between gap-sm h-full">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-secondary">Total Books</span>
+            <div class="flex flex-col gap-xs">
+              <span data-design-text-token="headline-lg" class="font-headline text-headline-lg text-text-primary tabular-nums">24</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Across 5 categories</span>
+            </div>
+          </article>
+
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="outlined" class="bg-surface border border-border rounded-card p-xl flex flex-col justify-between gap-sm h-full">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-secondary">Currently Reading</span>
+            <div class="flex flex-col gap-xs">
+              <span data-design-text-token="headline-lg" class="font-headline text-headline-lg text-text-primary tabular-nums">3</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Active books in progress</span>
+            </div>
+          </article>
+
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="outlined" class="bg-surface border border-border rounded-card p-xl flex flex-col justify-between gap-sm h-full">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-secondary">Completed</span>
+            <div class="flex flex-col gap-xs">
+              <span data-design-text-token="headline-lg" class="font-headline text-headline-lg text-text-primary tabular-nums">14</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums">58% of library</span>
+            </div>
+          </article>
+
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="outlined" class="bg-surface border border-border rounded-card p-xl flex flex-col justify-between gap-sm h-full">
+            <span data-design-text-token="label-md" class="font-label text-label-md text-text-secondary">To Read</span>
+            <div class="flex flex-col gap-xs">
+              <span data-design-text-token="headline-lg" class="font-headline text-headline-lg text-text-primary tabular-nums">7</span>
+              <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Queued next</span>
+            </div>
+          </article>
+        </section>
+
+        <!-- Currently Reading Section -->
+        <section class="flex flex-col gap-lg">
+          <div class="flex items-center justify-between">
+            <h2 data-design-text-token="title-lg" class="font-title text-title-lg text-text-primary">Currently Reading</h2>
+            <a href="#" data-design-text-token="label-md" class="font-label text-label-md text-text-secondary hover:text-text-primary transition-colors duration-interactive ease-interactive">View all</a>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg items-stretch">
+            <!-- Card 1 -->
+            <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-lg flex gap-lg hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+              <div class="w-[68px] aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background shrink-0">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrB1Hr8vPt1v-5V88nfvOtFH_RbBY5876FQ0hteDxQlHrcegbG581-jbNOiXznkfXhaSqImMwRZDnzYJ_cYzKTHhXb6nO7U6ry1iS0PEVXyVvtd18M1aWUgek54NCCkB2NuNAoF2vEMAbi1_RczoGOd45-PbvhteKg2CM5EAz8Jj_eYybfYqjZQvuhQMBiXaGMPlKvQldf26Itgabp-p8A7LrZyjxdTFRocYPJpxcJff5CZH3gaaDmFLFYVhflLo" alt="Designing Data-Intensive Applications cover" class="w-full h-full object-cover" data-stitch-original-src="3f9be48d8c514b6a===../../images/cover_ddia.jpg">
+              </div>
+              <div class="flex-1 min-w-0 flex flex-col justify-between gap-md">
+                <div class="flex flex-col gap-xs">
+                  <span data-design-text-token="label-sm" class="self-start inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary">Engineering</span>
+                  <h3 data-design-text-token="title-md" class="font-title text-title-md text-text-primary text-balance leading-snug">Designing Data-Intensive Applications</h3>
+                  <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Martin Kleppmann</p>
+                </div>
+                <div class="flex flex-col gap-xs">
+                  <div class="w-full h-xs rounded-full bg-surface-elevated overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" style="width: 51%"></div>
+                  </div>
+                  <p data-design-text-token="label-md" class="font-label text-label-md text-text-secondary tabular-nums">312 / 616 pages · 51%</p>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 2 (Arabic) -->
+            <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-lg flex gap-lg hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+              <div class="w-[68px] aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background shrink-0">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrDQQ8Ki3DJyNhXNdbBp2-w60l-FBQQdf1qQ1n6pqYmtf-iIF2NtLpWNqC9mqdge7Eq36hzVLbJZnmcpBfd3Zt0SXiyQvQiVM0nQy5cczdqHKUi8F024EawvfTrNfR7UwYixSDdIeLJN3kB-1LinFv0pPUAlNcjpjtaVPiJP_soAoqj2ACqv166jMpXvLwe1OOdVspZZypusjFkpma0gfrK_n5ljMtmldTzRXUHCd4D5JNwpLywJecVjwF9F6HhI27-HaQ" alt="ثلاثية غرناطة cover" class="w-full h-full object-cover" data-stitch-original-src="8c8fd0bd5b14671f===../../images/cover_granada.jpg">
+              </div>
+              <div class="flex-1 min-w-0 flex flex-col justify-between gap-md">
+                <div class="flex flex-col gap-xs">
+                  <span data-design-text-token="label-sm" class="self-start inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary">Arabic Literature</span>
+                  <h3 data-design-text-token="arabic-md" dir="rtl" class="font-arabic text-arabic-md text-text-primary text-right leading-snug">ثلاثية غرناطة</h3>
+                  <p data-design-text-token="arabic-sm" dir="rtl" class="font-arabic text-arabic-sm text-text-secondary text-right">رضوى عاشور</p>
+                </div>
+                <div class="flex flex-col gap-xs">
+                  <div class="w-full h-xs rounded-full bg-surface-elevated overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" style="width: 48%"></div>
+                  </div>
+                  <p data-design-text-token="label-md" class="font-label text-label-md text-text-secondary tabular-nums">240 / 504 pages · 48%</p>
+                </div>
+              </div>
+            </a>
+
+            <!-- Card 3 -->
+            <a href="#" data-component-id="card-interactive" data-component-type="card" data-component-variant="interactive" class="bg-surface border border-border rounded-card p-lg flex gap-lg hover:bg-surface-elevated hover:border-border-focus transition-colors duration-interactive ease-interactive h-full">
+              <div class="w-[68px] aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background shrink-0">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrB4YBKrELe3Koni0qEbje23jbQd29tcH00C-jb8epIyFGpKgUgguiGrfIqu1QiSHpKfwYgfr5GDtQD_g2JdVpciKCvtdhd3ZW0sMi0BOVrI4Oyi48688hckfn6Pdn2h2dAfs000MSFQjMklH0fYeaNcln5Ta6OKFaycv5RCSDWmCkyDuz-NFzPU0sHE-O3aqPYkROvGBLLWATs3cz5UHOJaasYn_bKR1LP_Ab0pKPZtCKbH-j0KV7gPTOmhGI6ywg8jbNuP" alt="The Pragmatic Programmer cover" class="w-full h-full object-cover" data-stitch-original-src="ebff816da4af7f5f===../../images/cover_pragmatic.jpg">
+              </div>
+              <div class="flex-1 min-w-0 flex flex-col justify-between gap-md">
+                <div class="flex flex-col gap-xs">
+                  <span data-design-text-token="label-sm" class="self-start inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-sm text-text-secondary">Engineering</span>
+                  <h3 data-design-text-token="title-md" class="font-title text-title-md text-text-primary truncate leading-snug">The Pragmatic Programmer</h3>
+                  <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Andrew Hunt</p>
+                </div>
+                <div class="flex flex-col gap-xs">
+                  <div class="w-full h-xs rounded-full bg-surface-elevated overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" style="width: 28%"></div>
+                  </div>
+                  <p data-design-text-token="label-md" class="font-label text-label-md text-text-secondary tabular-nums">98 / 352 pages · 28%</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <!-- Recently Added Section -->
+        <section class="flex flex-col gap-lg">
+          <div class="flex items-center justify-between">
+            <h2 data-design-text-token="title-lg" class="font-title text-title-lg text-text-primary">Recently Added</h2>
+          </div>
+
+          <div class="bg-surface border border-border rounded-card divide-y divide-border overflow-hidden">
+            <!-- Row 1 -->
+            <a href="#" class="flex items-center justify-between gap-lg px-lg py-md hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+              <div class="flex items-center gap-md min-w-0">
+                <div class="w-2xl aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background shrink-0">
+                  <img src="https://lh3.googleusercontent.com/aida/ALJJyrB1Hr8vPt1v-5V88nfvOtFH_RbBY5876FQ0hteDxQlHrcegbG581-jbNOiXznkfXhaSqImMwRZDnzYJ_cYzKTHhXb6nO7U6ry1iS0PEVXyVvtd18M1aWUgek54NCCkB2NuNAoF2vEMAbi1_RczoGOd45-PbvhteKg2CM5EAz8Jj_eYybfYqjZQvuhQMBiXaGMPlKvQldf26Itgabp-p8A7LrZyjxdTFRocYPJpxcJff5CZH3gaaDmFLFYVhflLo" alt="Designing Data-Intensive Applications" class="w-full h-full object-cover" data-stitch-original-src="3f9be48d8c514b6a===../../images/cover_ddia.jpg">
+                </div>
+                <div class="min-w-0">
+                  <p data-design-text-token="title-md" class="font-title text-title-md text-text-primary">Designing Data-Intensive Applications</p>
+                  <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Martin Kleppmann</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-lg shrink-0">
+                <span data-design-text-token="label-md" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-md text-text-secondary">Engineering</span>
+                <span data-design-text-token="label-md" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-md text-text-primary">Reading</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums w-[88px] text-right">Oct 14, 2026</span>
+              </div>
+            </a>
+
+            <!-- Row 2 -->
+            <a href="#" class="flex items-center justify-between gap-lg px-lg py-md hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+              <div class="flex items-center gap-md min-w-0">
+                <div class="w-2xl aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background shrink-0">
+                  <img src="https://lh3.googleusercontent.com/aida/ALJJyrDQQ8Ki3DJyNhXNdbBp2-w60l-FBQQdf1qQ1n6pqYmtf-iIF2NtLpWNqC9mqdge7Eq36hzVLbJZnmcpBfd3Zt0SXiyQvQiVM0nQy5cczdqHKUi8F024EawvfTrNfR7UwYixSDdIeLJN3kB-1LinFv0pPUAlNcjpjtaVPiJP_soAoqj2ACqv166jMpXvLwe1OOdVspZZypusjFkpma0gfrK_n5ljMtmldTzRXUHCd4D5JNwpLywJecVjwF9F6HhI27-HaQ" alt="ثلاثية غرناطة" class="w-full h-full object-cover" data-stitch-original-src="8c8fd0bd5b14671f===../../images/cover_granada.jpg">
+                </div>
+                <div class="min-w-0">
+                  <p data-design-text-token="arabic-md" dir="rtl" class="font-arabic text-arabic-md text-text-primary text-left">ثلاثية غرناطة</p>
+                  <p data-design-text-token="arabic-sm" dir="rtl" class="font-arabic text-arabic-sm text-text-secondary text-left">رضوى عاشور</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-lg shrink-0">
+                <span data-design-text-token="label-md" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-md text-text-secondary">Arabic Literature</span>
+                <span data-design-text-token="label-md" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-md text-text-primary">Reading</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums w-[88px] text-right">Oct 11, 2026</span>
+              </div>
+            </a>
+
+            <!-- Row 3 -->
+            <a href="#" class="flex items-center justify-between gap-lg px-lg py-md hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+              <div class="flex items-center gap-md min-w-0">
+                <div class="w-2xl aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background shrink-0">
+                  <img src="https://lh3.googleusercontent.com/aida/ALJJyrDENJkPhkHWepDBXMcw7XaBd5-U0PDgfgV9QsaEcykmjEVz5kcJTkLGIw2YeWur5tq2KxzCYe4iiS1Ku6QOahV-HLz4HGi1lOhOk8vOyqI7NSseg7BeKkL76wxB8A-dpIWUtywXHs_a5eEUw0S0yqXFH0zKsJdYVSQXCRfkaMRFyAQXcrI1PInETcynjXmTCcEJys7mepnflEEJeSAstxiUqLXPeyYxt-lLfsbkuEZPmdj5llLMCGS1NVnWbuJVnTA_Y7Cs" alt="Clean Architecture" class="w-full h-full object-cover" data-stitch-original-src="2c2159e89353afa3===../../images/cover_clean_arch.jpg">
+                </div>
+                <div class="min-w-0">
+                  <p data-design-text-token="title-md" class="font-title text-title-md text-text-primary">Clean Architecture</p>
+                  <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Robert C. Martin</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-lg shrink-0">
+                <span data-design-text-token="label-md" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-md text-text-secondary">Engineering</span>
+                <span data-design-text-token="label-md" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-md text-text-secondary">Completed</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums w-[88px] text-right">Oct 06, 2026</span>
+              </div>
+            </a>
+
+            <!-- Row 4 -->
+            <a href="#" class="flex items-center justify-between gap-lg px-lg py-md hover:bg-surface-elevated transition-colors duration-interactive ease-interactive">
+              <div class="flex items-center gap-md min-w-0">
+                <div class="w-2xl aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background shrink-0">
+                  <img src="https://lh3.googleusercontent.com/aida/ALJJyrDX9SGN3JXK05qAGXmoJ58nUAhaRt69RSWJZ1JbqeyFBlX8lXnrZ1myzJa7nmZ_ROz72vNQYV0Qh1AGJZ6aP1fLfJDUwC7e0oAQ60cqlxx9VgdJ77M9pkwqS8o1kVu2twvIQuCNjVNoRputIlTGkz59ozmMTWXfJbJzllrLPrPUjiHyuZ7sa6GvAOjwi7NVbTrw5bIyCNcpqNOX8B0Kco-apOvFO8XmH36cQ_fhhRN9MZ9cP94rBmGSj4ZiHXCwdA" alt="Dune" class="w-full h-full object-cover" data-stitch-original-src="becd5ead6a89b097===../../images/cover_dune.jpg">
+                </div>
+                <div class="min-w-0">
+                  <p data-design-text-token="title-md" class="font-title text-title-md text-text-primary">Dune</p>
+                  <p data-design-text-token="body-md" class="font-body text-body-md text-text-secondary">Frank Herbert</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-lg shrink-0">
+                <span data-design-text-token="label-md" class="inline-flex items-center px-sm py-xs rounded-control bg-surface-elevated border border-border font-label text-label-md text-text-secondary">Fiction &amp; Sci-Fi</span>
+                <span data-design-text-token="label-md" class="inline-flex items-center px-sm py-xs rounded-control bg-background border border-border font-label text-label-md text-text-secondary">To Read</span>
+                <span data-design-text-token="body-md" class="font-body text-body-md text-text-secondary tabular-nums w-[88px] text-right">Sep 28, 2026</span>
+              </div>
+            </a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+
+</body></html>

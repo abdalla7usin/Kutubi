@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kutubi — Personal Book Library</title>
+  
+  <!-- Typography: Inter & IBM Plex Sans Arabic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
+
+  <!-- Tailwind CSS Engine & Kutubi Custom Tokens Config -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'background': '#0B0B0C',
+            'surface': '#121214',
+            'on-surface': '#F4F4F5',
+            'surface-elevated': '#1A1A1E',
+            'on-surface-elevated': '#F4F4F5',
+            'border': '#242429',
+            'border-focus': '#3F3F46',
+            'text-primary': '#F4F4F5',
+            'text-secondary': '#A1A1AA',
+            'text-muted': '#6E6E77',
+            'primary': '#EDEDEF',
+            'on-primary': '#0B0B0C',
+            'error': '#E5484D',
+            'on-error': '#0B0B0C',
+          },
+          borderRadius: {
+            'cover': '4px',
+            'control': '6px',
+            'card': '8px',
+            'full': '9999px',
+          },
+          spacing: {
+            'xs': '4px',
+            'sm': '8px',
+            'md': '12px',
+            'lg': '16px',
+            'xl': '24px',
+            '2xl': '32px',
+          },
+          fontFamily: {
+            'headline': ['"Inter"', 'sans-serif'],
+            'title': ['"Inter"', 'sans-serif'],
+            'body': ['"Inter"', 'sans-serif'],
+            'label': ['"Inter"', 'sans-serif'],
+            'arabic': ['"IBM Plex Sans Arabic"', 'sans-serif'],
+          },
+          fontSize: {
+            'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.02em', fontWeight: '600' }],
+            'headline-md': ['20px', { lineHeight: '28px', letterSpacing: '-0.015em', fontWeight: '600' }],
+            'title-lg': ['16px', { lineHeight: '24px', letterSpacing: '-0.01em', fontWeight: '600' }],
+            'title-md': ['14px', { lineHeight: '20px', fontWeight: '500' }],
+            'body-lg': ['14px', { lineHeight: '22px', fontWeight: '400' }],
+            'body-md': ['13px', { lineHeight: '20px', fontWeight: '400' }],
+            'label-lg': ['13px', { lineHeight: '18px', fontWeight: '500' }],
+            'label-md': ['12px', { lineHeight: '16px', fontWeight: '500' }],
+            'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.01em', fontWeight: '500' }],
+            'arabic-lg': ['22px', { lineHeight: '34px', fontWeight: '600' }],
+            'arabic-md': ['14px', { lineHeight: '22px', fontWeight: '500' }],
+            'arabic-sm': ['13px', { lineHeight: '22px', fontWeight: '400' }],
+          },
+          transitionDuration: {
+            'interactive': '120ms',
+            'modal': '160ms',
+          },
+          transitionTimingFunction: {
+            'interactive': 'ease-out',
+            'modal': 'cubic-bezier(0.2, 0, 0, 1)',
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Design System Tokens & Application Styles -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-background text-text-primary antialiased font-body">
+  <!-- Mobile Top Bar (< 768px) -->
+  <header class="mobile-topbar" id="mobile-topbar">
+    <button type="button" id="mobile-menu-btn" class="btn-icon" aria-label="Open menu">
+      <span class="material-symbols-outlined text-[20px]">menu</span>
+    </button>
+    <span class="font-headline text-[18px] font-semibold text-text-primary">Kutubi</span>
+    <a href="#add" class="btn-icon" aria-label="Add book">
+      <span class="material-symbols-outlined text-[20px]">add</span>
+    </a>
+  </header>
+
+  <!-- Mobile Drawer Backdrop -->
+  <div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop"></div>
+
+  <!-- Main Application Layout Shell -->
+  <div id="app-layout">
+    <!-- Persistent Collapsible Sidebar -->
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Main Navigation">
+      <!-- Top Header -->
+      <div class="sidebar-header">
+        <span class="sidebar-title font-headline">Kutubi</span>
+        <button
+          type="button"
+          id="sidebar-collapse-btn"
+          aria-label="Collapse sidebar"
+          title="Collapse sidebar"
+          class="sidebar-collapse-btn"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+            <path d="M9 3v18"></path>
+            <path d="m16 15-3-3 3-3"></path>
+          </svg>
+        </button>
+
+        <!-- Collapsed Monogram Button ("K") -->
+        <button
+          type="button"
+          id="sidebar-expand-btn"
+          aria-label="Expand sidebar"
+          title="Expand sidebar"
+          class="sidebar-monogram-btn"
+        >
+          <span class="font-headline">K</span>
+          <span class="sidebar-tooltip">Expand sidebar</span>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav aria-label="Primary" class="sidebar-nav">
+        <a href="#dashboard" class="sidebar-link active" data-nav="dashboard">
+          <span class="material-symbols-outlined nav-icon" aria-hidden="true">grid_view</span>
+          <span class="nav-label">Dashboard</span>
+          <span class="sidebar-tooltip">Dashboard</span>
+        </a>
+
+        <a href="#library" class="sidebar-link" data-nav="library">
+          <span class="material-symbols-outlined nav-icon" aria-hidden="true">menu_book</span>
+          <span class="nav-label">My Library</span>
+          <span class="sidebar-badge" id="sidebar-total-badge">24</span>
+          <span class="sidebar-tooltip" id="sidebar-tooltip-library">My Library · 24</span>
+        </a>
+
+        <a href="#settings" class="sidebar-link" data-nav="settings">
+          <span class="material-symbols-outlined nav-icon" aria-hidden="true">settings</span>
+          <span class="nav-label">Settings</span>
+          <span class="sidebar-tooltip">Settings</span>
+        </a>
+
+        <a href="#profile" class="sidebar-link" data-nav="profile">
+          <span class="material-symbols-outlined nav-icon" aria-hidden="true">person</span>
+          <span class="nav-label">Profile</span>
+          <span class="sidebar-tooltip">Profile</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main View Container -->
+    <main class="app-main" id="app-main" tabindex="-1">
+      <!-- Dynamic view injected here by router -->
+    </main>
+  </div>
+
+  <!-- Global Modal Dialog Container -->
+  <div id="modal-container"></div>
+
+  <!-- Global Toast Notifications Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Application Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
