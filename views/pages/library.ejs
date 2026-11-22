@@ -90,19 +90,27 @@
   <!-- Book Content or Empty State -->
   <% if (!books || books.length === 0) { %>
     <!-- Empty State Card -->
+    <% const hasActiveFilters = Boolean(filters.search || (filters.status && filters.status !== 'All') || (filters.category && filters.category !== 'All')); %>
     <div class="flex justify-center pt-8">
       <article class="card card-padded max-w-md w-full flex flex-col items-center text-center gap-3 py-12">
         <div class="w-10 h-10 rounded-control bg-surface-elevated border border-border-subtle flex items-center justify-center text-text-muted">
-          <span class="material-symbols-outlined text-[20px]">search_off</span>
+          <span class="material-symbols-outlined text-[20px]"><%= hasActiveFilters ? 'search_off' : 'auto_stories' %></span>
         </div>
         <header class="flex flex-col items-center gap-1">
-          <h3 class="text-[15px] font-semibold text-text-primary">No books match your criteria</h3>
-          <p class="text-[13px] text-text-secondary">Try adjusting your search terms or clearing active filters.</p>
+          <h3 class="text-[15px] font-semibold text-text-primary"><%= hasActiveFilters ? 'No books match your criteria' : 'Your library is empty' %></h3>
+          <p class="text-[13px] text-text-secondary"><%= hasActiveFilters ? 'Try adjusting your search terms or clearing active filters.' : 'Start building your personal collection by adding your first book.' %></p>
         </header>
         <footer class="pt-2">
-          <a href="/library" id="clear-filters-btn" class="btn btn-secondary">
-            <span>Reset Filters</span>
-          </a>
+          <% if (hasActiveFilters) { %>
+            <a href="/library" id="clear-filters-btn" class="btn btn-secondary">
+              <span>Reset Filters</span>
+            </a>
+          <% } else { %>
+            <a href="/books/new" class="btn btn-primary h-9 flex items-center justify-center gap-xs px-4">
+              <span class="material-symbols-outlined text-[16px]">add</span>
+              <span>Add Your First Book</span>
+            </a>
+          <% } %>
         </footer>
       </article>
     </div>

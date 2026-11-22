@@ -1,6 +1,7 @@
 const { describe, it, beforeEach, afterEach } = require('node:test');
 const assert = require('node:assert');
 const { initDatabase, closeDb } = require('../db/database');
+const { seedSampleBooksForTests } = require('../db/seed');
 
 describe('Database Initialization & Schema Integrity', () => {
   let db;
@@ -25,36 +26,38 @@ describe('Database Initialization & Schema Integrity', () => {
     assert.ok(tables.includes('app_metadata'), 'app_metadata table exists');
   });
 
-  it('should seed exactly 24 books and 5 categories on initial run', () => {
+  it('should initialize exactly 0 books and 5 default categories on fresh initialization', () => {
     const bookCount = db.prepare('SELECT COUNT(*) AS total FROM books').get().total;
     const catCount = db.prepare('SELECT COUNT(*) AS total FROM categories').get().total;
 
-    assert.strictEqual(bookCount, 24, 'Exactly 24 seed books');
-    assert.strictEqual(catCount, 5, 'Exactly 5 seed categories');
+    assert.strictEqual(bookCount, 0, 'Fresh database starts with exactly 0 books');
+    assert.strictEqual(catCount, 5, 'Exactly 5 default categories initialized');
   });
 
-  it('should strictly match target status distribution (3 Reading, 14 Completed, 7 To Read)', () => {
+  it('should verify sample fixture seeder matches target status and category distributions', () => {
+    // Populate sample books fixture for testing
+    seedSampleBooksForTests(db);
+
+    const bookCount = db.prepare('SELECT COUNT(*) AS total FROM books').get().total;
+    assert.strictEqual(bookCount, 24, 'Exactly 24 fixture books');
+
     const statuses = db.prepare(`
       SELECT status, COUNT(*) AS count
       FROM books
       GROUP BY status
     `).all();
-
     const statusMap = Object.fromEntries(statuses.map(s => [s.status, s.count]));
 
     assert.strictEqual(statusMap['Reading'], 3, '3 Reading books');
     assert.strictEqual(statusMap['Completed'], 14, '14 Completed books');
     assert.strictEqual(statusMap['To Read'], 7, '7 To Read books');
-  });
 
-  it('should strictly match target category distribution (8, 6, 5, 3, 2)', () => {
     const catCounts = db.prepare(`
       SELECT c.name, COUNT(b.id) AS count
       FROM categories c
       LEFT JOIN books b ON b.category_id = c.id
       GROUP BY c.id
     `).all();
-
     const catMap = Object.fromEntries(catCounts.map(c => [c.name, c.count]));
 
     assert.strictEqual(catMap['Engineering'], 8, '8 Engineering books');

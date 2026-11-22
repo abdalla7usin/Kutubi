@@ -59,7 +59,6 @@
   - Milestone summary: Books Completed count, Total Pages Read (`SUM(current_page)`), and Favorite Category.
 - **Data Portability & Preferences:**
   - Full catalog backup exported as timestamped JSON file.
-  - Sample Data Reset to restore pristine 24-book demonstration baseline.
   - Persistent default library view (`grid` / `list`) and default sorting order.
 - **Responsive Layout & Sidebar Rail:**
   - Desktop: 220px sidebar with 64px collapsible icon rail (pre-painted to prevent layout shift).
@@ -90,11 +89,11 @@ Kutubi/
 │   ├── dashboard.controller.js   # Live metrics & recent books
 │   ├── library.controller.js     # Library grid/list view & filter query parsing
 │   ├── profile.controller.js     # Profile details & milestone statistics
-│   └── settings.controller.js    # Preferences, backup export & sample reset
+│   └── settings.controller.js    # Preferences & backup export
 ├── db/                   # Database connection, DDL schema, migrations & seeder
 │   ├── database.js       # SQLite connection manager, WAL mode & migrations
 │   ├── schema.sql        # Database schema definitions & indexes
-│   └── seed.js           # 24 sample books & 5 categories seeder
+│   └── seed.js           # 5 default categories seeder & test fixtures
 ├── middleware/           # Centralized Express middleware
 │   ├── error-handler.js  # Global error handling
 │   ├── not-found.js      # 404 handler
@@ -121,12 +120,12 @@ Kutubi/
 │   ├── dashboard.service.js  # Live SQLite aggregations
 │   ├── pdf.service.js        # Magic byte validation, cover extraction & cleanup
 │   ├── profile.service.js    # Dynamic profile stats & initials logic
-│   └── settings.service.js   # Settings persistence, export & reset
+│   └── settings.service.js   # Settings persistence & export
 ├── storage/              # Persistent document storage outside public root
 │   ├── covers/           # Generated PDF first-page cover thumbnails (.png)
 │   ├── pdfs/             # Uploaded PDF document files (.pdf)
 │   └── temp/             # Temporary processing files
-├── tests/                # Automated unit & integration test suite (36 tests)
+├── tests/                # Automated unit & integration test suite (34 tests)
 │   ├── books.test.js
 │   ├── categories.test.js
 │   ├── dashboard.test.js
@@ -270,7 +269,7 @@ Kutubi initializes automatically with **exactly 24 realistic sample books** acro
    ```text
    http://localhost:3000
    ```
-   *(The database is automatically created and seeded at `data/kutubi.db` on first run. Upload directories `storage/pdfs/`, `storage/covers/`, and `storage/temp/` are also initialized).*
+   *(The database is automatically created and initialized at `data/kutubi.db` on first run with 5 default categories and 0 books, ready for your personal collection. Upload directories `storage/pdfs/`, `storage/covers/`, and `storage/temp/` are also initialized).*
 
 5. **Health Check Endpoint:**
    ```text
@@ -288,14 +287,14 @@ Kutubi includes a complete automated test suite using the Node.js native test ru
 npm test
 ```
 
-### Test Coverage Summary (36 Automated Tests across 7 Suites):
-- **Database Initialization & Schema Integrity:** Foreign keys, WAL pragma, table constraints, singleton enforcement, seed count accuracy (5 tests).
+### Test Coverage Summary (34 Automated Tests across 7 Suites):
+- **Database Initialization & Schema Integrity:** Foreign keys, WAL pragma, table constraints, singleton enforcement, fresh 0-book baseline initialization (4 tests).
 - **Books Service & CRUD:** Full search (English and Arabic), status/category filtering, multi-field sorting, book creation, updates, and deletion (8 tests).
 - **Reading Progress Logic:** Auto-transitions to `Completed` on max pages, transitions to `Reading` on partial progress, reset to `To Read` on 0 pages, and strict out-of-bounds page rejection (5 tests).
 - **Categories Service & Safety:** Category listing, book counts, case-insensitive duplicate prevention, rename, `Uncategorized` system protection, and safe reassignment upon custom category deletion (5 tests).
 - **Dashboard Service:** Live SQLite aggregations, currently reading retrieval, recently added queries, and zero-books division-by-zero protection (4 tests).
 - **In-App PDF Service & Document Operations:** Magic byte signature validation, rejection of corrupt/spoofed files, 3-page rendering & first-page thumbnail generation, and database attachment persistence (4 tests).
-- **Settings & Profile:** Preferences persistence, JSON backup export, factory sample data reset, profile updates, and Unicode avatar initials generation rules (5 tests).
+- **Settings & Profile:** Preferences persistence, JSON backup export, profile updates, and Unicode avatar initials generation rules (4 tests).
 
 ---
 

@@ -1,10 +1,9 @@
 /**
  * Kutubi - Settings Service
- * Handles preferences persistence, JSON library backups, and sample data restoration
+ * Handles preferences persistence and JSON library backups
  */
 
 const { getDb } = require('../db/database');
-const { resetDatabaseToDefaults } = require('../db/seed');
 
 class SettingsService {
   /**
@@ -107,17 +106,6 @@ class SettingsService {
       categories,
       books
     };
-  }
-
-  /**
-   * Restore default 24 sample books and 5 categories
-   * @param {import('better-sqlite3').Database} [dbInstance]
-   * @returns {boolean}
-   */
-  resetSampleData(dbInstance) {
-    const db = dbInstance || getDb();
-    resetDatabaseToDefaults(db);
-    return true;
   }
 }
 

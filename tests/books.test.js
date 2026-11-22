@@ -1,6 +1,7 @@
 const { describe, it, beforeEach, afterEach } = require('node:test');
 const assert = require('node:assert');
 const { initDatabase, closeDb } = require('../db/database');
+const { seedSampleBooksForTests } = require('../db/seed');
 const booksService = require('../services/books.service');
 
 describe('Books Service & CRUD Operations', () => {
@@ -8,6 +9,7 @@ describe('Books Service & CRUD Operations', () => {
 
   beforeEach(() => {
     db = initDatabase(':memory:');
+    seedSampleBooksForTests(db);
   });
 
   afterEach(() => {

@@ -18,7 +18,6 @@ function getSettings(req, res, next) {
       toastMessage = `Category deleted. Reassigned ${count} book(s) to Uncategorized.`;
     }
     else if (req.query.toast === 'settings_saved') toastMessage = 'Preferences saved successfully';
-    else if (req.query.toast === 'sample_reset') toastMessage = 'Restored factory sample library (24 books)';
 
     res.render('pages/settings', {
       title: 'Settings',
@@ -60,18 +59,8 @@ function exportJson(req, res, next) {
   }
 }
 
-function resetSample(req, res, next) {
-  try {
-    settingsService.resetSampleData();
-    res.redirect(303, '/settings?toast=sample_reset');
-  } catch (err) {
-    next(err);
-  }
-}
-
 module.exports = {
   getSettings,
   updatePreferences,
-  exportJson,
-  resetSample
+  exportJson
 };

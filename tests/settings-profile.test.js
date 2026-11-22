@@ -1,6 +1,7 @@
 const { describe, it, beforeEach, afterEach } = require('node:test');
 const assert = require('node:assert');
 const { initDatabase, closeDb } = require('../db/database');
+const { seedSampleBooksForTests } = require('../db/seed');
 const settingsService = require('../services/settings.service');
 const profileService = require('../services/profile.service');
 const booksService = require('../services/books.service');
@@ -32,33 +33,31 @@ describe('Settings & Profile Persistence and Features', () => {
   });
 
   it('should export valid JSON backup containing all books and categories', () => {
-    const backup = settingsService.exportLibraryJson(db);
+    const backupEmpty = settingsService.exportLibraryJson(db);
 
-    assert.strictEqual(backup.app, 'Kutubi');
-    assert.strictEqual(backup.version, '1.0.0');
-    assert.ok(backup.exportedAt);
-    assert.strictEqual(backup.books.length, 24);
-    assert.strictEqual(backup.categories.length, 5);
-  });
+    assert.strictEqual(backupEmpty.app, 'Kutubi');
+    assert.strictEqual(backupEmpty.version, '1.0.0');
+    assert.ok(backupEmpty.exportedAt);
+    assert.strictEqual(backupEmpty.books.length, 0);
+    assert.strictEqual(backupEmpty.categories.length, 5);
 
-  it('should restore factory defaults on sample reset', () => {
-    // Add custom book and category
+    // After adding a book
     booksService.createBook({
-      title: 'Custom Book',
-      author: 'Custom Author',
-      totalPages: 100,
-      category: 'Engineering'
+      title: 'Operating Systems',
+      author: 'Remzi',
+      category: 'Engineering',
+      totalPages: 500,
+      status: 'Reading'
     }, db);
-    assert.strictEqual(booksService.getBooks({}, db).length, 25);
 
-    // Run reset
-    settingsService.resetSampleData(db);
-
-    // Verify back to exact 24 books
-    assert.strictEqual(booksService.getBooks({}, db).length, 24);
+    const backupWithBook = settingsService.exportLibraryJson(db);
+    assert.strictEqual(backupWithBook.books.length, 1);
+    assert.strictEqual(backupWithBook.categories.length, 5);
   });
 
   it('should update profile and calculate dynamic milestone statistics and initials', () => {
+    seedSampleBooksForTests(db);
+
     const updated = profileService.updateProfile({
       displayName: 'Sarah Connor',
       bio: 'Reading to save the future.'

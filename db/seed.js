@@ -316,14 +316,14 @@ const INITIAL_BOOKS = [
 ];
 
 /**
- * Seed database with initial categories and books if not yet seeded
+ * Initialize default categories only (no sample books).
+ * Used for production and personal use.
  * @param {import('better-sqlite3').Database} db
  */
-function seedInitialData(db) {
+function seedDefaultCategories(db) {
   const seedTransaction = db.transaction(() => {
     const now = new Date().toISOString();
 
-    // 1. Insert Categories
     const insertCat = db.prepare(`
       INSERT OR IGNORE INTO categories (name, is_system, created_at, updated_at)
       VALUES (?, ?, ?, ?)
@@ -333,6 +333,26 @@ function seedInitialData(db) {
       insertCat.run(cat.name, cat.isSystem, now, now);
     }
 
+    db.prepare(`
+      INSERT INTO app_metadata (key, value)
+      VALUES ('initialized', '1')
+      ON CONFLICT(key) DO UPDATE SET value = '1'
+    `).run();
+  });
+
+  seedTransaction();
+}
+
+/**
+ * Seed sample books for test fixtures only.
+ * @param {import('better-sqlite3').Database} db
+ */
+function seedSampleBooksForTests(db) {
+  seedDefaultCategories(db);
+
+  const seedTransaction = db.transaction(() => {
+    const now = new Date().toISOString();
+
     // Map category names to IDs
     const categoryRows = db.prepare('SELECT id, name FROM categories').all();
     const categoryMap = new Map();
@@ -340,7 +360,7 @@ function seedInitialData(db) {
       categoryMap.set(row.name.toLowerCase(), row.id);
     }
 
-    // 2. Insert Books
+    // Insert Books
     const insertBook = db.prepare(`
       INSERT INTO books (
         title, author, category_id, status, total_pages, current_page,
@@ -352,7 +372,6 @@ function seedInitialData(db) {
     for (let i = 0; i < INITIAL_BOOKS.length; i++) {
       const b = INITIAL_BOOKS[i];
       const categoryId = categoryMap.get(b.category.toLowerCase()) || categoryMap.get('uncategorized');
-      // Decrement created_at slightly so array order is preserved in created_at DESC
       const createdAt = new Date(Date.now() - (INITIAL_BOOKS.length - i) * 60000).toISOString();
 
       insertBook.run(
@@ -371,7 +390,6 @@ function seedInitialData(db) {
       );
     }
 
-    // 3. Mark as seeded in metadata
     db.prepare(`
       INSERT INTO app_metadata (key, value)
       VALUES ('seeded', '1')
@@ -382,93 +400,10 @@ function seedInitialData(db) {
   seedTransaction();
 }
 
-/**
- * Reset database to factory default sample data
- * Restores 5 default categories and 24 sample books while preserving user profile & preferences
- * @param {import('better-sqlite3').Database} db
- */
-function resetDatabaseToDefaults(db) {
-  const resetTransaction = db.transaction(() => {
-    // 1. Delete all existing books and reset sequence
-    db.prepare('DELETE FROM books').run();
-    try {
-      db.prepare("DELETE FROM sqlite_sequence WHERE name = 'books'").run();
-    } catch {
-      // sqlite_sequence might not exist if autoincrement isn't used
-    }
-
-    // 2. Delete custom categories (preserving Uncategorized)
-    db.prepare('DELETE FROM categories WHERE is_system = 0').run();
-
-    // 3. Ensure Uncategorized exists
-    const now = new Date().toISOString();
-    db.prepare(`
-      INSERT OR IGNORE INTO categories (name, is_system, created_at, updated_at)
-      VALUES ('Uncategorized', 1, ?, ?)
-    `).run(now, now);
-
-    // 4. Re-insert default custom categories
-    const insertCat = db.prepare(`
-      INSERT OR IGNORE INTO categories (name, is_system, created_at, updated_at)
-      VALUES (?, ?, ?, ?)
-    `);
-
-    for (const cat of INITIAL_CATEGORIES) {
-      if (!cat.isSystem) {
-        insertCat.run(cat.name, 0, now, now);
-      }
-    }
-
-    // 5. Re-map categories
-    const categoryRows = db.prepare('SELECT id, name FROM categories').all();
-    const categoryMap = new Map();
-    for (const row of categoryRows) {
-      categoryMap.set(row.name.toLowerCase(), row.id);
-    }
-
-    // 6. Re-insert 24 sample books
-    const insertBook = db.prepare(`
-      INSERT INTO books (
-        title, author, category_id, status, total_pages, current_page,
-        cover_url, rating, description, date_added, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    for (let i = 0; i < INITIAL_BOOKS.length; i++) {
-      const b = INITIAL_BOOKS[i];
-      const categoryId = categoryMap.get(b.category.toLowerCase()) || categoryMap.get('uncategorized');
-      const createdAt = new Date(Date.now() - (INITIAL_BOOKS.length - i) * 60000).toISOString();
-
-      insertBook.run(
-        b.title,
-        b.author,
-        categoryId,
-        b.status,
-        b.totalPages,
-        b.currentPage,
-        b.coverUrl || '',
-        b.rating,
-        b.notes,
-        b.dateAdded,
-        createdAt,
-        now
-      );
-    }
-
-    // 7. Mark seeded
-    db.prepare(`
-      INSERT INTO app_metadata (key, value)
-      VALUES ('seeded', '1')
-      ON CONFLICT(key) DO UPDATE SET value = '1'
-    `).run();
-  });
-
-  resetTransaction();
-}
-
 module.exports = {
   INITIAL_CATEGORIES,
   INITIAL_BOOKS,
-  seedInitialData,
-  resetDatabaseToDefaults
+  seedDefaultCategories,
+  seedSampleBooksForTests,
+  seedInitialData: seedDefaultCategories
 };

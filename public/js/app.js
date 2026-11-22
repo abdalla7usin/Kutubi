@@ -422,15 +422,6 @@ function setupGlobalEvents() {
       showToast('Library exported as JSON');
       return;
     }
-
-    // Settings: Reset Sample Data
-    const resetBtn = e.target.closest('#reset-sample-btn');
-    if (resetBtn) {
-      store.resetToDefaults();
-      showToast('Restored sample library (24 books)');
-      updateView(renderSettings());
-      return;
-    }
   });
 
   // Form Submissions

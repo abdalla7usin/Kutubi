@@ -88,11 +88,12 @@ function initDatabase(customPath) {
     `).run(now);
   }
 
-  // Check if initial seeding is required
-  const seedMeta = db.prepare("SELECT value FROM app_metadata WHERE key = 'seeded'").get();
+  // Check if initial default categories are initialized (never seeds sample books)
+  const seedMeta = db.prepare("SELECT value FROM app_metadata WHERE key = 'initialized'").get()
+    || db.prepare("SELECT value FROM app_metadata WHERE key = 'seeded'").get();
   if (!seedMeta) {
-    const { seedInitialData } = require('./seed');
-    seedInitialData(db);
+    const { seedDefaultCategories } = require('./seed');
+    seedDefaultCategories(db);
   }
 
   dbInstance = db;

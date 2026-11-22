@@ -162,23 +162,6 @@
         return;
       }
 
-      // Reset Sample Data Confirmation Trigger
-      const resetBtn = e.target.closest('#reset-sample-btn');
-      if (resetBtn) {
-        e.preventDefault();
-        openDeleteModal({
-          title: 'Reset sample library to factory defaults?',
-          confirmText: 'Reset Sample Data',
-          onConfirm: () => {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/settings/reset';
-            document.body.appendChild(form);
-            form.submit();
-          }
-        });
-        return;
-      }
     });
 
     // 5. Add / Edit Book Form: Live Cover Preview & Rating
