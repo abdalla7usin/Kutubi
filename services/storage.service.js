@@ -7,19 +7,30 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const crypto = require('crypto');
 
 const STORAGE_ROOT = path.join(__dirname, '..', 'storage');
 const PDFS_DIR = path.join(STORAGE_ROOT, 'pdfs');
 const COVERS_DIR = path.join(STORAGE_ROOT, 'covers');
-const TEMP_DIR = path.join(STORAGE_ROOT, 'temp');
+const TEMP_DIR = process.env.VERCEL ? path.join(os.tmpdir(), 'kutubi-temp') : path.join(STORAGE_ROOT, 'temp');
 
-// Ensure local directories exist
-[PDFS_DIR, COVERS_DIR, TEMP_DIR].forEach((dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-});
+// Ensure local directories exist (only for writable local environments)
+if (!process.env.VERCEL) {
+  [PDFS_DIR, COVERS_DIR, TEMP_DIR].forEach((dir) => {
+    try {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    } catch {}
+  });
+} else {
+  try {
+    if (!fs.existsSync(TEMP_DIR)) {
+      fs.mkdirSync(TEMP_DIR, { recursive: true });
+    }
+  } catch {}
+}
 
 const MAX_PDF_SIZE = 50 * 1024 * 1024; // 50MB
 
