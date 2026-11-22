@@ -164,7 +164,51 @@
 
     });
 
-    // 5. Add / Edit Book Form: Live Cover Preview & Rating
+    // 5. Library Toolbar: Grid / List View Switcher & Filter Handling
+    const libraryToolbarForm = document.getElementById('library-toolbar-form');
+    const libraryViewInput = document.getElementById('library-view-input');
+    const toggleGridBtn = document.getElementById('toggle-grid-view');
+    const toggleListBtn = document.getElementById('toggle-list-view');
+
+    if (libraryToolbarForm && libraryViewInput) {
+      if (toggleGridBtn) {
+        toggleGridBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (libraryViewInput.value !== 'grid') {
+            libraryViewInput.value = 'grid';
+            libraryToolbarForm.submit();
+          }
+        });
+      }
+
+      if (toggleListBtn) {
+        toggleListBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (libraryViewInput.value !== 'list') {
+            libraryViewInput.value = 'list';
+            libraryToolbarForm.submit();
+          }
+        });
+      }
+
+      // Auto-submit toolbar form on dropdown change
+      const toolbarSelects = libraryToolbarForm.querySelectorAll('select');
+      toolbarSelects.forEach(selectEl => {
+        selectEl.addEventListener('change', () => {
+          libraryToolbarForm.submit();
+        });
+      });
+
+      // Clear search triggers submission
+      const searchInput = document.getElementById('library-search-input');
+      if (searchInput) {
+        searchInput.addEventListener('search', () => {
+          libraryToolbarForm.submit();
+        });
+      }
+    }
+
+    // 6. Add / Edit Book Form: Live Cover Preview & Rating
     const coverUrlInput = document.getElementById('book-cover-url');
     const previewBox = document.getElementById('cover-preview-box');
     if (coverUrlInput && previewBox) {
