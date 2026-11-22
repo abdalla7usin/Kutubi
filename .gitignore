@@ -8,6 +8,7 @@ Thumbs.db
 /data/*.db-wal
 /data/*.db-journal
 /data/*.bak
+/data/*.json
 
 # Persistent PDF & Generated Cover storage (user uploads & generated files)
 /storage/pdfs/*
