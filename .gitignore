@@ -22,8 +22,8 @@ Thumbs.db
 # Secrets and environment configurations
 .env
 .env.*
+.env*
 !.env.example
 
 .vercel
-.env*
 /public/vendor/pdfjs
