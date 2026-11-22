@@ -56,7 +56,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
 app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
 app.use('/storage/covers', express.static(path.join(__dirname, 'storage', 'covers')));
-app.get('/storage/covers/:filename(*)', async (req, res, next) => {
+app.get('/storage/covers/*filename', async (req, res, next) => {
   const filename = req.params.filename;
   const storage = require('./services/storage.service').getStorage();
   if (storage.isCloudStorage()) {
