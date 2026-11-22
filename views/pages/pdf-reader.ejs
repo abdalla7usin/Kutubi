@@ -13,149 +13,316 @@
   <!-- Material Symbols Outlined -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
-  <!-- Project Design System & Component Stylesheets -->
+  <!-- Project Design Tokens -->
   <link rel="stylesheet" href="/css/tokens.css" />
-  <link rel="stylesheet" href="/css/styles.css" />
 
   <style>
-    /* Dedicated PDF Reader Specialized Layout */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body.pdf-reader-body {
-      background-color: #0B0B0C;
-      color: #F4F4F5;
+      background-color: #0A0A0A;
+      color: #EDEDEF;
       overflow: hidden;
       height: 100vh;
       width: 100vw;
-      margin: 0;
-      padding: 0;
       display: flex;
       flex-direction: column;
-      font-family: var(--font-sans);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    .reader-toolbar {
-      height: 48px;
-      min-height: 48px;
+    /* Low-Profile Minimalist Header */
+    .reader-header {
+      height: 52px;
+      min-height: 52px;
       background-color: #121214;
-      border-bottom: 1px solid #242429;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
-      gap: 12px;
+      padding: 0 24px;
+      gap: 16px;
       z-index: 50;
       user-select: none;
+      flex-shrink: 0;
     }
 
-    .reader-btn {
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .header-center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Back Button */
+    .reader-back-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 6px;
       height: 32px;
-      padding: 0 8px;
+      padding: 0 10px;
       border-radius: 6px;
       background: transparent;
       border: 1px solid transparent;
-      color: #A1A1AA;
+      color: #94949E;
       font-size: 13px;
-      cursor: pointer;
+      font-weight: 500;
       text-decoration: none;
-      transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
+      transition: all 120ms ease;
     }
 
-    .reader-btn:hover:not(:disabled) {
-      color: #F4F4F5;
-      background-color: #1A1A1E;
-      border-color: #242429;
+    .reader-back-btn:hover {
+      color: #EDEDEF;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.08);
     }
 
-    .reader-btn:disabled {
-      opacity: 0.35;
+    .header-divider {
+      width: 1px;
+      height: 16px;
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .book-title-heading {
+      font-size: 13px;
+      font-weight: 500;
+      color: #EDEDEF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+      letter-spacing: -0.01em;
+    }
+
+    @media (min-width: 768px) {
+      .book-title-heading {
+        max-width: 380px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .book-title-heading {
+        max-width: 520px;
+      }
+    }
+
+    /* Page Navigation Controls */
+    .nav-arrow-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #94949E;
+      cursor: pointer;
+      transition: all 120ms ease;
+    }
+
+    .nav-arrow-btn:hover:not(:disabled) {
+      color: #EDEDEF;
+      background-color: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-arrow-btn:disabled {
+      opacity: 0.25;
       cursor: not-allowed;
     }
 
-    .reader-btn-primary {
-      background-color: #EDEDEF;
-      color: #0B0B0C;
-      font-weight: 500;
-      border-color: #EDEDEF;
+    .page-indicator-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      color: #71717A;
     }
 
-    .reader-btn-primary:hover:not(:disabled) {
-      background-color: #FFFFFF;
-      color: #0B0B0C;
-      border-color: #FFFFFF;
-    }
-
-    .reader-icon-btn {
-      width: 32px;
-      height: 32px;
-      padding: 0;
-    }
-
-    .reader-input {
-      height: 28px;
-      width: 52px;
-      background-color: #0B0B0C;
-      border: 1px solid #242429;
-      border-radius: 4px;
-      color: #F4F4F5;
+    .page-num-input {
+      height: 26px;
+      width: 48px;
+      background-color: #0A0A0C;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 5px;
+      color: #EDEDEF;
       text-align: center;
       font-size: 13px;
       font-variant-numeric: tabular-nums;
-      padding: 0 4px;
+      font-family: inherit;
       outline: none;
+      transition: border-color 120ms ease;
+      -moz-appearance: textfield;
     }
 
-    .reader-input:focus {
-      border-color: #3F3F46;
+    .page-num-input::-webkit-outer-spin-button,
+    .page-num-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
+    .page-num-input:focus {
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Primary Action: Mark as Read */
+    .mark-read-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 150ms cubic-bezier(0.2, 0, 0, 1);
+      user-select: none;
+      background-color: #FAFAFA;
+      color: #0A0A0A;
+    }
+
+    .mark-read-btn:hover:not(:disabled) {
+      background-color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.12);
+    }
+
+    .mark-read-btn.is-completed {
+      background-color: rgba(16, 185, 129, 0.12);
+      color: #34D399;
+      border-color: rgba(52, 211, 153, 0.25);
+      cursor: default;
+    }
+
+    .mark-read-btn.is-completed:hover {
+      box-shadow: none;
+    }
+
+    /* Main Viewport */
     .reader-viewport {
       flex: 1;
       overflow: auto;
-      background-color: #0B0B0C;
+      background-color: #0A0A0A;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
-      padding: 24px 16px;
+      padding: 24px;
       position: relative;
     }
 
-    .pdf-canvas-container {
+    /* Physical Desk Page Canvas Container */
+    .page-canvas-wrapper {
+      position: relative;
       background-color: #121214;
-      border: 1px solid #242429;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05);
       display: flex;
       justify-content: center;
       align-items: center;
-      position: relative;
-      border-radius: 4px;
-      overflow: hidden;
+      transition: width 150ms ease, height 150ms ease;
     }
 
     #pdf-canvas {
       display: block;
-      max-width: 100%;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 160ms ease-in-out;
     }
 
+    #pdf-canvas.rendered {
+      opacity: 1;
+    }
+
+    /* Skeleton Loader */
+    .page-skeleton {
+      position: absolute;
+      inset: 0;
+      background-color: #151518;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 10;
+      opacity: 1;
+      transition: opacity 160ms ease;
+    }
+
+    .page-skeleton.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .skeleton-spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #EDEDEF;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .skeleton-text {
+      font-size: 12px;
+      color: #71717A;
+      letter-spacing: -0.01em;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Error Display */
+    .reader-error-card {
+      background-color: #121214;
+      border: 1px solid rgba(229, 72, 77, 0.3);
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 440px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Subtle Toast */
     .reader-toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background-color: #121214;
-      border: 1px solid #242429;
-      color: #F4F4F5;
-      padding: 10px 16px;
+      background-color: #18181B;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #EDEDEF;
+      padding: 8px 14px;
       border-radius: 6px;
       font-size: 13px;
       display: flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
       z-index: 100;
       opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 160ms ease, transform 160ms ease;
+      transform: translateY(6px);
+      transition: opacity 150ms ease, transform 150ms ease;
       pointer-events: none;
     }
 
@@ -166,108 +333,84 @@
   </style>
 </head>
 <body class="pdf-reader-body">
-  <!-- Top Navigation & Control Toolbar -->
-  <header class="reader-toolbar">
-    <!-- Left: Back to Book Details & Title -->
-    <div class="flex items-center gap-sm min-w-0">
-      <a href="/books/<%= book.id %>" class="reader-btn flex items-center gap-xs" title="Return to Book Details">
-        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-        <span class="hidden sm:inline">Details</span>
+  <!-- Ultra-Minimalist Top Header -->
+  <header class="reader-header">
+    <!-- Left: Return to Book Details & Book Title -->
+    <div class="header-left">
+      <a href="/books/<%= book.id %>" class="reader-back-btn" title="Back to Details">
+        <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span>
+        <span>Back</span>
       </a>
-      <span class="text-border">|</span>
-      <h1 class="text-[13px] font-medium text-text-primary truncate max-w-[200px] md:max-w-[320px] lg:max-w-[480px]" dir="auto" title="<%= book.title %>">
+      <div class="header-divider"></div>
+      <h1 class="book-title-heading" dir="auto" title="<%= book.title %>">
         <%= book.title %>
       </h1>
     </div>
 
-    <!-- Center: Page Navigation Controls -->
-    <div class="flex items-center gap-xs shrink-0">
-      <button type="button" id="reader-prev-btn" class="reader-btn reader-icon-btn" aria-label="Previous Page" title="Previous Page (Left Arrow)">
-        <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+    <!-- Center: Clean Page Navigation -->
+    <div class="header-center">
+      <button type="button" id="reader-prev-btn" class="nav-arrow-btn" aria-label="Previous Page" title="Previous Page (Left Arrow)">
+        <span class="material-symbols-outlined" style="font-size: 18px;">chevron_left</span>
       </button>
 
-      <div class="flex items-center gap-xs text-[13px] text-text-secondary tabular-nums">
+      <div class="page-indicator-group">
         <input
           type="number"
           id="reader-page-input"
           min="1"
           max="<%= book.pdfPageCount || 1 %>"
           value="<%= book.lastReadPage || 1 %>"
-          class="reader-input"
-          aria-label="Current Page Number"
+          class="page-num-input"
+          aria-label="Page number"
         />
         <span>/</span>
         <span id="reader-total-pages"><%= book.pdfPageCount || '—' %></span>
       </div>
 
-      <button type="button" id="reader-next-btn" class="reader-btn reader-icon-btn" aria-label="Next Page" title="Next Page (Right Arrow)">
-        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+      <button type="button" id="reader-next-btn" class="nav-arrow-btn" aria-label="Next Page" title="Next Page (Right Arrow)">
+        <span class="material-symbols-outlined" style="font-size: 18px;">chevron_right</span>
       </button>
     </div>
 
-    <!-- Right: Zoom, Fit, Fullscreen, Actions -->
-    <div class="flex items-center gap-xs shrink-0">
-      <!-- Zoom Controls -->
-      <button type="button" id="reader-zoom-out" class="reader-btn reader-icon-btn" aria-label="Zoom Out" title="Zoom Out (-)">
-        <span class="material-symbols-outlined text-[18px]">zoom_out</span>
-      </button>
-      <button type="button" id="reader-zoom-reset" class="reader-btn text-[12px] px-1.5 tabular-nums hidden sm:inline-flex" title="Reset Zoom">
-        <span id="reader-zoom-label">100%</span>
-      </button>
-      <button type="button" id="reader-zoom-in" class="reader-btn reader-icon-btn" aria-label="Zoom In" title="Zoom In (+)">
-        <span class="material-symbols-outlined text-[18px]">zoom_in</span>
-      </button>
-
-      <span class="text-border hidden md:inline">|</span>
-
-      <!-- Fit Controls -->
-      <button type="button" id="reader-fit-width" class="reader-btn reader-icon-btn hidden md:inline-flex" aria-label="Fit Width" title="Fit to Width">
-        <span class="material-symbols-outlined text-[18px]">fit_screen</span>
-      </button>
-      <button type="button" id="reader-fit-page" class="reader-btn reader-icon-btn hidden md:inline-flex" aria-label="Fit Page" title="Fit to Page">
-        <span class="material-symbols-outlined text-[18px]">aspect_ratio</span>
-      </button>
-
-      <!-- Fullscreen Toggle -->
-      <button type="button" id="reader-fullscreen-btn" class="reader-btn reader-icon-btn" aria-label="Toggle Fullscreen" title="Toggle Fullscreen (F)">
-        <span class="material-symbols-outlined text-[18px]" id="fullscreen-icon">fullscreen</span>
-      </button>
-
-      <!-- Download Original PDF -->
-      <a href="/books/<%= book.id %>/pdf" download="<%= book.pdfFilename || 'book.pdf' %>" class="reader-btn reader-icon-btn" title="Download Original PDF" aria-label="Download Original PDF">
-        <span class="material-symbols-outlined text-[18px]">download</span>
-      </a>
-
-      <!-- Confirm Reading Progress Action -->
+    <!-- Right: Mark as Read Action Button -->
+    <div class="header-right">
       <button
         type="button"
         id="reader-mark-read-btn"
-        class="reader-btn reader-btn-primary flex items-center gap-xs text-[12px] ml-1"
-        title="Mark this page as your confirmed reading progress in Kutubi"
+        class="mark-read-btn <%= book.status === 'Completed' && book.currentPage >= book.totalPages ? 'is-completed' : '' %>"
+        title="Mark this page as your confirmed reading progress"
       >
-        <span class="material-symbols-outlined text-[16px]">bookmark_added</span>
-        <span class="hidden sm:inline">Mark as Read</span>
+        <span class="material-symbols-outlined" style="font-size: 16px;">
+          <%= book.status === 'Completed' && book.currentPage >= book.totalPages ? 'check' : 'bookmark_added' %>
+        </span>
+        <span id="mark-read-text">
+          <%= book.status === 'Completed' && book.currentPage >= book.totalPages ? 'Completed' : 'Mark as Read' %>
+        </span>
       </button>
     </div>
   </header>
 
-  <!-- Scrollable Canvas Viewport -->
-  <main id="reader-viewport" class="reader-viewport" tabindex="0" aria-label="PDF Document Surface">
-    <div id="pdf-container" class="pdf-canvas-container">
+  <!-- Anti-Glare Reading Viewport -->
+  <main id="reader-viewport" class="reader-viewport" tabindex="0" aria-label="Document Reader">
+    <div id="page-wrapper" class="page-canvas-wrapper">
+      <div id="page-skeleton" class="page-skeleton">
+        <div class="skeleton-spinner"></div>
+        <div class="skeleton-text" id="skeleton-status">Rendering page...</div>
+      </div>
       <canvas id="pdf-canvas"></canvas>
     </div>
   </main>
 
   <!-- Notification Toast -->
   <div id="reader-toast" class="reader-toast" role="status" aria-live="polite">
-    <span class="material-symbols-outlined text-[16px] text-text-primary">check_circle</span>
+    <span class="material-symbols-outlined text-[16px] text-text-primary" style="font-size: 16px; color: #34D399;">check_circle</span>
     <span id="reader-toast-msg">Progress updated</span>
   </div>
 
-  <!-- PDF.js Client-Side Initialization -->
+  <!-- PDF.js Client Engine Initialization -->
   <script type="module">
-    import * as pdfjsLib from '/vendor/pdfjs/pdf.min.mjs';
-    pdfjsLib.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/pdf.worker.min.mjs';
+    import * as pdfjsLib from '/vendor/pdfjs/build/pdf.min.mjs';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/build/pdf.worker.min.mjs';
 
     const bookId = <%= book.id %>;
     const pdfUrl = `/books/${bookId}/pdf`;
@@ -277,90 +420,123 @@
     let pageNum = initialPage;
     let pageRendering = false;
     let pageNumPending = null;
-    let scale = 1.0;
-    let fitMode = null; // null | 'width' | 'page'
+    let currentRenderTask = null;
 
+    const viewportContainer = document.getElementById('reader-viewport');
+    const pageWrapper = document.getElementById('page-wrapper');
+    const pageSkeleton = document.getElementById('page-skeleton');
+    const skeletonStatus = document.getElementById('skeleton-status');
     const canvas = document.getElementById('pdf-canvas');
     const ctx = canvas.getContext('2d');
-    const viewportContainer = document.getElementById('reader-viewport');
-    const pageInput = document.getElementById('reader-page-input');
-    const totalPagesSpan = document.getElementById('reader-total-pages');
-    const zoomLabel = document.getElementById('reader-zoom-label');
+
     const prevBtn = document.getElementById('reader-prev-btn');
     const nextBtn = document.getElementById('reader-next-btn');
+    const pageInput = document.getElementById('reader-page-input');
+    const totalPagesSpan = document.getElementById('reader-total-pages');
     const markReadBtn = document.getElementById('reader-mark-read-btn');
+    const markReadText = document.getElementById('mark-read-text');
     const toast = document.getElementById('reader-toast');
     const toastMsg = document.getElementById('reader-toast-msg');
 
-    function showReaderToast(msg) {
+    function showToast(msg) {
       toastMsg.textContent = msg;
       toast.classList.add('visible');
-      setTimeout(() => toast.classList.remove('visible'), 2400);
+      setTimeout(() => toast.classList.remove('visible'), 2200);
     }
 
     // Debounced position saving
-    let savePositionTimeout = null;
+    let savePositionTimer = null;
     function saveLastReadPosition(page) {
-      clearTimeout(savePositionTimeout);
-      savePositionTimeout = setTimeout(() => {
+      clearTimeout(savePositionTimer);
+      savePositionTimer = setTimeout(() => {
         fetch(`/books/${bookId}/read-position`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ page })
-        }).catch(err => console.error('Error saving read position:', err));
-      }, 500);
+        }).catch(err => console.error('Position save error:', err));
+      }, 400);
     }
 
     async function renderPage(num) {
+      if (pageRendering && currentRenderTask) {
+        currentRenderTask.cancel();
+      }
+
       pageRendering = true;
-      const page = await pdfDoc.getPage(num);
+      skeletonStatus.textContent = `Rendering page ${num}...`;
+      pageSkeleton.classList.remove('hidden');
+      canvas.classList.remove('rendered');
 
-      // Determine viewport scale based on fit mode
-      let currentScale = scale;
-      const unscaledViewport = page.getViewport({ scale: 1.0 });
+      try {
+        const page = await pdfDoc.getPage(num);
 
-      if (fitMode === 'width') {
-        const containerWidth = viewportContainer.clientWidth - 48;
-        currentScale = containerWidth / unscaledViewport.width;
-      } else if (fitMode === 'page') {
-        const containerHeight = viewportContainer.clientHeight - 48;
-        currentScale = containerHeight / unscaledViewport.height;
+        // Auto-fit page to viewport reading area
+        const paddingX = 48;
+        const paddingY = 48;
+        const availWidth = Math.max(viewportContainer.clientWidth - paddingX, 320);
+        const availHeight = Math.max(viewportContainer.clientHeight - paddingY, 400);
+
+        const unscaledViewport = page.getViewport({ scale: 1.0 });
+        const scaleX = availWidth / unscaledViewport.width;
+        const scaleY = availHeight / unscaledViewport.height;
+
+        // Fit proportionally within reading area with comfortable margin
+        let autoScale = Math.min(scaleX, scaleY);
+        // Don't blow up tiny pages past 1.8x, don't shrink past 0.4x
+        autoScale = Math.min(Math.max(autoScale, 0.4), 1.8);
+
+        const dpr = window.devicePixelRatio || 1;
+        const viewport = page.getViewport({ scale: autoScale });
+
+        const displayWidth = Math.floor(viewport.width);
+        const displayHeight = Math.floor(viewport.height);
+
+        pageWrapper.style.width = displayWidth + 'px';
+        pageWrapper.style.height = displayHeight + 'px';
+
+        canvas.width = Math.floor(displayWidth * dpr);
+        canvas.height = Math.floor(displayHeight * dpr);
+        canvas.style.width = displayWidth + 'px';
+        canvas.style.height = displayHeight + 'px';
+
+        const renderContext = {
+          canvasContext: ctx,
+          transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null,
+          viewport: viewport
+        };
+
+        currentRenderTask = page.render(renderContext);
+        await currentRenderTask.promise;
+
+        currentRenderTask = null;
+        pageRendering = false;
+
+        // Display rendered canvas cleanly
+        pageSkeleton.classList.add('hidden');
+        canvas.classList.add('rendered');
+
+        // Update navigation controls
+        pageInput.value = num;
+        prevBtn.disabled = (num <= 1);
+        nextBtn.disabled = (num >= pdfDoc.numPages);
+
+        // Auto-save last read position
+        saveLastReadPosition(num);
+
+        // Check if there's a pending page request
+        if (pageNumPending !== null) {
+          const next = pageNumPending;
+          pageNumPending = null;
+          renderPage(next);
+        }
+      } catch (err) {
+        if (err.name === 'RenderingCancelledException') {
+          return;
+        }
+        console.error('Render error:', err);
+        pageRendering = false;
+        skeletonStatus.textContent = 'Rendering failed';
       }
-
-      // Respect display device pixel ratio for crisp text
-      const dpr = window.devicePixelRatio || 1;
-      const viewport = page.getViewport({ scale: currentScale });
-
-      canvas.width = Math.floor(viewport.width * dpr);
-      canvas.height = Math.floor(viewport.height * dpr);
-      canvas.style.width = Math.floor(viewport.width) + 'px';
-      canvas.style.height = Math.floor(viewport.height) + 'px';
-
-      const renderContext = {
-        canvasContext: ctx,
-        transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null,
-        viewport: viewport
-      };
-
-      const renderTask = page.render(renderContext);
-      await renderTask.promise;
-
-      pageRendering = false;
-      if (pageNumPending !== null) {
-        renderPage(pageNumPending);
-        pageNumPending = null;
-      }
-
-      // Update UI controls
-      pageInput.value = num;
-      pageInput.max = pdfDoc.numPages;
-      totalPagesSpan.textContent = pdfDoc.numPages;
-      zoomLabel.textContent = Math.round(currentScale * 100) + '%';
-      prevBtn.disabled = (num <= 1);
-      nextBtn.disabled = (num >= pdfDoc.numPages);
-
-      // Save position to SQLite
-      saveLastReadPosition(num);
     }
 
     function queueRenderPage(num) {
@@ -383,66 +559,15 @@
       queueRenderPage(pageNum);
     }
 
-    // Attach button events
     prevBtn.addEventListener('click', goToPrevPage);
     nextBtn.addEventListener('click', goToNextPage);
 
     pageInput.addEventListener('change', () => {
       let val = parseInt(pageInput.value, 10);
-      if (isNaN(val)) val = 1;
-      if (val < 1) val = 1;
+      if (isNaN(val) || val < 1) val = 1;
       if (pdfDoc && val > pdfDoc.numPages) val = pdfDoc.numPages;
       pageNum = val;
       queueRenderPage(pageNum);
-    });
-
-    document.getElementById('reader-zoom-in').addEventListener('click', () => {
-      fitMode = null;
-      scale = Math.min(scale * 1.25, 4.0);
-      queueRenderPage(pageNum);
-    });
-
-    document.getElementById('reader-zoom-out').addEventListener('click', () => {
-      fitMode = null;
-      scale = Math.max(scale * 0.8, 0.4);
-      queueRenderPage(pageNum);
-    });
-
-    document.getElementById('reader-zoom-reset').addEventListener('click', () => {
-      fitMode = null;
-      scale = 1.0;
-      queueRenderPage(pageNum);
-    });
-
-    document.getElementById('reader-fit-width').addEventListener('click', () => {
-      fitMode = 'width';
-      queueRenderPage(pageNum);
-    });
-
-    document.getElementById('reader-fit-page').addEventListener('click', () => {
-      fitMode = 'page';
-      queueRenderPage(pageNum);
-    });
-
-    // Fullscreen support
-    const fullscreenBtn = document.getElementById('reader-fullscreen-btn');
-    const fullscreenIcon = document.getElementById('fullscreen-icon');
-    fullscreenBtn.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-        fullscreenIcon.textContent = 'fullscreen_exit';
-      } else {
-        document.exitFullscreen().catch(() => {});
-        fullscreenIcon.textContent = 'fullscreen';
-      }
-    });
-
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
-        fullscreenIcon.textContent = 'fullscreen';
-      } else {
-        fullscreenIcon.textContent = 'fullscreen_exit';
-      }
     });
 
     // Keyboard navigation
@@ -455,27 +580,27 @@
       } else if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
         e.preventDefault();
         goToNextPage();
-      } else if (e.key === '+' || e.key === '=') {
-        scale = Math.min(scale * 1.25, 4.0);
-        fitMode = null;
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        pageNum = 1;
         queueRenderPage(pageNum);
-      } else if (e.key === '-') {
-        scale = Math.max(scale * 0.8, 0.4);
-        fitMode = null;
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        pageNum = pdfDoc.numPages;
         queueRenderPage(pageNum);
-      } else if (e.key === 'f' || e.key === 'F') {
-        fullscreenBtn.click();
       }
     });
 
     // Window resize handler
+    let resizeTimer = null;
     window.addEventListener('resize', () => {
-      if (fitMode !== null) {
-        queueRenderPage(pageNum);
-      }
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (pdfDoc) queueRenderPage(pageNum);
+      }, 150);
     });
 
-    // Mark current page as confirmed progress
+    // Mark current page as read
     markReadBtn.addEventListener('click', async () => {
       try {
         const res = await fetch(`/books/${bookId}/mark-read-page`, {
@@ -488,20 +613,35 @@
         });
         const data = await res.json();
         if (data.success) {
-          showReaderToast(`Marked page ${pageNum} as confirmed progress (${data.book.status})`);
+          const isComplete = data.book.status === 'Completed';
+          if (isComplete) {
+            markReadBtn.classList.add('is-completed');
+            markReadText.textContent = 'Completed';
+            markReadBtn.querySelector('.material-symbols-outlined').textContent = 'check';
+          }
+          showToast(`Marked page ${pageNum} as confirmed progress`);
         } else {
-          showReaderToast(data.error || 'Could not update progress');
+          showToast(data.error || 'Could not update progress');
         }
       } catch (err) {
-        showReaderToast('Error updating progress');
+        showToast('Error updating progress');
       }
     });
 
-    // Initial PDF Document Loading
+    // Load PDF Document with full CMap and WebAssembly decoders
     try {
-      const loadingTask = pdfjsLib.getDocument({ url: pdfUrl });
+      const loadingTask = pdfjsLib.getDocument({
+        url: pdfUrl,
+        cMapUrl: '/vendor/pdfjs/cmaps/',
+        cMapPacked: true,
+        standardFontDataUrl: '/vendor/pdfjs/standard_fonts/',
+        wasmUrl: '/vendor/pdfjs/wasm/',
+        iccUrl: '/vendor/pdfjs/iccs/'
+      });
+
       pdfDoc = await loadingTask.promise;
       totalPagesSpan.textContent = pdfDoc.numPages;
+      pageInput.max = pdfDoc.numPages;
 
       if (pageNum > pdfDoc.numPages) pageNum = pdfDoc.numPages;
       if (pageNum < 1) pageNum = 1;
@@ -510,11 +650,11 @@
     } catch (err) {
       console.error('Failed to load PDF document:', err);
       viewportContainer.innerHTML = `
-        <div class="card card-padded flex flex-col items-center gap-md text-center max-w-md my-auto">
-          <span class="material-symbols-outlined text-[32px] text-danger">error_outline</span>
-          <h2 class="text-title-lg font-semibold text-text-primary">Unable to display PDF</h2>
-          <p class="text-body-md text-text-secondary">${err.message || 'The PDF file could not be rendered.'}</p>
-          <a href="/books/${bookId}" class="btn btn-secondary">Return to Book Details</a>
+        <div class="reader-error-card">
+          <span class="material-symbols-outlined" style="font-size: 32px; color: #E5484D;">error_outline</span>
+          <h2 style="font-size: 15px; font-weight: 600; color: #EDEDEF;">Unable to display document</h2>
+          <p style="font-size: 13px; color: #94949E; line-height: 1.5;">${err.message || 'The PDF file could not be decoded.'}</p>
+          <a href="/books/${bookId}" class="reader-back-btn" style="margin-top: 8px; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.08);">Return to Book Details</a>
         </div>
       `;
     }

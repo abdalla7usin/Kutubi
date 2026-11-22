@@ -1,49 +1,56 @@
 <div class="main-container narrow">
-  <!-- Header -->
-  <header class="flex flex-col gap-xs">
-    <h1 class="font-headline text-[22px] font-semibold leading-snug text-text-primary">Settings</h1>
-    <p class="font-body text-body-md text-text-secondary">Manage application preferences and library categories.</p>
+  <!-- Header with Editorial Precision -->
+  <header class="flex flex-col gap-1">
+    <p class="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-muted">Preferences</p>
+    <h1 class="text-[26px] font-semibold text-text-primary tracking-tight leading-none">Settings</h1>
+    <p class="text-[13px] text-text-secondary mt-1">Configure your reading environment and library categories.</p>
   </header>
 
   <!-- Section 1: Categories Management -->
-  <section class="card card-padded flex flex-col gap-lg">
-    <div class="flex flex-col gap-xs">
-      <h2 class="font-title text-title-lg text-text-primary">Categories</h2>
+  <section class="card card-padded flex flex-col gap-5">
+    <div class="flex items-center justify-between pb-1">
+      <div>
+        <h2 class="text-[15px] font-semibold text-text-primary tracking-tight">Categories</h2>
+        <p class="text-[12px] text-text-secondary mt-0.5">Organize and group your book collection.</p>
+      </div>
+      <span class="text-[11px] font-medium text-text-muted tabular-nums bg-[rgba(255,255,255,0.04)] px-2 py-0.5 rounded border border-border-subtle">
+        <%= categories.length %> <%= categories.length === 1 ? 'category' : 'categories' %>
+      </span>
     </div>
 
     <!-- Inline Add Category Bar -->
-    <form action="/categories" method="POST" id="add-category-form" class="flex items-center gap-sm">
+    <form action="/categories" method="POST" id="add-category-form" class="flex items-center gap-2">
       <label for="new-category-input" class="sr-only">New category name</label>
       <input
         id="new-category-input"
         name="name"
         type="text"
         placeholder="New category name..."
-        class="form-input flex-1"
+        class="form-input flex-1 h-9"
         autocomplete="off"
         required
       />
-      <button type="submit" class="btn btn-primary shrink-0">
-        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">add</span>
+      <button type="submit" class="btn btn-primary h-9 px-4 shrink-0 text-[12px]">
+        <span class="material-symbols-outlined text-[15px]" aria-hidden="true">add</span>
         <span>Add</span>
       </button>
     </form>
 
     <!-- Category Rows -->
-    <div class="border border-border rounded-control divide-y divide-border overflow-hidden bg-background">
+    <div class="border border-[rgba(255,255,255,0.06)] rounded-control divide-y divide-[rgba(255,255,255,0.04)] overflow-hidden bg-[rgba(255,255,255,0.015)]">
       <% categories.forEach(cat => { %>
-        <div class="flex items-center justify-between gap-md px-lg py-md hover:bg-surface-elevated transition-colors" data-category-id="<%= cat.id %>">
-          <div class="flex items-center gap-sm">
-            <span class="font-title text-title-md <%= cat.isSystem ? 'text-text-secondary' : 'text-text-primary' %>">
+        <div class="flex items-center justify-between gap-md px-4 py-3 hover:bg-[rgba(255,255,255,0.025)] transition-colors" data-category-id="<%= cat.id %>">
+          <div class="flex items-center gap-2.5">
+            <span class="text-[13px] font-medium <%= cat.isSystem ? 'text-text-secondary' : 'text-text-primary' %>">
               <%= cat.name %>
             </span>
-            <span class="font-body text-body-md text-text-secondary tabular-nums">
-              (<%= cat.bookCount %><%= cat.isSystem ? ' · System default' : '' %>)
+            <span class="text-[11px] text-text-muted tabular-nums">
+              (<%= cat.bookCount %><%= cat.isSystem ? ' · Default' : '' %>)
             </span>
           </div>
 
           <% if (!cat.isSystem) { %>
-            <div class="flex items-center gap-xs">
+            <div class="flex items-center gap-1">
               <button
                 type="button"
                 data-action="rename-category"
@@ -51,8 +58,9 @@
                 data-category-name="<%= cat.name %>"
                 aria-label="Rename <%= cat.name %>"
                 class="btn-icon"
+                title="Rename Category"
               >
-                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">edit</span>
+                <span class="material-symbols-outlined text-[15px]" aria-hidden="true">edit</span>
               </button>
               <button
                 type="button"
@@ -60,11 +68,14 @@
                 data-category-id="<%= cat.id %>"
                 data-category-name="<%= cat.name %>"
                 aria-label="Delete <%= cat.name %>"
-                class="btn-icon text-text-secondary hover:text-danger"
+                class="btn-icon text-text-muted hover:text-danger"
+                title="Delete Category"
               >
-                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">delete</span>
+                <span class="material-symbols-outlined text-[15px]" aria-hidden="true">delete</span>
               </button>
             </div>
+          <% } else { %>
+            <span class="text-[11px] text-text-muted px-2 py-0.5 rounded bg-[rgba(255,255,255,0.03)] border border-border-subtle">System</span>
           <% } %>
         </div>
       <% }); %>
@@ -72,42 +83,45 @@
   </section>
 
   <!-- Section 2: Reading & Display Preferences -->
-  <section class="card card-padded flex flex-col gap-lg">
-    <h2 class="font-title text-title-lg text-text-primary">Reading &amp; Display Preferences</h2>
+  <section class="card card-padded flex flex-col gap-5">
+    <div>
+      <h2 class="text-[15px] font-semibold text-text-primary tracking-tight">Reading &amp; Display</h2>
+      <p class="text-[12px] text-text-secondary mt-0.5">Customize your layout defaults and catalog backups.</p>
+    </div>
 
-    <form id="settings-pref-form" action="/settings" method="POST" class="flex flex-col divide-y divide-border">
+    <form id="settings-pref-form" action="/settings" method="POST" class="flex flex-col divide-y divide-[rgba(255,255,255,0.04)]">
       <!-- Default Library View -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-md py-md first:pt-0">
-        <div class="flex flex-col gap-xs">
-          <span class="font-title text-title-md text-text-primary">Default Library View</span>
-          <span class="font-body text-body-md text-text-secondary">Choose how books are laid out when opening My Library.</span>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3.5 first:pt-0">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-[13px] font-medium text-text-primary">Default Library View</span>
+          <span class="text-[12px] text-text-secondary">Choose how books are displayed when opening My Library.</span>
         </div>
         <input type="hidden" name="defaultLibraryView" id="pref-default-view-input" value="<%= settings.defaultLibraryView %>" />
-        <div role="group" aria-label="Default Library View" class="inline-flex items-center p-xs rounded-control bg-background border border-border shrink-0 self-start sm:self-auto">
+        <div role="group" aria-label="Default Library View" class="inline-flex items-center p-0.5 rounded-control bg-[rgba(255,255,255,0.03)] border border-border-subtle shrink-0 self-start sm:self-auto">
           <button
             type="button"
             id="pref-view-grid"
             aria-pressed="<%= settings.defaultLibraryView === 'grid' ? 'true' : 'false' %>"
-            class="px-md py-xs rounded-cover <%= settings.defaultLibraryView === 'grid' ? 'bg-surface-elevated text-text-primary' : 'text-text-secondary hover:text-text-primary' %> font-label text-label-md transition-colors"
+            class="px-3 py-1 rounded-[5px] <%= settings.defaultLibraryView === 'grid' ? 'bg-surface-elevated text-text-primary shadow-sm' : 'text-text-muted hover:text-text-secondary' %> text-[12px] font-medium transition-colors"
           >
-            <span>Grid View</span>
+            <span>Grid</span>
           </button>
           <button
             type="button"
             id="pref-view-list"
             aria-pressed="<%= settings.defaultLibraryView === 'list' ? 'true' : 'false' %>"
-            class="px-md py-xs rounded-cover <%= settings.defaultLibraryView === 'list' ? 'bg-surface-elevated text-text-primary' : 'text-text-secondary hover:text-text-primary' %> font-label text-label-md transition-colors"
+            class="px-3 py-1 rounded-[5px] <%= settings.defaultLibraryView === 'list' ? 'bg-surface-elevated text-text-primary shadow-sm' : 'text-text-muted hover:text-text-secondary' %> text-[12px] font-medium transition-colors"
           >
-            <span>List View</span>
+            <span>List</span>
           </button>
         </div>
       </div>
 
       <!-- Default Sort Order -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-md py-md">
-        <div class="flex flex-col gap-xs">
-          <label for="settings-default-sort" class="font-title text-title-md text-text-primary">Default Sort Order</label>
-          <span class="font-body text-body-md text-text-secondary">Initial ordering applied to your book collection.</span>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3.5">
+        <div class="flex flex-col gap-0.5">
+          <label for="settings-default-sort" class="text-[13px] font-medium text-text-primary">Default Sort Order</label>
+          <span class="text-[12px] text-text-secondary">Initial ordering applied to your book collection.</span>
         </div>
         <select id="settings-default-sort" name="defaultSortOrder" class="form-select w-auto shrink-0 self-start sm:self-auto">
           <option value="recently-added" <%= settings.defaultSortOrder === 'recently-added' ? 'selected' : '' %>>Recently Added</option>
@@ -118,17 +132,19 @@
       </div>
 
       <!-- Data Management -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-md pt-md">
-        <div class="flex flex-col gap-xs">
-          <span class="font-title text-title-md text-text-primary">Data Management</span>
-          <span class="font-body text-body-md text-text-secondary">Back up your catalog or restore sample titles.</span>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3.5">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-[13px] font-medium text-text-primary">Data Management</span>
+          <span class="text-[12px] text-text-secondary">Export catalog backup or restore sample demonstration titles.</span>
         </div>
-        <div class="flex flex-wrap items-center gap-sm shrink-0">
-          <a href="/settings/export" id="export-library-btn" class="btn btn-secondary">
-            <span>Export Library (JSON)</span>
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <a href="/settings/export" id="export-library-btn" class="btn btn-secondary text-[12px] h-8 px-3">
+            <span class="material-symbols-outlined text-[15px]">download</span>
+            <span>Export JSON</span>
           </a>
-          <button type="button" id="reset-sample-btn" class="btn btn-secondary">
-            <span>Reset Sample Data</span>
+          <button type="button" id="reset-sample-btn" class="btn btn-secondary text-[12px] h-8 px-3">
+            <span class="material-symbols-outlined text-[15px]">restart_alt</span>
+            <span>Reset Baseline</span>
           </button>
         </div>
       </div>
@@ -153,6 +169,7 @@
         prefForm.submit();
       });
     }
+
     if (btnList && viewInput) {
       btnList.addEventListener('click', () => {
         viewInput.value = 'list';

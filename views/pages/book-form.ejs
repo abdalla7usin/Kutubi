@@ -10,19 +10,22 @@
 
 <div class="main-container form-container">
   <!-- Breadcrumb & Header -->
-  <header class="flex flex-col gap-sm">
-    <nav aria-label="Breadcrumb" class="flex items-center gap-sm">
-      <a href="/library" class="font-label text-label-md text-text-secondary hover:text-text-primary transition-colors">
+  <header class="flex flex-col gap-2">
+    <nav aria-label="Breadcrumb" class="flex items-center gap-2">
+      <a href="/library" class="text-[12px] font-medium text-text-muted hover:text-text-primary transition-colors">
         My Library
       </a>
-      <span class="font-label text-label-md text-text-secondary">/</span>
-      <span class="font-label text-label-md text-text-primary">
+      <span class="text-[12px] text-text-muted">/</span>
+      <span class="text-[12px] font-medium text-text-primary">
         <%= isEdit ? 'Edit Book' : 'Add Book' %>
       </span>
     </nav>
-    <h1 class="font-headline text-headline-lg text-text-primary">
-      <%= isEdit ? 'Edit Book' : 'Add a New Book' %>
-    </h1>
+    <div>
+      <p class="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-muted mb-1"><%= isEdit ? 'Update Details' : 'New Title' %></p>
+      <h1 class="text-[26px] font-semibold text-text-primary tracking-tight leading-none">
+        <%= isEdit ? 'Edit Book' : 'Add a New Book' %>
+      </h1>
+    </div>
   </header>
 
   <!-- Form Card -->
@@ -32,12 +35,12 @@
     method="POST"
     enctype="multipart/form-data"
     data-mode="<%= isEdit ? 'edit' : 'add' %>"
-    class="card card-padded flex flex-col gap-lg"
+    class="card card-padded flex flex-col gap-6"
     novalidate
   >
     <!-- Title Input -->
     <label class="form-group">
-      <span class="form-label">Title *</span>
+      <span class="form-label">Title <span class="text-danger">*</span></span>
       <input
         id="book-title"
         name="title"
@@ -57,7 +60,7 @@
 
     <!-- Author Input -->
     <label class="form-group">
-      <span class="form-label">Author *</span>
+      <span class="form-label">Author <span class="text-danger">*</span></span>
       <input
         id="book-author"
         name="author"
@@ -76,9 +79,9 @@
     </label>
 
     <!-- Category & Reading Status -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <label class="form-group">
-        <span class="form-label">Category *</span>
+        <span class="form-label">Category <span class="text-danger">*</span></span>
         <select id="book-category" name="category" class="form-select">
           <% categories.forEach(cat => { %>
             <% const isSelected = (initialCategory === cat.name || String(initialCategory) === String(cat.id)); %>
@@ -90,7 +93,7 @@
       </label>
 
       <label class="form-group">
-        <span class="form-label">Reading Status *</span>
+        <span class="form-label">Reading Status <span class="text-danger">*</span></span>
         <select id="book-status" name="status" class="form-select">
           <option value="To Read" <%= initialStatus === 'To Read' ? 'selected' : '' %>>To Read</option>
           <option value="Reading" <%= initialStatus === 'Reading' ? 'selected' : '' %>>Reading</option>
@@ -100,9 +103,9 @@
     </div>
 
     <!-- Total Pages & Current Page -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <label class="form-group">
-        <span class="form-label">Total Pages *</span>
+        <span class="form-label">Total Pages <span class="text-danger">*</span></span>
         <input
           id="book-total-pages"
           name="totalPages"
@@ -139,8 +142,51 @@
       </label>
     </div>
 
-    <!-- Cover Image URL + 48x72 Live Preview Box -->
-    <div class="flex items-end gap-lg">
+    <!-- In-App PDF Document Upload -->
+    <div class="form-group flex flex-col gap-2 p-4 rounded-card border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.02)]">
+      <div class="flex items-center justify-between">
+        <span class="form-label mb-0">PDF Document <span class="optional">(Optional &middot; Max 50 MB)</span></span>
+        <% if (isEdit && book && book.pdfPath) { %>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-surface-elevated text-text-primary border border-border-subtle">
+            <span class="material-symbols-outlined text-[13px]">picture_as_pdf</span> Attached
+          </span>
+        <% } %>
+      </div>
+
+      <% if (isEdit && book && book.pdfPath) { %>
+        <!-- Existing PDF Information Bar -->
+        <div class="flex items-center justify-between p-2.5 rounded-control bg-background border border-border-subtle text-[12px]">
+          <div class="flex items-center gap-2 overflow-hidden">
+            <span class="material-symbols-outlined text-[16px] text-text-secondary">description</span>
+            <span class="font-medium text-text-primary truncate" title="<%= book.pdfFilename %>"><%= book.pdfFilename || 'Attached PDF' %></span>
+            <span class="text-text-muted text-[11px]">(<%= book.pdfPageCount ? `${book.pdfPageCount} pages &middot; ` : '' %><%= book.pdfSize ? `${(book.pdfSize / (1024 * 1024)).toFixed(1)} MB` : '' %>)</span>
+          </div>
+          <label class="flex items-center gap-1.5 text-[11px] text-danger cursor-pointer hover:underline">
+            <input type="checkbox" name="removePdf" value="true" class="rounded border-border-subtle bg-surface text-danger focus:ring-0">
+            <span>Remove PDF</span>
+          </label>
+        </div>
+      <% } %>
+
+      <div class="flex items-center gap-3">
+        <input
+          id="book-pdf-file"
+          name="pdfFile"
+          type="file"
+          accept=".pdf,application/pdf"
+          class="form-input flex-1 file:mr-3 file:py-1 file:px-3 file:rounded-control file:border-0 file:text-[12px] file:font-medium file:bg-surface-elevated file:text-text-primary file:cursor-pointer hover:file:bg-[rgba(255,255,255,0.1)] transition-colors text-text-secondary text-[12px]"
+        />
+      </div>
+      <% if (errors && errors.pdfFile) { %>
+        <span id="pdf-file-error" class="form-error-msg"><%= errors.pdfFile %></span>
+      <% } %>
+      <span class="text-[11px] text-text-muted">
+        When uploaded, page 1 is extracted as the library cover and total pages are synchronized automatically.
+      </span>
+    </div>
+
+    <!-- Cover Image URL Override -->
+    <div class="flex items-end gap-4">
       <label class="form-group flex-1">
         <span class="form-label">
           Cover Image URL <span class="optional">(Optional override)</span>
@@ -157,20 +203,18 @@
           <span id="cover-url-error" class="form-error-msg"><%= errors.coverUrl %></span>
         <% } %>
       </label>
-      <div
-        id="cover-preview-box"
-        class="w-[48px] h-[72px] rounded-cover border border-border bg-background flex items-center justify-center shrink-0 overflow-hidden"
-        aria-label="Cover preview"
-      >
+      <div id="cover-preview-container" class="w-12 h-[72px] rounded-cover overflow-hidden border border-border-subtle bg-background shrink-0 flex items-center justify-center">
         <% if (initialCoverUrl) { %>
           <img
+            id="cover-preview-img"
             src="<%= initialCoverUrl %>"
-            alt="Preview"
+            alt="Cover Preview"
             class="w-full h-full object-cover"
             onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'material-symbols-outlined text-[18px] text-text-muted\'>menu_book</span>';"
           />
         <% } else if (isEdit && book && book.coverImage) { %>
           <img
+            id="cover-preview-img"
             src="/storage/covers/<%= book.coverImage %>"
             alt="PDF Cover Preview"
             class="w-full h-full object-cover"
@@ -182,64 +226,20 @@
       </div>
     </div>
 
-    <!-- In-App PDF Document Upload -->
-    <div class="form-group flex flex-col gap-sm p-md rounded-card border border-border bg-surface-primary">
-      <div class="flex items-center justify-between">
-        <span class="form-label mb-0">PDF Document <span class="optional">(Optional &middot; Max 50 MB)</span></span>
-        <% if (isEdit && book && book.pdfPath) { %>
-          <span class="inline-flex items-center gap-xs px-2 py-0.5 rounded text-[11px] font-medium bg-surface-elevated text-text-primary border border-border">
-            <span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> Attached
-          </span>
-        <% } %>
-      </div>
-
-      <% if (isEdit && book && book.pdfPath) { %>
-        <!-- Existing PDF Information Bar -->
-        <div class="flex items-center justify-between p-sm rounded-control bg-background border border-border text-body-sm">
-          <div class="flex items-center gap-sm overflow-hidden">
-            <span class="material-symbols-outlined text-[18px] text-text-secondary">description</span>
-            <span class="font-medium text-text-primary truncate" title="<%= book.pdfFilename %>"><%= book.pdfFilename || 'Attached PDF' %></span>
-            <span class="text-text-muted text-caption">(<%= book.pdfPageCount ? `${book.pdfPageCount} pages &middot; ` : '' %><%= book.pdfSize ? `${(book.pdfSize / (1024 * 1024)).toFixed(1)} MB` : '' %>)</span>
-          </div>
-          <label class="flex items-center gap-xs text-caption text-danger cursor-pointer hover:underline">
-            <input type="checkbox" name="removePdf" value="true" class="rounded border-border bg-surface text-danger focus:ring-0">
-            <span>Remove PDF</span>
-          </label>
-        </div>
-        <p class="text-caption text-text-muted">Upload a replacement PDF below, or check 'Remove PDF' to detach the document.</p>
-      <% } %>
-
-      <div class="flex items-center gap-md">
-        <input
-          id="book-pdf-file"
-          name="pdfFile"
-          type="file"
-          accept=".pdf,application/pdf"
-          class="form-input flex-1 file:mr-4 file:py-1.5 file:px-3 file:rounded-control file:border-0 file:text-[12px] file:font-medium file:bg-surface-elevated file:text-text-primary file:cursor-pointer hover:file:bg-border transition-colors text-text-secondary text-body-sm"
-        />
-      </div>
-      <% if (errors && errors.pdfFile) { %>
-        <span id="pdf-file-error" class="form-error-msg"><%= errors.pdfFile %></span>
-      <% } %>
-      <span class="text-caption text-text-muted">
-        When uploaded, page 1 is automatically extracted as the library cover and total pages are synchronized.
-      </span>
-    </div>
-
     <!-- Interactive 1-5 Star Rating -->
     <div class="form-group">
       <span class="form-label">
         Rating <span class="optional">(Optional)</span>
       </span>
       <input type="hidden" name="rating" id="book-rating" value="<%= initialRating || '' %>" />
-      <div id="star-selector" class="flex items-center gap-xs" role="radiogroup" aria-label="Book rating" data-rating="<%= initialRating || '' %>">
+      <div id="star-selector" class="flex items-center gap-1" role="radiogroup" aria-label="Book rating" data-rating="<%= initialRating || '' %>">
         <% [1, 2, 3, 4, 5].forEach(num => { %>
           <% const isFilled = initialRating && num <= Number(initialRating); %>
           <button
             type="button"
             data-star-rating="<%= num %>"
             aria-label="<%= num %> star<%= num > 1 ? 's' : '' %>"
-            class="p-xs rounded-control star-btn <%= isFilled ? 'text-text-primary' : 'text-text-secondary' %> hover:text-text-primary transition-colors"
+            class="p-1 rounded-control star-btn <%= isFilled ? 'text-text-primary' : 'text-text-muted' %> hover:text-text-primary transition-colors"
           >
             <span class="material-symbols-outlined text-[20px] <%= isFilled ? 'star-filled' : '' %>">star</span>
           </button>
@@ -256,31 +256,31 @@
         id="book-notes"
         name="notes"
         rows="4"
-        placeholder="Write a short summary or your reading notes..."
+        placeholder="Write a short summary or reading takeaways..."
         class="form-textarea"
         dir="auto"
       ><%= initialNotes %></textarea>
     </label>
 
     <!-- Footer Actions -->
-    <footer class="flex items-center <%= isEdit ? 'justify-between' : 'justify-end' %> gap-md pt-md border-t border-border">
+    <footer class="flex items-center <%= isEdit ? 'justify-between' : 'justify-end' %> gap-3 pt-3 border-t border-[rgba(255,255,255,0.06)]">
       <% if (isEdit) { %>
         <button
           type="button"
           id="form-delete-book-btn"
           data-delete-book-id="<%= book.id %>"
           data-delete-book-title="<%= book.title %>"
-          class="btn btn-destructive"
+          class="btn btn-destructive text-[12px]"
         >
           <span>Delete Book</span>
         </button>
       <% } %>
 
-      <div class="flex items-center gap-sm">
-        <a href="<%= isEdit ? `/books/${book.id}` : '/library' %>" class="btn btn-secondary">
+      <div class="flex items-center gap-2">
+        <a href="<%= isEdit ? `/books/${book.id}` : '/library' %>" class="btn btn-secondary text-[12px]">
           <span>Cancel</span>
         </a>
-        <button type="submit" class="btn btn-primary" id="save-book-btn">
+        <button type="submit" class="btn btn-primary text-[12px]" id="save-book-btn">
           <span><%= isEdit ? 'Save Changes' : 'Save Book' %></span>
         </button>
       </div>

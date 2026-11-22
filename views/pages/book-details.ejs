@@ -1,22 +1,23 @@
 <% const dir = isArabic(book.title) ? 'rtl' : 'ltr'; %>
-<% const statusClass = book.status === 'Reading' ? 'badge-status-reading text-text-primary' : 'badge-status-completed text-text-secondary'; %>
+<% const statusClass = book.status === 'Reading' ? 'badge-status-reading' : (book.status === 'Completed' ? 'badge-status-completed' : 'badge-status-toread'); %>
 <% const percent = calculatePercentage(book.currentPage, book.totalPages); %>
 
 <div class="main-container details-container">
   <!-- Breadcrumb Header -->
-  <header class="flex items-center justify-between gap-lg pb-lg border-b border-border">
-    <nav aria-label="Breadcrumb" class="flex items-center gap-sm min-w-0">
-      <a href="/library" class="font-label text-label-lg text-text-secondary hover:text-text-primary transition-colors shrink-0">
+  <header class="flex items-center justify-between gap-lg pb-4 border-b border-[rgba(255,255,255,0.06)]">
+    <nav aria-label="Breadcrumb" class="flex items-center gap-2 min-w-0">
+      <a href="/library" class="text-[12px] font-medium text-text-muted hover:text-text-primary transition-colors shrink-0">
         My Library
       </a>
-      <span class="font-label text-label-lg text-text-secondary shrink-0">/</span>
-      <span class="font-label text-label-lg text-text-primary truncate" dir="<%= dir %>">
+      <span class="text-[12px] text-text-muted shrink-0">/</span>
+      <span class="text-[12px] font-medium text-text-primary truncate" dir="<%= dir %>">
         <%= book.title %>
       </span>
     </nav>
 
-    <div class="flex items-center gap-sm shrink-0">
-      <a href="/books/<%= book.id %>/edit" class="btn btn-secondary">
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="/books/<%= book.id %>/edit" class="btn btn-secondary h-8 px-3 text-[12px]">
+        <span class="material-symbols-outlined text-[15px]">edit</span>
         <span>Edit Book</span>
       </a>
       <button
@@ -24,73 +25,74 @@
         id="details-delete-btn"
         data-delete-book-id="<%= book.id %>"
         data-delete-book-title="<%= book.title %>"
-        class="btn btn-destructive"
+        class="btn btn-destructive h-8 px-3 text-[12px]"
       >
+        <span class="material-symbols-outlined text-[15px]">delete</span>
         <span>Delete</span>
       </button>
     </div>
   </header>
 
-  <!-- Asymmetric Two-Column Layout -->
-  <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-2xl items-start">
-    <!-- Left Column: Cover + Reader Action + Progress Card -->
-    <div class="flex flex-col gap-lg">
+  <!-- Asymmetric Two-Column Editorial Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 items-start">
+    <!-- Left Column: Cover + Primary Reader Action + Progress Card -->
+    <div class="flex flex-col gap-5">
       <div class="w-full">
-        <%- renderBookCover(book, 'shadow-sm') %>
+        <%- renderBookCover(book, 'shadow-lg') %>
       </div>
 
       <!-- In-App PDF Reader Action Card -->
       <% if (book.pdfPath) { %>
-        <section class="card card-padded flex flex-col gap-sm border-border bg-surface-primary">
+        <section class="card card-padded flex flex-col gap-3">
           <a
             href="/books/<%= book.id %>/read"
             id="read-book-btn"
-            class="btn btn-primary w-full flex items-center justify-center gap-sm py-2.5 font-medium"
+            class="btn btn-primary w-full flex items-center justify-center gap-2 h-10 font-medium text-[13px] rounded-lg shadow-sm"
           >
             <span class="material-symbols-outlined text-[18px]">menu_book</span>
             <span>Read Book</span>
           </a>
-          <div class="flex flex-col gap-xs pt-xs border-t border-border text-caption text-text-secondary">
+          <div class="flex flex-col gap-1.5 pt-2 border-t border-[rgba(255,255,255,0.06)] text-[11px] text-text-secondary">
             <div class="flex items-center justify-between">
               <span class="text-text-muted">Document:</span>
               <span class="text-text-primary font-medium truncate max-w-[170px]" title="<%= book.pdfFilename %>"><%= book.pdfFilename || 'Attached PDF' %></span>
             </div>
             <div class="flex items-center justify-between">
-              <span class="text-text-muted">Document Size:</span>
+              <span class="text-text-muted">Size:</span>
               <span class="tabular-nums"><%= book.pdfPageCount %> pages &middot; <%= (book.pdfSize / (1024 * 1024)).toFixed(1) %> MB</span>
             </div>
             <div class="flex items-center justify-between">
-              <span class="text-text-muted">Last Opened:</span>
-              <span class="tabular-nums text-text-primary">Page <%= book.lastReadPage || 1 %></span>
+              <span class="text-text-muted">Last Position:</span>
+              <span class="tabular-nums text-text-primary font-medium">Page <%= book.lastReadPage || 1 %></span>
             </div>
           </div>
         </section>
       <% } else { %>
         <a
           href="/books/<%= book.id %>/edit"
-          class="btn btn-secondary w-full flex items-center justify-center gap-sm py-2"
+          class="btn btn-secondary w-full flex items-center justify-center gap-2 h-9 text-[12px]"
         >
-          <span class="material-symbols-outlined text-[18px] text-text-muted">upload_file</span>
+          <span class="material-symbols-outlined text-[16px] text-text-muted">upload_file</span>
           <span>Attach PDF Document</span>
         </a>
       <% } %>
 
       <!-- Reading Progress Card -->
-      <section class="card card-padded flex flex-col gap-md">
+      <section class="card card-padded flex flex-col gap-3">
         <div class="flex items-center justify-between">
-          <h2 class="font-title text-title-md text-text-primary">Reading Progress</h2>
-          <span id="progress-percent" class="font-label text-label-md text-text-secondary tabular-nums">
+          <h2 class="text-[13px] font-semibold text-text-primary">Reading Progress</h2>
+          <span id="progress-percent" class="text-[11px] font-medium text-text-muted tabular-nums">
             <%= percent %>% Completed
           </span>
         </div>
 
-        <div class="progress-track">
+        <div class="progress-track" style="height: 5px;">
           <div id="progress-bar-fill" class="progress-fill" style="width: <%= percent %>%;"></div>
         </div>
 
-        <form action="/books/<%= book.id %>/progress" method="POST" id="quick-page-form" class="flex flex-col gap-xs pt-xs">
-          <div class="flex items-center justify-between gap-sm">
-            <div class="flex items-center gap-xs">
+        <form action="/books/<%= book.id %>/progress" method="POST" id="quick-page-form" class="flex flex-col gap-2 pt-1">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
               <label for="quick-page-input" class="sr-only">Current page</label>
               <input
                 id="quick-page-input"
@@ -99,15 +101,15 @@
                 min="0"
                 max="<%= book.totalPages %>"
                 value="<%= book.currentPage %>"
-                class="form-input text-center tabular-nums"
-                style="width: 68px; padding: 6px 8px;"
+                class="form-input text-center tabular-nums h-8"
+                style="width: 68px; padding: 4px 8px;"
                 required
               />
-              <span class="font-body text-body-md text-text-secondary tabular-nums whitespace-nowrap">
-                / <%= book.totalPages %> pages
+              <span class="text-[12px] text-text-secondary tabular-nums whitespace-nowrap">
+                / <%= book.totalPages %> p.
               </span>
             </div>
-            <button type="submit" class="btn btn-secondary" style="padding: 6px 14px;">
+            <button type="submit" class="btn btn-secondary h-8 px-3 text-[12px]">
               <span>Update</span>
             </button>
           </div>
@@ -121,49 +123,48 @@
     </div>
 
     <!-- Right Column: Status & Category, Title, Metadata Grid, Notes -->
-    <div class="flex flex-col gap-xl min-w-0">
-      <div class="flex flex-col gap-sm" dir="<%= dir %>">
-        <div class="flex items-center gap-sm" dir="ltr">
+    <div class="flex flex-col gap-6 min-w-0">
+      <div class="flex flex-col gap-2" dir="<%= dir %>">
+        <div class="flex items-center gap-2" dir="ltr">
           <span class="badge <%= statusClass %>"><%= book.status %></span>
           <span class="badge badge-category"><%= book.category %></span>
+          <% if (book.pdfPath) { %>
+            <span class="badge border border-border-subtle bg-surface-elevated text-text-primary text-[10px]">PDF</span>
+          <% } %>
         </div>
-        <h1 class="font-headline text-headline-lg text-text-primary text-balance" dir="<%= dir %>">
+        <h1 class="text-[28px] font-bold text-text-primary leading-tight tracking-tight mt-1" dir="<%= dir %>">
           <%= book.title %>
         </h1>
-        <p class="font-body text-body-lg text-text-secondary" dir="<%= dir %>">
+        <p class="text-[15px] text-text-secondary" dir="<%= dir %>">
           <%= book.author %>
         </p>
       </div>
 
       <!-- Metadata Grid -->
-      <dl class="grid grid-cols-2 sm:grid-cols-4 gap-md bg-surface border border-border rounded-card p-lg">
-        <div class="flex flex-col gap-xs">
-          <dt class="font-label text-label-sm text-text-secondary">Total Pages</dt>
-          <dd class="font-title text-title-md text-text-primary tabular-nums"><%= book.totalPages %></dd>
+      <dl class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.06)] rounded-card p-4">
+        <div class="flex flex-col gap-1">
+          <dt class="text-[11px] font-semibold uppercase tracking-wider text-text-muted">Total Pages</dt>
+          <dd class="text-[15px] font-semibold text-text-primary tabular-nums"><%= book.totalPages %></dd>
         </div>
-        <div class="flex flex-col gap-xs">
-          <dt class="font-label text-label-sm text-text-secondary">Current Page</dt>
-          <dd id="meta-current-page" class="font-title text-title-md text-text-primary tabular-nums"><%= book.currentPage %></dd>
+        <div class="flex flex-col gap-1">
+          <dt class="text-[11px] font-semibold uppercase tracking-wider text-text-muted">Current Page</dt>
+          <dd id="meta-current-page" class="text-[15px] font-semibold text-text-primary tabular-nums"><%= book.currentPage %></dd>
         </div>
-        <div class="flex flex-col gap-xs">
-          <dt class="font-label text-label-sm text-text-secondary">Rating</dt>
-          <dd class="font-title text-title-md text-text-primary tabular-nums"><%= book.rating ? `${book.rating}/5` : '—' %></dd>
+        <div class="flex flex-col gap-1">
+          <dt class="text-[11px] font-semibold uppercase tracking-wider text-text-muted">Rating</dt>
+          <dd class="text-[15px] font-semibold text-text-primary tabular-nums"><%= book.rating ? `${book.rating} / 5 ★` : '—' %></dd>
         </div>
-        <div class="flex flex-col gap-xs">
-          <dt class="font-label text-label-sm text-text-secondary">Added</dt>
-          <dd class="font-title text-title-md text-text-primary tabular-nums"><%= book.dateAdded %></dd>
+        <div class="flex flex-col gap-1">
+          <dt class="text-[11px] font-semibold uppercase tracking-wider text-text-muted">Date Added</dt>
+          <dd class="text-[15px] font-semibold text-text-primary tabular-nums"><%= book.dateAdded %></dd>
         </div>
       </dl>
 
       <!-- Description & Personal Notes -->
-      <section class="card card-padded flex flex-col gap-md">
-        <h2 class="font-title text-title-lg text-text-primary">Description &amp; Personal Notes</h2>
-        <div class="font-body text-body-lg text-text-secondary" style="white-space: pre-line; line-height: 1.6;" dir="auto">
-          <% if (book.description) { %>
-            <%= book.description %>
-          <% } else { %>
-            <em class="text-text-muted">No personal notes added for this book yet.</em>
-          <% } %>
+      <section class="card card-padded flex flex-col gap-3">
+        <h2 class="text-[14px] font-semibold text-text-primary">Description &amp; Notes</h2>
+        <div class="text-[13px] leading-relaxed text-text-secondary whitespace-pre-line" dir="auto">
+          <%= book.description || book.notes || 'No description or personal notes recorded for this title.' %>
         </div>
       </section>
     </div>

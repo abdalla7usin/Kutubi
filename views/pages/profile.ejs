@@ -1,23 +1,24 @@
 <div class="main-container narrow">
-  <!-- Header -->
-  <header class="flex flex-col gap-xs">
-    <h1 class="font-headline text-[22px] font-semibold leading-snug text-text-primary">Profile</h1>
-    <p class="font-body text-body-md text-text-secondary">Your personal reader identity and library overview.</p>
+  <!-- Header with Editorial Precision -->
+  <header class="flex flex-col gap-1">
+    <p class="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-muted">Account</p>
+    <h1 class="text-[26px] font-semibold text-text-primary tracking-tight leading-none">Profile</h1>
+    <p class="text-[13px] text-text-secondary mt-1">Your reader identity and reading achievements.</p>
   </header>
 
   <!-- Card 1: Reader Identity -->
-  <section class="card card-padded flex flex-col gap-xl">
-    <div class="flex items-center gap-lg">
-      <div id="profile-avatar" class="w-[56px] h-[56px] rounded-full bg-surface-elevated border border-border flex items-center justify-center shrink-0">
-        <span class="font-title text-title-lg text-text-primary" id="avatar-initials" data-testid="profile-avatar-initials"><%= profile.initials %></span>
+  <section class="card card-padded flex flex-col gap-6">
+    <div class="flex items-center gap-4">
+      <div id="profile-avatar" class="w-[64px] h-[64px] rounded-full bg-[linear-gradient(135deg,#1E1E24,#141418)] border border-[rgba(255,255,255,0.08)] flex items-center justify-center shrink-0 shadow-sm">
+        <span class="text-[20px] font-semibold text-text-primary tracking-tight" id="avatar-initials" data-testid="profile-avatar-initials"><%= profile.initials %></span>
       </div>
-      <div class="flex flex-col gap-xs">
-        <h2 class="font-title text-title-lg text-text-primary">Reader Identity</h2>
-        <p class="font-body text-body-md text-text-secondary">Displayed across your personal reading workspace.</p>
+      <div class="flex flex-col gap-0.5">
+        <h2 class="text-[15px] font-semibold text-text-primary tracking-tight">Reader Identity</h2>
+        <p class="text-[12px] text-text-secondary">Displayed across your personal reading workspace.</p>
       </div>
     </div>
 
-    <form id="profile-form" action="/profile" method="POST" class="flex flex-col gap-lg">
+    <form id="profile-form" action="/profile" method="POST" class="flex flex-col gap-5">
       <label class="form-group">
         <span class="form-label">Display Name</span>
         <input
@@ -26,7 +27,7 @@
           type="text"
           required
           value="<%= profile.displayName %>"
-          class="form-input"
+          class="form-input h-9"
         />
       </label>
 
@@ -37,39 +38,43 @@
           name="bio"
           rows="3"
           class="form-textarea"
+          placeholder="What are you currently exploring or reading towards?"
         ><%= profile.bio %></textarea>
       </label>
 
-      <div class="flex justify-end pt-sm border-t border-border">
-        <button type="submit" class="btn btn-primary" id="save-profile-btn">
-          <span>Save Profile</span>
+      <div class="flex justify-end pt-2 border-t border-[rgba(255,255,255,0.06)]">
+        <button type="submit" class="btn btn-primary text-[12px] h-9 px-4" id="save-profile-btn">
+          <span>Save Changes</span>
         </button>
       </div>
     </form>
   </section>
 
   <!-- Card 2: Reading Milestone Summary -->
-  <section class="card card-padded flex flex-col gap-lg">
-    <h2 class="font-title text-title-lg text-text-primary">Reading Milestone Summary</h2>
+  <section class="card card-padded flex flex-col gap-4">
+    <div>
+      <h2 class="text-[15px] font-semibold text-text-primary tracking-tight">Reading Milestones</h2>
+      <p class="text-[12px] text-text-secondary mt-0.5">Aggregated statistics calculated live from your collection.</p>
+    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-lg">
-      <div class="bg-background border border-border rounded-control p-lg flex flex-col gap-xs">
-        <span class="font-label text-label-md text-text-secondary">Books Completed</span>
-        <span class="font-headline text-headline-lg text-text-primary tabular-nums" id="milestone-completed">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div class="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.06)] rounded-control p-4 flex flex-col gap-1">
+        <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-muted">Books Completed</span>
+        <span class="text-[26px] font-semibold text-text-primary tabular-nums tracking-tight" id="milestone-completed">
           <%= stats.completedBooks %>
         </span>
       </div>
 
-      <div class="bg-background border border-border rounded-control p-lg flex flex-col gap-xs">
-        <span class="font-label text-label-md text-text-secondary">Total Pages Read</span>
-        <span class="font-headline text-headline-lg text-text-primary tabular-nums" id="milestone-pages">
+      <div class="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.06)] rounded-control p-4 flex flex-col gap-1">
+        <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-muted">Total Pages Read</span>
+        <span class="text-[26px] font-semibold text-text-primary tabular-nums tracking-tight" id="milestone-pages">
           <%= stats.totalPagesRead.toLocaleString() %>
         </span>
       </div>
 
-      <div class="bg-background border border-border rounded-control p-lg flex flex-col gap-xs">
-        <span class="font-label text-label-md text-text-secondary">Favorite Category</span>
-        <span class="font-headline text-headline-md text-text-primary" id="milestone-favorite">
+      <div class="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.06)] rounded-control p-4 flex flex-col gap-1">
+        <span class="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-muted">Top Category</span>
+        <span class="text-[16px] font-semibold text-text-primary truncate mt-1" id="milestone-favorite">
           <%= stats.favoriteCategory %>
         </span>
       </div>
