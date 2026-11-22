@@ -547,15 +547,25 @@ function seedStarterBooksIfFresh(db) {
 
   if (fs.existsSync(starterPdfSource)) {
     starterPdfName = 'starter-guide.pdf';
-    fs.copyFileSync(starterPdfSource, path.join(PDFS_DIR, starterPdfName));
+    const dest = path.join(PDFS_DIR, starterPdfName);
     try {
-      starterPdfSize = fs.statSync(path.join(PDFS_DIR, starterPdfName)).size;
+      if (!fs.existsSync(dest)) {
+        fs.copyFileSync(starterPdfSource, dest);
+      }
+    } catch {}
+    try {
+      starterPdfSize = fs.statSync(dest).size;
     } catch {}
   }
 
   if (fs.existsSync(starterCoverSource)) {
     starterCoverName = 'starter-guide.png';
-    fs.copyFileSync(starterCoverSource, path.join(COVERS_DIR, starterCoverName));
+    const dest = path.join(COVERS_DIR, starterCoverName);
+    try {
+      if (!fs.existsSync(dest)) {
+        fs.copyFileSync(starterCoverSource, dest);
+      }
+    } catch {}
   }
 
   // 3. Map categories
