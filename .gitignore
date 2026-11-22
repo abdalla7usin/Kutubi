@@ -16,3 +16,9 @@ Thumbs.db
 !/storage/covers/.gitkeep
 /storage/temp/*
 !/storage/temp/.gitkeep
+
+# Secrets and environment configurations
+.env
+.env.*
+!.env.example
+
