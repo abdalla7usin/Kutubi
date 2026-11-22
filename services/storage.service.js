@@ -260,10 +260,14 @@ class VercelBlobStorageAdapter {
    */
   async getSignedPdfUrl(pdfPath, expiresInSeconds = 900) {
     if (!pdfPath) return null;
+    let normalizedPath = typeof pdfPath === 'string' ? pdfPath : (Array.isArray(pdfPath) ? pdfPath.join('/') : '');
+    if (!normalizedPath.startsWith('kutubi/pdfs/')) {
+      normalizedPath = `kutubi/pdfs/${path.basename(normalizedPath)}`;
+    }
     const validUntil = Date.now() + expiresInSeconds * 1000;
 
     const signedToken = await this.blobSdk.issueSignedToken({
-      pathname: pdfPath,
+      pathname: normalizedPath,
       access: 'private',
       validUntil,
       allowedOperations: ['get'],
@@ -272,7 +276,7 @@ class VercelBlobStorageAdapter {
 
     const { presignedUrl } = await this.blobSdk.presignUrl(signedToken, {
       operation: 'get',
-      pathname: pdfPath,
+      pathname: normalizedPath,
       access: 'private'
     });
 
@@ -284,10 +288,14 @@ class VercelBlobStorageAdapter {
    */
   async getSignedCoverUrl(coverPath, expiresInSeconds = 3600) {
     if (!coverPath) return null;
+    let normalizedPath = typeof coverPath === 'string' ? coverPath : (Array.isArray(coverPath) ? coverPath.join('/') : '');
+    if (!normalizedPath.startsWith('kutubi/covers/')) {
+      normalizedPath = `kutubi/covers/${path.basename(normalizedPath)}`;
+    }
     const validUntil = Date.now() + expiresInSeconds * 1000;
 
     const signedToken = await this.blobSdk.issueSignedToken({
-      pathname: coverPath,
+      pathname: normalizedPath,
       access: 'private',
       validUntil,
       allowedOperations: ['get'],
@@ -296,7 +304,7 @@ class VercelBlobStorageAdapter {
 
     const { presignedUrl } = await this.blobSdk.presignUrl(signedToken, {
       operation: 'get',
-      pathname: coverPath,
+      pathname: normalizedPath,
       access: 'private'
     });
 
