@@ -5,10 +5,10 @@
 const settingsService = require('../services/settings.service');
 const categoriesService = require('../services/categories.service');
 
-function getSettings(req, res, next) {
+async function getSettings(req, res, next) {
   try {
-    const settings = settingsService.getSettings();
-    const categories = categoriesService.getAllCategories();
+    const settings = await settingsService.getSettings();
+    const categories = await categoriesService.getAllCategories();
 
     let toastMessage = null;
     if (req.query.toast === 'category_created') toastMessage = 'Category created successfully';
@@ -32,10 +32,10 @@ function getSettings(req, res, next) {
   }
 }
 
-function updatePreferences(req, res, next) {
+async function updatePreferences(req, res, next) {
   try {
     const { defaultLibraryView, defaultSortOrder } = req.body;
-    settingsService.updateSettings({
+    await settingsService.updateSettings({
       defaultLibraryView,
       defaultSortOrder
     });
@@ -46,9 +46,9 @@ function updatePreferences(req, res, next) {
   }
 }
 
-function exportJson(req, res, next) {
+async function exportJson(req, res, next) {
   try {
-    const backup = settingsService.exportLibraryJson();
+    const backup = await settingsService.exportLibraryJson();
     const filename = `kutubi-library-${new Date().toISOString().slice(0, 10)}.json`;
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');

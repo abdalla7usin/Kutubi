@@ -61,3 +61,36 @@ CREATE INDEX IF NOT EXISTS idx_books_status ON books(status);
 CREATE INDEX IF NOT EXISTS idx_books_category_id ON books(category_id);
 CREATE INDEX IF NOT EXISTS idx_books_created ON books(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_books_rating ON books(rating);
+
+-- Referential Integrity Triggers (Enforces foreign keys on all SQLite / Turso connections)
+CREATE TRIGGER IF NOT EXISTS fk_books_category_insert
+BEFORE INSERT ON books
+FOR EACH ROW
+WHEN NEW.category_id IS NOT NULL AND (SELECT id FROM categories WHERE id = NEW.category_id) IS NULL
+BEGIN
+  SELECT RAISE(ABORT, 'FOREIGN KEY constraint failed: category_id does not exist in categories');
+END;
+
+CREATE TRIGGER IF NOT EXISTS fk_books_category_update
+BEFORE UPDATE OF category_id ON books
+FOR EACH ROW
+WHEN NEW.category_id IS NOT NULL AND (SELECT id FROM categories WHERE id = NEW.category_id) IS NULL
+BEGIN
+  SELECT RAISE(ABORT, 'FOREIGN KEY constraint failed: category_id does not exist in categories');
+END;
+
+CREATE TRIGGER IF NOT EXISTS fk_categories_delete
+BEFORE DELETE ON categories
+FOR EACH ROW
+WHEN (SELECT COUNT(*) FROM books WHERE category_id = OLD.id) > 0
+BEGIN
+  SELECT RAISE(ABORT, 'FOREIGN KEY constraint failed: cannot delete category referenced by books');
+END;
+
+CREATE TRIGGER IF NOT EXISTS fk_categories_update_id
+BEFORE UPDATE OF id ON categories
+FOR EACH ROW
+WHEN (SELECT COUNT(*) FROM books WHERE category_id = OLD.id) > 0
+BEGIN
+  SELECT RAISE(ABORT, 'FOREIGN KEY constraint failed: cannot change category id while referenced by books');
+END;

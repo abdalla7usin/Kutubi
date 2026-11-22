@@ -6,10 +6,10 @@ const booksService = require('../services/books.service');
 const categoriesService = require('../services/categories.service');
 const settingsService = require('../services/settings.service');
 
-function getLibrary(req, res, next) {
+async function getLibrary(req, res, next) {
   try {
-    const settings = settingsService.getSettings();
-    const categories = categoriesService.getAllCategories();
+    const settings = await settingsService.getSettings();
+    const categories = await categoriesService.getAllCategories();
 
     // Query parameters with sensible defaults from settings
     const search = req.query.search ? String(req.query.search) : '';
@@ -18,7 +18,7 @@ function getLibrary(req, res, next) {
     const sort = req.query.sort ? String(req.query.sort) : (settings.defaultSortOrder || 'recently-added');
     const view = req.query.view ? String(req.query.view) : (settings.defaultLibraryView || 'grid');
 
-    const books = booksService.getBooks({
+    const books = await booksService.getBooks({
       search,
       status,
       category,

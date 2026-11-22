@@ -10,9 +10,9 @@ const categoriesService = require('../services/categories.service');
 const pdfService = require('../services/pdf.service');
 const { calculatePercentage } = require('../utils/formatting');
 
-function getNewBookForm(req, res, next) {
+async function getNewBookForm(req, res, next) {
   try {
-    const categories = categoriesService.getAllCategories();
+    const categories = await categoriesService.getAllCategories();
     const idempotencyKey = crypto.randomUUID();
     res.render('pages/book-form', {
       title: 'Add Book',
@@ -33,7 +33,7 @@ function getNewBookForm(req, res, next) {
 
 async function createBook(req, res, next) {
   try {
-    const categories = categoriesService.getAllCategories();
+    const categories = await categoriesService.getAllCategories();
 
     // 1. Check for upload error (from multer)
     if (req.uploadError) {
@@ -84,7 +84,8 @@ async function createBook(req, res, next) {
       ...pdfData
     };
 
-    const result = booksService.createBook(bookInput);
+    const result = await booksService.createBook(bookInput);
+
     if (!result.success) {
       // If book creation failed, clean up any processed PDF files to avoid orphans
       if (pdfData.pdfPath) {
@@ -111,10 +112,10 @@ async function createBook(req, res, next) {
   }
 }
 
-function getBookDetails(req, res, next) {
+async function getBookDetails(req, res, next) {
   try {
     const id = req.params.id;
-    const book = booksService.getBookById(id);
+    const book = await booksService.getBookById(id);
     if (!book) {
       return res.status(404).render('pages/error', {
         title: 'Book Not Found',
@@ -138,10 +139,10 @@ function getBookDetails(req, res, next) {
   }
 }
 
-function getEditBookForm(req, res, next) {
+async function getEditBookForm(req, res, next) {
   try {
     const id = req.params.id;
-    const book = booksService.getBookById(id);
+    const book = await booksService.getBookById(id);
     if (!book) {
       return res.status(404).render('pages/error', {
         title: 'Book Not Found',
@@ -151,7 +152,7 @@ function getEditBookForm(req, res, next) {
       });
     }
 
-    const categories = categoriesService.getAllCategories();
+    const categories = await categoriesService.getAllCategories();
     res.render('pages/book-form', {
       title: `Edit ${book.title}`,
       activeNav: 'library',
@@ -171,7 +172,7 @@ function getEditBookForm(req, res, next) {
 async function updateBook(req, res, next) {
   try {
     const id = req.params.id;
-    const existing = booksService.getBookById(id);
+    const existing = await booksService.getBookById(id);
     if (!existing) {
       return res.status(404).render('pages/error', {
         title: 'Book Not Found',
@@ -181,7 +182,7 @@ async function updateBook(req, res, next) {
       });
     }
 
-    const categories = categoriesService.getAllCategories();
+    const categories = await categoriesService.getAllCategories();
 
     // Check upload error
     if (req.uploadError) {
@@ -225,7 +226,7 @@ async function updateBook(req, res, next) {
       removePdf: req.body.removePdf === 'true' || req.body.removePdf === '1' || req.body.removePdf === 'on'
     };
 
-    const result = booksService.updateBook(id, updatePayload);
+    const result = await booksService.updateBook(id, updatePayload);
     if (!result.success) {
       if (pdfData.pdfPath) {
         pdfService.cleanupPdfFiles(pdfData.pdfPath, pdfData.coverImage);
@@ -250,11 +251,11 @@ async function updateBook(req, res, next) {
   }
 }
 
-function updateProgress(req, res, next) {
+async function updateProgress(req, res, next) {
   try {
     const id = req.params.id;
     const currentPageInput = req.body.currentPage;
-    const result = booksService.updateProgress(id, currentPageInput);
+    const result = await booksService.updateProgress(id, currentPageInput);
 
     if (result.notFound) {
       return res.status(404).render('pages/error', {
@@ -278,12 +279,20 @@ function updateProgress(req, res, next) {
 /**
  * Stream the stored PDF document with HTTP Range request support
  */
-function serveBookPdf(req, res, next) {
+async function serveBookPdf(req, res, next) {
   try {
     const id = req.params.id;
-    const book = booksService.getBookById(id);
+    const book = await booksService.getBookById(id);
     if (!book || !book.pdfPath) {
       return res.status(404).send('PDF document not attached to this book.');
+    }
+
+    // Check if using cloud blob storage
+    if (pdfService.isCloudStorage && pdfService.isCloudStorage()) {
+      const signedUrl = await pdfService.getSignedPdfUrl(book.pdfPath);
+      if (signedUrl) {
+        return res.redirect(signedUrl);
+      }
     }
 
     const safePath = pdfService.getSafePdfPath(book.pdfPath);
@@ -303,10 +312,10 @@ function serveBookPdf(req, res, next) {
 /**
  * Render the dedicated, focused In-App PDF Reader screen
  */
-function getPdfReader(req, res, next) {
+async function getPdfReader(req, res, next) {
   try {
     const id = req.params.id;
-    const book = booksService.getBookById(id);
+    const book = await booksService.getBookById(id);
     if (!book) {
       return res.status(404).render('pages/error', {
         title: 'Book Not Found',
@@ -334,11 +343,11 @@ function getPdfReader(req, res, next) {
  * Update reading position (last opened page in PDF reader)
  * Does NOT alter confirmed reading progress
  */
-function updateReadPosition(req, res, next) {
+async function updateReadPosition(req, res, next) {
   try {
     const id = req.params.id;
     const { page } = req.body;
-    const result = booksService.updateReadPosition(id, page);
+    const result = await booksService.updateReadPosition(id, page);
     res.json(result);
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -348,11 +357,11 @@ function updateReadPosition(req, res, next) {
 /**
  * Explicit action to mark the current PDF reader page as confirmed reading progress
  */
-function markPageRead(req, res, next) {
+async function markPageRead(req, res, next) {
   try {
     const id = req.params.id;
     const { page } = req.body;
-    const result = booksService.updateProgress(id, page);
+    const result = await booksService.updateProgress(id, page);
 
     if (req.headers.accept && req.headers.accept.includes('application/json')) {
       return res.json(result);
@@ -368,10 +377,10 @@ function markPageRead(req, res, next) {
   }
 }
 
-function getDeleteConfirmation(req, res, next) {
+async function getDeleteConfirmation(req, res, next) {
   try {
     const id = req.params.id;
-    const book = booksService.getBookById(id);
+    const book = await booksService.getBookById(id);
     if (!book) {
       return res.status(404).render('pages/error', {
         title: 'Book Not Found',
@@ -391,10 +400,10 @@ function getDeleteConfirmation(req, res, next) {
   }
 }
 
-function deleteBook(req, res, next) {
+async function deleteBook(req, res, next) {
   try {
     const id = req.params.id;
-    const result = booksService.deleteBook(id);
+    const result = await booksService.deleteBook(id);
     if (result.notFound) {
       return res.status(404).render('pages/error', {
         title: 'Book Not Found',

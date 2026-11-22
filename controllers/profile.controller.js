@@ -4,9 +4,9 @@
 
 const profileService = require('../services/profile.service');
 
-function getProfile(req, res, next) {
+async function getProfile(req, res, next) {
   try {
-    const { profile, stats } = profileService.getProfileStats();
+    const { profile, stats } = await profileService.getProfileStats();
     let toastMessage = null;
     if (req.query.toast === 'profile_saved') toastMessage = 'Profile updated successfully';
 
@@ -23,10 +23,10 @@ function getProfile(req, res, next) {
   }
 }
 
-function updateProfile(req, res, next) {
+async function updateProfile(req, res, next) {
   try {
     const { displayName, bio } = req.body;
-    const result = profileService.updateProfile({ displayName, bio });
+    const result = await profileService.updateProfile({ displayName, bio });
     if (!result.success) {
       return res.redirect(303, `/profile?error=${encodeURIComponent(result.error || 'Failed to update profile.')}`);
     }

@@ -1,6 +1,7 @@
 /**
  * Kutubi - Categories Service
- * Handles category CRUD, system category protection, and safe reassignment of books
+ * Handles category CRUD, system category protection, and safe reassignment of books.
+ * Fully dual-mode: synchronous with SQLiteAdapter, asynchronous with TursoAdapter.
  */
 
 const { getDb } = require('../db/database');
@@ -9,12 +10,10 @@ const { validateCategoryName } = require('../utils/validation');
 class CategoriesService {
   /**
    * Get all categories with dynamic count of books in each
-   * @param {import('better-sqlite3').Database} [dbInstance]
-   * @returns {Array<object>}
    */
   getAllCategories(dbInstance) {
     const db = dbInstance || getDb();
-    return db.prepare(`
+    const sql = `
       SELECT 
         c.id,
         c.name,
@@ -26,51 +25,83 @@ class CategoriesService {
       LEFT JOIN books b ON b.category_id = c.id
       GROUP BY c.id
       ORDER BY c.is_system ASC, c.name ASC
-    `).all();
+    `;
+
+    if (db.isAsync) {
+      return (async () => {
+        return await db.queryAll(sql);
+      })();
+    }
+
+    return db.prepare(sql).all();
   }
 
   /**
    * Get category by ID
-   * @param {number|string} id
-   * @param {import('better-sqlite3').Database} [dbInstance]
-   * @returns {object|null}
    */
   getCategoryById(id, dbInstance) {
     const db = dbInstance || getDb();
-    const cat = db.prepare(`
+    const sql = `
       SELECT id, name, is_system AS isSystem, created_at, updated_at
       FROM categories
       WHERE id = ?
-    `).get(id);
+    `;
+
+    if (db.isAsync) {
+      return (async () => {
+        return await db.queryOne(sql, [id]);
+      })();
+    }
+
+    const cat = db.prepare(sql).get(id);
     return cat || null;
   }
 
   /**
    * Get category by Name (case-insensitive)
-   * @param {string} name
-   * @param {import('better-sqlite3').Database} [dbInstance]
-   * @returns {object|null}
    */
   getCategoryByName(name, dbInstance) {
     const db = dbInstance || getDb();
-    const cat = db.prepare(`
+    const sql = `
       SELECT id, name, is_system AS isSystem, created_at, updated_at
       FROM categories
       WHERE name = ? COLLATE NOCASE
-    `).get(name);
+    `;
+
+    if (db.isAsync) {
+      return (async () => {
+        return await db.queryOne(sql, [name]);
+      })();
+    }
+
+    const cat = db.prepare(sql).get(name);
     return cat || null;
   }
 
   /**
    * Get the system 'Uncategorized' category
-   * @param {import('better-sqlite3').Database} [dbInstance]
-   * @returns {object}
    */
   getUncategorizedCategory(dbInstance) {
     const db = dbInstance || getDb();
-    let cat = db.prepare("SELECT id, name, is_system AS isSystem FROM categories WHERE name = 'Uncategorized'").get();
+    const querySql = "SELECT id, name, is_system AS isSystem FROM categories WHERE name = 'Uncategorized'";
+
+    if (db.isAsync) {
+      return (async () => {
+        let cat = await db.queryOne(querySql);
+        if (!cat) {
+          const now = new Date().toISOString();
+          const info = await db.execute(`
+            INSERT INTO categories (name, is_system, created_at, updated_at)
+            VALUES ('Uncategorized', 1, ?, ?)
+          `, [now, now]);
+          cat = { id: info.lastInsertRowid, name: 'Uncategorized', isSystem: 1 };
+        }
+        return cat;
+      })();
+    }
+
+    let cat = db.prepare(querySql).get();
     if (!cat) {
-      // Self-heal: ensure Uncategorized always exists
       const now = new Date().toISOString();
       const info = db.prepare(`
         INSERT INTO categories (name, is_system, created_at, updated_at)
@@ -83,15 +114,30 @@ class CategoriesService {
 
   /**
    * Create a new custom category
-   * @param {string} name
-   * @param {import('better-sqlite3').Database} [dbInstance]
-   * @returns {{ success: boolean, category?: object, error?: string }}
    */
   createCategory(name, dbInstance) {
     const db = dbInstance || getDb();
     const validation = validateCategoryName(name);
     if (!validation.isValid) {
       return { success: false, error: validation.error };
+    }
+
+    if (db.isAsync) {
+      return (async () => {
+        const existing = await this.getCategoryByName(validation.name, db);
+        if (existing) {
+          return { success: false, error: `Category '${validation.name}' already exists.` };
+        }
+
+        const now = new Date().toISOString();
+        const info = await db.execute(`
+          INSERT INTO categories (name, is_system, created_at, updated_at)
+          VALUES (?, 0, ?, ?)
+        `, [validation.name, now, now]);
+
+        const newCategory = await this.getCategoryById(info.lastInsertRowid, db);
+        return { success: true, category: newCategory };
+      })();
     }
 
     const existing = this.getCategoryByName(validation.name, db);
@@ -111,29 +157,50 @@ class CategoriesService {
 
   /**
    * Rename an existing custom category
-   * @param {number|string} id
-   * @param {string} newName
-   * @param {import('better-sqlite3').Database} [dbInstance]
-   * @returns {{ success: boolean, error?: string }}
    */
   renameCategory(id, newName, dbInstance) {
     const db = dbInstance || getDb();
-    const cat = this.getCategoryById(id, db);
-    if (!cat) {
-      return { success: false, error: 'Category not found.' };
-    }
-
-    if (cat.isSystem) {
-      return { success: false, error: 'The system default category cannot be renamed.' };
-    }
-
     const validation = validateCategoryName(newName);
     if (!validation.isValid) {
       return { success: false, error: validation.error };
     }
 
+    if (db.isAsync) {
+      return (async () => {
+        const cat = await this.getCategoryById(id, db);
+        if (!cat) {
+          return { success: false, error: 'Category not found.' };
+        }
+        if (cat.isSystem) {
+          return { success: false, error: 'The system default category cannot be renamed.' };
+        }
+
+        const existing = await this.getCategoryByName(validation.name, db);
+        if (existing && Number(existing.id) !== Number(id)) {
+          return { success: false, error: `Category '${validation.name}' already exists.` };
+        }
+
+        const now = new Date().toISOString();
+        await db.execute(`
+          UPDATE categories
+          SET name = ?, updated_at = ?
+          WHERE id = ?
+        `, [validation.name, now, id]);
+
+        return { success: true };
+      })();
+    }
+
+    const cat = this.getCategoryById(id, db);
+    if (!cat) {
+      return { success: false, error: 'Category not found.' };
+    }
+    if (cat.isSystem) {
+      return { success: false, error: 'The system default category cannot be renamed.' };
+    }
+
     const existing = this.getCategoryByName(validation.name, db);
-    if (existing && existing.id !== Number(id)) {
+    if (existing && Number(existing.id) !== Number(id)) {
       return { success: false, error: `Category '${validation.name}' already exists.` };
     }
 
@@ -151,17 +218,43 @@ class CategoriesService {
    * Safely delete a category:
    * Reassigns all associated books to 'Uncategorized' inside a single transaction.
    * Protects the system 'Uncategorized' category.
-   * @param {number|string} id
-   * @param {import('better-sqlite3').Database} [dbInstance]
-   * @returns {{ success: boolean, reassignedCount?: number, error?: string }}
    */
   deleteCategory(id, dbInstance) {
     const db = dbInstance || getDb();
+
+    if (db.isAsync) {
+      return (async () => {
+        const cat = await this.getCategoryById(id, db);
+        if (!cat) {
+          return { success: false, error: 'Category not found.' };
+        }
+        if (cat.isSystem) {
+          return { success: false, error: 'The system default category cannot be deleted.' };
+        }
+
+        const uncategorized = await this.getUncategorizedCategory(db);
+        const now = new Date().toISOString();
+
+        // Atomic batch reassign and delete
+        const results = await db.batch([
+          {
+            sql: 'UPDATE books SET category_id = ?, updated_at = ? WHERE category_id = ?',
+            args: [uncategorized.id, now, id]
+          },
+          {
+            sql: 'DELETE FROM categories WHERE id = ?',
+            args: [id]
+          }
+        ]);
+
+        return { success: true, reassignedCount: results[0].rowsAffected };
+      })();
+    }
+
     const cat = this.getCategoryById(id, db);
     if (!cat) {
       return { success: false, error: 'Category not found.' };
     }
-
     if (cat.isSystem) {
       return { success: false, error: 'The system default category cannot be deleted.' };
     }
@@ -169,16 +262,13 @@ class CategoriesService {
     const uncategorized = this.getUncategorizedCategory(db);
 
     const deleteTx = db.transaction(() => {
-      // 1. Reassign books to Uncategorized
       const reassignResult = db.prepare(`
         UPDATE books
         SET category_id = ?, updated_at = ?
         WHERE category_id = ?
       `).run(uncategorized.id, new Date().toISOString(), id);
 
-      // 2. Delete custom category
       db.prepare('DELETE FROM categories WHERE id = ?').run(id);
-
       return reassignResult.changes;
     });
 

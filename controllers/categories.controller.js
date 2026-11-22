@@ -4,10 +4,10 @@
 
 const categoriesService = require('../services/categories.service');
 
-function createCategory(req, res, next) {
+async function createCategory(req, res, next) {
   try {
     const { name } = req.body;
-    const result = categoriesService.createCategory(name);
+    const result = await categoriesService.createCategory(name);
     if (!result.success) {
       return res.redirect(303, `/settings?error=${encodeURIComponent(result.error || 'Failed to create category.')}`);
     }
@@ -18,11 +18,11 @@ function createCategory(req, res, next) {
   }
 }
 
-function renameCategory(req, res, next) {
+async function renameCategory(req, res, next) {
   try {
     const id = req.params.id;
     const { name } = req.body;
-    const result = categoriesService.renameCategory(id, name);
+    const result = await categoriesService.renameCategory(id, name);
     if (!result.success) {
       return res.redirect(303, `/settings?error=${encodeURIComponent(result.error || 'Failed to rename category.')}`);
     }
@@ -33,10 +33,10 @@ function renameCategory(req, res, next) {
   }
 }
 
-function deleteCategory(req, res, next) {
+async function deleteCategory(req, res, next) {
   try {
     const id = req.params.id;
-    const result = categoriesService.deleteCategory(id);
+    const result = await categoriesService.deleteCategory(id);
     if (!result.success) {
       return res.redirect(303, `/settings?error=${encodeURIComponent(result.error || 'Failed to delete category.')}`);
     }

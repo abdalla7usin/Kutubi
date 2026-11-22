@@ -4,9 +4,9 @@
 
 const dashboardService = require('../services/dashboard.service');
 
-function getDashboard(req, res, next) {
+async function getDashboard(req, res, next) {
   try {
-    const data = dashboardService.getDashboardData();
+    const data = await dashboardService.getDashboardData();
     res.render('pages/dashboard', {
       title: 'Dashboard',
       activeNav: 'dashboard',

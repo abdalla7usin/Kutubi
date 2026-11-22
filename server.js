@@ -56,6 +56,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
 app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
 app.use('/storage/covers', express.static(path.join(__dirname, 'storage', 'covers')));
+app.get('/storage/covers/:filename(*)', async (req, res, next) => {
+  const filename = req.params.filename;
+  const storage = require('./services/storage.service').getStorage();
+  if (storage.isCloudStorage()) {
+    try {
+      const signedUrl = await storage.getSignedCoverUrl(filename);
+      if (signedUrl) {
+        return res.redirect(signedUrl);
+      }
+    } catch (err) {
+      console.warn('[Cover Delivery] Signed URL warning:', err.message);
+    }
+  }
+  const safePath = storage.getSafeCoverPath(filename);
+  if (safePath) {
+    return res.sendFile(safePath);
+  }
+  res.status(404).send('Cover not found');
+});
 app.use('/vendor/pdfjs', express.static(path.join(__dirname, 'node_modules', 'pdfjs-dist'), {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.wasm')) {

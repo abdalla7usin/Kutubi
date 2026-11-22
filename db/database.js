@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const Database = require('better-sqlite3');
+const { wrapDatabase } = require('./adapter');
 
 let dbInstance = null;
 
@@ -40,6 +41,41 @@ function runMigrations(db) {
     db.exec("ALTER TABLE books ADD COLUMN idempotency_key TEXT DEFAULT ''");
   }
   db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_books_idempotency_key ON books(idempotency_key) WHERE idempotency_key IS NOT NULL AND idempotency_key != ''");
+
+  // Referential integrity triggers
+  db.exec(`
+    CREATE TRIGGER IF NOT EXISTS fk_books_category_insert
+    BEFORE INSERT ON books
+    FOR EACH ROW
+    WHEN NEW.category_id IS NOT NULL AND (SELECT id FROM categories WHERE id = NEW.category_id) IS NULL
+    BEGIN
+      SELECT RAISE(ABORT, 'FOREIGN KEY constraint failed: category_id does not exist in categories');
+    END;
+
+    CREATE TRIGGER IF NOT EXISTS fk_books_category_update
+    BEFORE UPDATE OF category_id ON books
+    FOR EACH ROW
+    WHEN NEW.category_id IS NOT NULL AND (SELECT id FROM categories WHERE id = NEW.category_id) IS NULL
+    BEGIN
+      SELECT RAISE(ABORT, 'FOREIGN KEY constraint failed: category_id does not exist in categories');
+    END;
+
+    CREATE TRIGGER IF NOT EXISTS fk_categories_delete
+    BEFORE DELETE ON categories
+    FOR EACH ROW
+    WHEN (SELECT COUNT(*) FROM books WHERE category_id = OLD.id) > 0
+    BEGIN
+      SELECT RAISE(ABORT, 'FOREIGN KEY constraint failed: cannot delete category referenced by books');
+    END;
+
+    CREATE TRIGGER IF NOT EXISTS fk_categories_update_id
+    BEFORE UPDATE OF id ON categories
+    FOR EACH ROW
+    WHEN (SELECT COUNT(*) FROM books WHERE category_id = OLD.id) > 0
+    BEGIN
+      SELECT RAISE(ABORT, 'FOREIGN KEY constraint failed: cannot change category id while referenced by books');
+    END;
+  `);
 }
 
 /**
@@ -114,8 +150,9 @@ function initDatabase(customPath) {
     }
   }
 
-  dbInstance = db;
-  return db;
+  const wrapped = wrapDatabase(db);
+  dbInstance = wrapped;
+  return wrapped;
 }
 
 /**
