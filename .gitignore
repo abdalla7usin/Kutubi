@@ -9,6 +9,7 @@ Thumbs.db
 /data/*.db-journal
 /data/*.bak
 /data/*.json
+/tests/*.db
 
 # Persistent PDF & Generated Cover storage (user uploads & generated files)
 /storage/pdfs/*
@@ -23,6 +24,6 @@ Thumbs.db
 .env.*
 !.env.example
 
-
 .vercel
 .env*
+/public/vendor/pdfjs

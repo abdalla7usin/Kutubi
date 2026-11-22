@@ -1,12 +1,20 @@
 /**
  * Kutubi - Database Connection & Initialization Module
- * Uses better-sqlite3 with foreign key enforcement and WAL mode
+ * Provides dual-mode connection:
+ * 1. better-sqlite3 for local development and test suites
+ * 2. Turso / @libsql/client for production cloud deployment
  */
 
 const fs = require('fs');
 const path = require('path');
-const Database = require('better-sqlite3');
 const { wrapDatabase } = require('./adapter');
+
+let Database;
+try {
+  Database = require('better-sqlite3');
+} catch (e) {
+  // Ignored in cloud serverless environments
+}
 
 let dbInstance = null;
 
@@ -14,7 +22,7 @@ const DEFAULT_DB_PATH = path.join(__dirname, '..', 'data', 'kutubi.db');
 const SCHEMA_PATH = path.join(__dirname, 'schema.sql');
 
 /**
- * Run safe, non-destructive migrations on existing databases
+ * Run safe, non-destructive migrations on existing SQLite databases
  * @param {Database.Database} db
  */
 function runMigrations(db) {
@@ -79,11 +87,39 @@ function runMigrations(db) {
 }
 
 /**
- * Initialize and return the SQLite database instance
+ * Initialize and return the database instance
+ * Automatically connects to Turso when TURSO_DATABASE_URL is set,
+ * or better-sqlite3 for local files.
  * @param {string} [customPath] - Optional custom path (e.g. for testing)
- * @returns {Database.Database}
+ * @returns {import('./adapter').SQLiteAdapter | import('./adapter').TursoAdapter}
  */
 function initDatabase(customPath) {
+  // If Turso cloud database is configured and no specific local path was requested
+  if (!customPath && process.env.TURSO_DATABASE_URL) {
+    if (dbInstance && dbInstance.engine === 'turso') {
+      return dbInstance;
+    }
+    const { createClient } = require('@libsql/client');
+    const client = createClient({
+      url: process.env.TURSO_DATABASE_URL,
+      authToken: process.env.TURSO_AUTH_TOKEN
+    });
+    dbInstance = wrapDatabase(client);
+    return dbInstance;
+  }
+
+  if (dbInstance && !customPath) {
+    return dbInstance;
+  }
+
+  if (!Database) {
+    try {
+      Database = require('better-sqlite3');
+    } catch {
+      throw new Error('better-sqlite3 is not available and TURSO_DATABASE_URL is not set.');
+    }
+  }
+
   const dbPath = customPath || process.env.DATABASE_PATH || DEFAULT_DB_PATH;
 
   // Ensure target directory exists if writing to disk
@@ -157,12 +193,20 @@ function initDatabase(customPath) {
 
 /**
  * Get active database instance (initializes if needed)
- * @returns {Database.Database}
+ * @returns {import('./adapter').SQLiteAdapter | import('./adapter').TursoAdapter}
  */
 function getDb() {
   if (!dbInstance) {
     return initDatabase();
   }
+  return dbInstance;
+}
+
+/**
+ * Override active db instance (primarily for tests)
+ */
+function setDb(db) {
+  dbInstance = wrapDatabase(db);
   return dbInstance;
 }
 
@@ -183,6 +227,7 @@ function closeDb() {
 module.exports = {
   initDatabase,
   getDb,
+  setDb,
   closeDb,
   DEFAULT_DB_PATH
 };
