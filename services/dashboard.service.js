@@ -49,6 +49,8 @@ class DashboardService {
         b.total_pages AS totalPages,
         b.current_page AS currentPage,
         b.cover_url AS coverUrl,
+        b.cover_image AS coverImage,
+        b.pdf_path AS pdfPath,
         b.rating,
         b.description,
         b.date_added AS dateAdded,
@@ -77,6 +79,8 @@ class DashboardService {
         b.total_pages AS totalPages,
         b.current_page AS currentPage,
         b.cover_url AS coverUrl,
+        b.cover_image AS coverImage,
+        b.pdf_path AS pdfPath,
         b.rating,
         b.date_added AS dateAdded,
         b.created_at AS createdAt

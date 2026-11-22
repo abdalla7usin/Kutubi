@@ -13,6 +13,32 @@ const DEFAULT_DB_PATH = path.join(__dirname, '..', 'data', 'kutubi.db');
 const SCHEMA_PATH = path.join(__dirname, 'schema.sql');
 
 /**
+ * Run safe, non-destructive migrations on existing databases
+ * @param {Database.Database} db
+ */
+function runMigrations(db) {
+  const columns = db.prepare("PRAGMA table_info(books)").all().map(c => c.name);
+  if (!columns.includes('pdf_path')) {
+    db.exec("ALTER TABLE books ADD COLUMN pdf_path TEXT DEFAULT ''");
+  }
+  if (!columns.includes('pdf_filename')) {
+    db.exec("ALTER TABLE books ADD COLUMN pdf_filename TEXT DEFAULT ''");
+  }
+  if (!columns.includes('pdf_size')) {
+    db.exec("ALTER TABLE books ADD COLUMN pdf_size INTEGER DEFAULT 0");
+  }
+  if (!columns.includes('pdf_page_count')) {
+    db.exec("ALTER TABLE books ADD COLUMN pdf_page_count INTEGER DEFAULT 0");
+  }
+  if (!columns.includes('cover_image')) {
+    db.exec("ALTER TABLE books ADD COLUMN cover_image TEXT DEFAULT ''");
+  }
+  if (!columns.includes('last_read_page')) {
+    db.exec("ALTER TABLE books ADD COLUMN last_read_page INTEGER DEFAULT 1");
+  }
+}
+
+/**
  * Initialize and return the SQLite database instance
  * @param {string} [customPath] - Optional custom path (e.g. for testing)
  * @returns {Database.Database}
@@ -37,6 +63,9 @@ function initDatabase(customPath) {
   // Execute schema
   const schemaSql = fs.readFileSync(SCHEMA_PATH, 'utf8');
   db.exec(schemaSql);
+
+  // Run versioned migrations for existing databases
+  runMigrations(db);
 
   // Initialize singleton defaults if not present
   const now = new Date().toISOString();

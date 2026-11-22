@@ -152,12 +152,32 @@ export function renderTypographicCover(title, author, isCompact = false) {
 }
 
 /**
+ * Resolves the effective cover URL based on priority:
+ * 1. User manual override (coverUrl)
+ * 2. Generated PDF cover (coverImage)
+ * 3. Null (triggers typographic fallback)
+ * @param {object} book
+ * @returns {string|null}
+ */
+export function getEffectiveCoverUrl(book) {
+  if (!book) return null;
+  if (book.coverUrl && book.coverUrl.trim()) {
+    return book.coverUrl.trim();
+  }
+  if (book.coverImage && book.coverImage.trim()) {
+    return `/storage/covers/${book.coverImage.trim()}`;
+  }
+  return null;
+}
+
+/**
  * Renders a full 2:3 cover container (either image or typographic fallback)
  */
 export function renderBookCover(book, customClass = '') {
-  const { title, author, coverUrl } = book;
+  const { title, author } = book;
+  const effectiveCover = getEffectiveCoverUrl(book);
 
-  if (!coverUrl) {
+  if (!effectiveCover) {
     return `
       <div class="book-cover-container ${customClass}" data-cover-for="${escapeHtml(book.id)}">
         ${renderTypographicCover(title, author)}
@@ -168,7 +188,7 @@ export function renderBookCover(book, customClass = '') {
   return `
     <div class="book-cover-container ${customClass}" data-cover-for="${escapeHtml(book.id)}">
       <img
-        src="${escapeHtml(coverUrl)}"
+        src="${escapeHtml(effectiveCover)}"
         alt="${escapeHtml(title)} cover"
         class="book-cover-img"
         loading="lazy"
@@ -183,9 +203,10 @@ export function renderBookCover(book, customClass = '') {
  * For books without cover: centered minimal book icon inside bordered dark rectangle.
  */
 export function renderListThumbnail(book) {
-  const { title, coverUrl } = book;
+  const { title } = book;
+  const effectiveCover = getEffectiveCoverUrl(book);
 
-  if (!coverUrl) {
+  if (!effectiveCover) {
     return `
       <div class="list-thumb" aria-hidden="true">
         <span class="material-symbols-outlined text-[18px] text-text-muted">menu_book</span>
@@ -196,7 +217,7 @@ export function renderListThumbnail(book) {
   return `
     <div class="list-thumb">
       <img
-        src="${escapeHtml(coverUrl)}"
+        src="${escapeHtml(effectiveCover)}"
         alt="${escapeHtml(title)}"
         class="list-thumb-img"
         loading="lazy"

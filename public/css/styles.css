@@ -47,10 +47,14 @@ a {
 /* Material Symbols Adjustments */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   vertical-align: middle;
   line-height: 1;
   user-select: none;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
 }
 
 /* App Layout Shell */
@@ -64,6 +68,8 @@ a {
 /* Sidebar Shell */
 .app-sidebar {
   width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
   min-height: 100vh;
   flex-shrink: 0;
   background-color: var(--surface-primary);
@@ -72,7 +78,6 @@ a {
   flex-direction: column;
   padding: var(--space-2xl) var(--space-lg) var(--space-lg) var(--space-lg);
   gap: var(--space-xl);
-  transition: width var(--duration-sidebar) var(--ease-modal), padding var(--duration-sidebar) var(--ease-modal);
   position: sticky;
   top: 0;
   height: 100vh;
@@ -80,11 +85,18 @@ a {
 }
 
 .app-sidebar.transitioning {
+  transition: width var(--duration-sidebar) var(--ease-modal),
+              min-width var(--duration-sidebar) var(--ease-modal),
+              max-width var(--duration-sidebar) var(--ease-modal),
+              padding var(--duration-sidebar) var(--ease-modal);
   overflow: hidden !important;
 }
 
-.app-sidebar.collapsed {
+.app-sidebar.collapsed,
+html.sidebar-is-collapsed .app-sidebar {
   width: var(--sidebar-collapsed-width);
+  min-width: var(--sidebar-collapsed-width);
+  max-width: var(--sidebar-collapsed-width);
   padding: var(--space-2xl) var(--space-xs) var(--space-lg) var(--space-xs);
   align-items: center;
   overflow: hidden;
@@ -158,18 +170,22 @@ a {
   transform: scale(0.96);
 }
 
-.app-sidebar.collapsed .sidebar-header {
+.app-sidebar.collapsed .sidebar-header,
+html.sidebar-is-collapsed .app-sidebar .sidebar-header {
   justify-content: center;
   padding: 0;
   width: 100%;
 }
 
 .app-sidebar.collapsed .sidebar-title,
-.app-sidebar.collapsed .sidebar-collapse-btn {
+.app-sidebar.collapsed .sidebar-collapse-btn,
+html.sidebar-is-collapsed .app-sidebar .sidebar-title,
+html.sidebar-is-collapsed .app-sidebar .sidebar-collapse-btn {
   display: none !important;
 }
 
-.app-sidebar.collapsed .sidebar-monogram-btn {
+.app-sidebar.collapsed .sidebar-monogram-btn,
+html.sidebar-is-collapsed .app-sidebar .sidebar-monogram-btn {
   display: inline-flex !important;
 }
 
@@ -209,8 +225,49 @@ a {
 
 .sidebar-link .nav-icon,
 .sidebar-link .sidebar-icon {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 18px;
+  line-height: 1;
   flex-shrink: 0;
+  overflow: hidden;
+  text-align: center;
+  contain: layout paint size;
+}
+
+.sidebar-collapse-btn {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-control);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--duration-interactive) var(--ease-interactive), background-color var(--duration-interactive) var(--ease-interactive);
+}
+
+.sidebar-collapse-btn .material-symbols-outlined {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  font-size: 18px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar-badge {
@@ -222,17 +279,20 @@ a {
 }
 
 /* Collapsed Navigation */
-.app-sidebar.collapsed .sidebar-nav {
+.app-sidebar.collapsed .sidebar-nav,
+html.sidebar-is-collapsed .app-sidebar .sidebar-nav {
   align-items: center;
 }
 
-.app-sidebar.collapsed .sidebar-item-container {
+.app-sidebar.collapsed .sidebar-item-container,
+html.sidebar-is-collapsed .app-sidebar .sidebar-item-container {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
-.app-sidebar.collapsed .sidebar-link {
+.app-sidebar.collapsed .sidebar-link,
+html.sidebar-is-collapsed .app-sidebar .sidebar-link {
   width: 36px;
   height: 36px;
   padding: 0;
@@ -242,7 +302,10 @@ a {
 
 .app-sidebar.collapsed .sidebar-link .nav-label,
 .app-sidebar.collapsed .sidebar-link .sidebar-label,
-.app-sidebar.collapsed .sidebar-link .sidebar-badge {
+.app-sidebar.collapsed .sidebar-link .sidebar-badge,
+html.sidebar-is-collapsed .app-sidebar .sidebar-link .nav-label,
+html.sidebar-is-collapsed .app-sidebar .sidebar-link .sidebar-label,
+html.sidebar-is-collapsed .app-sidebar .sidebar-link .sidebar-badge {
   display: none !important;
 }
 

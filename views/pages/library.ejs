@@ -139,7 +139,15 @@
 
             <div class="flex items-center justify-between gap-xs pt-xs border-t border-border">
               <span class="badge badge-category"><%= book.category %></span>
-              <span class="badge <%= statusClass %>"><%= book.status %></span>
+              <div class="flex items-center gap-xs">
+                <% if (book.pdfPath) { %>
+                  <span class="badge border border-border bg-surface-elevated text-text-primary px-1.5 py-0.5 text-[10px] flex items-center gap-0.5" title="In-App PDF Reader available">
+                    <span class="material-symbols-outlined text-[12px]">picture_as_pdf</span>
+                    <span>PDF</span>
+                  </span>
+                <% } %>
+                <span class="badge <%= statusClass %>"><%= book.status %></span>
+              </div>
             </div>
           </div>
         </a>
@@ -170,9 +178,14 @@
                 <a href="/books/<%= book.id %>" class="flex items-center gap-md group text-inherit">
                   <%- renderListThumbnail(book) %>
                   <div class="min-w-0">
-                    <p class="font-title text-title-md text-text-primary group-hover:text-text-primary truncate" dir="<%= dir %>">
-                      <%= book.title %>
-                    </p>
+                    <div class="flex items-center gap-xs">
+                      <p class="font-title text-title-md text-text-primary group-hover:text-text-primary truncate" dir="<%= dir %>">
+                        <%= book.title %>
+                      </p>
+                      <% if (book.pdfPath) { %>
+                        <span class="badge border border-border bg-surface-elevated text-text-primary px-1.5 py-0.2 text-[10px] shrink-0" title="PDF Document attached">PDF</span>
+                      <% } %>
+                    </div>
                     <p class="font-body text-body-md text-text-secondary truncate" dir="<%= dir %>">
                       <%= book.author %>
                     </p>

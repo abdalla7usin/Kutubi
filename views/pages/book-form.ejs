@@ -30,6 +30,7 @@
     id="book-form"
     action="<%= isEdit ? `/books/${book.id}/edit` : '/books' %>"
     method="POST"
+    enctype="multipart/form-data"
     data-mode="<%= isEdit ? 'edit' : 'add' %>"
     class="card card-padded flex flex-col gap-lg"
     novalidate
@@ -142,7 +143,7 @@
     <div class="flex items-end gap-lg">
       <label class="form-group flex-1">
         <span class="form-label">
-          Cover Image URL <span class="optional">(Optional)</span>
+          Cover Image URL <span class="optional">(Optional override)</span>
         </span>
         <input
           id="book-cover-url"
@@ -168,10 +169,61 @@
             class="w-full h-full object-cover"
             onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'material-symbols-outlined text-[18px] text-text-muted\'>menu_book</span>';"
           />
+        <% } else if (isEdit && book && book.coverImage) { %>
+          <img
+            src="/storage/covers/<%= book.coverImage %>"
+            alt="PDF Cover Preview"
+            class="w-full h-full object-cover"
+            onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'material-symbols-outlined text-[18px] text-text-muted\'>menu_book</span>';"
+          />
         <% } else { %>
           <span class="material-symbols-outlined text-[18px] text-text-muted" aria-hidden="true">menu_book</span>
         <% } %>
       </div>
+    </div>
+
+    <!-- In-App PDF Document Upload -->
+    <div class="form-group flex flex-col gap-sm p-md rounded-card border border-border bg-surface-primary">
+      <div class="flex items-center justify-between">
+        <span class="form-label mb-0">PDF Document <span class="optional">(Optional &middot; Max 50 MB)</span></span>
+        <% if (isEdit && book && book.pdfPath) { %>
+          <span class="inline-flex items-center gap-xs px-2 py-0.5 rounded text-[11px] font-medium bg-surface-elevated text-text-primary border border-border">
+            <span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> Attached
+          </span>
+        <% } %>
+      </div>
+
+      <% if (isEdit && book && book.pdfPath) { %>
+        <!-- Existing PDF Information Bar -->
+        <div class="flex items-center justify-between p-sm rounded-control bg-background border border-border text-body-sm">
+          <div class="flex items-center gap-sm overflow-hidden">
+            <span class="material-symbols-outlined text-[18px] text-text-secondary">description</span>
+            <span class="font-medium text-text-primary truncate" title="<%= book.pdfFilename %>"><%= book.pdfFilename || 'Attached PDF' %></span>
+            <span class="text-text-muted text-caption">(<%= book.pdfPageCount ? `${book.pdfPageCount} pages &middot; ` : '' %><%= book.pdfSize ? `${(book.pdfSize / (1024 * 1024)).toFixed(1)} MB` : '' %>)</span>
+          </div>
+          <label class="flex items-center gap-xs text-caption text-danger cursor-pointer hover:underline">
+            <input type="checkbox" name="removePdf" value="true" class="rounded border-border bg-surface text-danger focus:ring-0">
+            <span>Remove PDF</span>
+          </label>
+        </div>
+        <p class="text-caption text-text-muted">Upload a replacement PDF below, or check 'Remove PDF' to detach the document.</p>
+      <% } %>
+
+      <div class="flex items-center gap-md">
+        <input
+          id="book-pdf-file"
+          name="pdfFile"
+          type="file"
+          accept=".pdf,application/pdf"
+          class="form-input flex-1 file:mr-4 file:py-1.5 file:px-3 file:rounded-control file:border-0 file:text-[12px] file:font-medium file:bg-surface-elevated file:text-text-primary file:cursor-pointer hover:file:bg-border transition-colors text-text-secondary text-body-sm"
+        />
+      </div>
+      <% if (errors && errors.pdfFile) { %>
+        <span id="pdf-file-error" class="form-error-msg"><%= errors.pdfFile %></span>
+      <% } %>
+      <span class="text-caption text-text-muted">
+        When uploaded, page 1 is automatically extracted as the library cover and total pages are synchronized.
+      </span>
     </div>
 
     <!-- Interactive 1-5 Star Rating -->

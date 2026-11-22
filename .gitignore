@@ -8,3 +8,11 @@ Thumbs.db
 /data/*.db-wal
 /data/*.db-journal
 /data/*.bak
+
+# Persistent PDF & Generated Cover storage (user uploads & generated files)
+/storage/pdfs/*
+!/storage/pdfs/.gitkeep
+/storage/covers/*
+!/storage/covers/.gitkeep
+/storage/temp/*
+!/storage/temp/.gitkeep

@@ -22,6 +22,12 @@ CREATE TABLE IF NOT EXISTS books (
   cover_url TEXT DEFAULT '',
   rating INTEGER CHECK(rating IS NULL OR (rating >= 1 AND rating <= 5)),
   description TEXT DEFAULT '',
+  pdf_path TEXT DEFAULT '',
+  pdf_filename TEXT DEFAULT '',
+  pdf_size INTEGER DEFAULT 0,
+  pdf_page_count INTEGER DEFAULT 0,
+  cover_image TEXT DEFAULT '',
+  last_read_page INTEGER DEFAULT 1,
   date_added TEXT NOT NULL,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL

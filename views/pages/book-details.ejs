@@ -33,11 +33,47 @@
 
   <!-- Asymmetric Two-Column Layout -->
   <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-2xl items-start">
-    <!-- Left Column: Cover + Interactive Reading Progress Card -->
+    <!-- Left Column: Cover + Reader Action + Progress Card -->
     <div class="flex flex-col gap-lg">
       <div class="w-full">
         <%- renderBookCover(book, 'shadow-sm') %>
       </div>
+
+      <!-- In-App PDF Reader Action Card -->
+      <% if (book.pdfPath) { %>
+        <section class="card card-padded flex flex-col gap-sm border-border bg-surface-primary">
+          <a
+            href="/books/<%= book.id %>/read"
+            id="read-book-btn"
+            class="btn btn-primary w-full flex items-center justify-center gap-sm py-2.5 font-medium"
+          >
+            <span class="material-symbols-outlined text-[18px]">menu_book</span>
+            <span>Read Book</span>
+          </a>
+          <div class="flex flex-col gap-xs pt-xs border-t border-border text-caption text-text-secondary">
+            <div class="flex items-center justify-between">
+              <span class="text-text-muted">Document:</span>
+              <span class="text-text-primary font-medium truncate max-w-[170px]" title="<%= book.pdfFilename %>"><%= book.pdfFilename || 'Attached PDF' %></span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-text-muted">Document Size:</span>
+              <span class="tabular-nums"><%= book.pdfPageCount %> pages &middot; <%= (book.pdfSize / (1024 * 1024)).toFixed(1) %> MB</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-text-muted">Last Opened:</span>
+              <span class="tabular-nums text-text-primary">Page <%= book.lastReadPage || 1 %></span>
+            </div>
+          </div>
+        </section>
+      <% } else { %>
+        <a
+          href="/books/<%= book.id %>/edit"
+          class="btn btn-secondary w-full flex items-center justify-center gap-sm py-2"
+        >
+          <span class="material-symbols-outlined text-[18px] text-text-muted">upload_file</span>
+          <span>Attach PDF Document</span>
+        </a>
+      <% } %>
 
       <!-- Reading Progress Card -->
       <section class="card card-padded flex flex-col gap-md">

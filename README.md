@@ -1,4 +1,4 @@
-# Kutubi (كتبي) — Personal Book Library Manager
+# Kutubi (كتبي) — Personal Book Library Manager & In-App PDF Reader
 
 > A dark, ultra-minimalist personal book library web application inspired by the craft, density, and precision of Linear and Raycast. Built with **Node.js, Express, SQLite (`better-sqlite3`), and EJS**.
 
@@ -6,36 +6,50 @@
 
 ## 1. Project Overview
 
-**Kutubi (كتبي)** is a fullstack personal library and reading tracker built as a university summer training graduation project. It allows readers to organize their personal physical and digital book collection, track reading progress in real time, categorize titles, record personal notes and ratings, and visualize reading milestones in an ultra-clean, monochromatic environment.
+**Kutubi (كتبي)** is a fullstack personal library, reading tracker, and in-app document reader built as a university summer training graduation project. It allows readers to organize their personal physical and digital book collection, read attached PDF books directly inside the browser, track reading progress in real time, categorize titles, record personal notes and ratings, and visualize reading milestones in an ultra-clean, monochromatic environment.
 
 ### Core Highlights
 - **Strict Grayscale Aesthetic:** Minimalist dark canvas (`#0B0B0C`, `#121214`, `#1A1A1E`), hairline borders (`1px solid #242429`), zero bright colors, zero glow, and zero drop shadows.
-- **Raycast/Linear Craft:** Custom popover dropdowns, keyboard-navigable menus, responsive 64px collapsible icon rail, and crisp micro-interactions (`150ms–200ms cubic-bezier(0.2, 0, 0, 1)`).
-- **First-Class Bilingual Typography:** Google Fonts `Inter` (Latin) and `IBM Plex Sans Arabic` (Arabic), `dir="auto"` on all user content, and `tabular-nums` on all counters and dates.
-- **Zero Broken Images:** Deterministic SVG typographic covers automatically generated when no cover image URL is provided.
+- **Linear/Raycast Craft & Zero-Jitter Navigation:** Custom popover dropdowns, keyboard-navigable menus, stable 220px desktop sidebar with 64px collapsible icon rail, and fixed 18×18px bounding box icons that never jitter or shift during navigation or page refresh.
+- **In-App PDF Reader:** Pure JavaScript PDF reader powered by Mozilla PDF.js v4. Multipart uploads with 50 MB limit, strict `%PDF-` magic byte validation, automatic first-page cover generation, dual progress tracking (Last Read Position vs. Confirmed Progress), and full keyboard/toolbar controls.
+- **First-Class Bilingual Typography:** Google Fonts `Inter` (Latin) and `IBM Plex Sans Arabic` (Arabic), `dir="auto"` on all user content, and `tabular-nums` on all counters, page badges, and dates.
+- **Zero Broken Images:** Multi-tier cover resolution: Manual cover URL $\to$ Extracted PDF cover thumbnail $\to$ Deterministic SVG typographic cover.
 - **Persistent SQLite Database:** Powered by `better-sqlite3` with foreign key enforcement and Write-Ahead Logging (`WAL`) mode. Zero simulated prototype state.
 
 ---
 
 ## 2. Key Features
 
-- **Dashboard:** Real-time library metrics (Total Books, Categories Count, Currently Reading, Completed with rounded percentage, To Read), active "Currently Reading" progress cards, and "Recently Added" titles.
+- **Dashboard:**
+  - Dynamic library metric cards calculated live from SQLite: Total Books, Categories Count, Currently Reading, Completed with rounded percentage, and To Read.
+  - Active "Currently Reading" progress cards with percentage meters and quick access.
+  - "Recently Added" titles with format badges (`PDF`).
 - **My Library (Grid & List Views):**
-  - **4-Column Grid View:** Visual card layout with progress bars, status pills, and category badges.
-  - **Structured List View:** Compact data table with 36×54px thumbnails, progress meters, and star ratings.
+  - **4-Column Grid View:** Visual card layout with progress bars, status pills, category badges, and PDF indicators.
+  - **Structured List View:** Compact data table with 36×54px thumbnails, progress meters, star ratings, and document badges.
   - **Live Search & Filters:** Search by title or author in both English and Arabic; filter by Reading Status, Category, and sort by Recently Added, Title (A–Z), Progress, or Rating.
+- **In-App PDF Reader (`/books/:id/read`):**
+  - **Streamlined Toolbar:** Previous/Next page navigation, direct page jump input, current page indicator (`Page X of Y`), Zoom In/Out, Fit Width, Fit Page, Fullscreen toggle, and direct download of original PDF.
+  - **Mark as Read Integration:** One-click CTA in toolbar to synchronize current document page to confirmed reading progress (`current_page`), auto-transitioning book status to `Completed` when reaching the final page.
+  - **Reading Position vs. Confirmed Progress:** Automatically persists the reader's view location (`last_read_page`) on page navigation without prematurely updating confirmed reading stats. When reopening the reader, it automatically resumes where the reader left off.
+  - **Pure JavaScript Rendering:** High-resolution HTML5 canvas rendering via Mozilla PDF.js v4 with zero native C++ compiler requirements.
 - **Book Details & Reading Progress:**
-  - Quick Page Update form that auto-transitions reading statuses:
+  - **Read Book CTA:** Prominent action button to launch the In-App PDF Reader (or `Attach PDF` link when no digital copy is uploaded).
+  - **Document Metadata Box:** Displays original PDF filename, formatted file size, detected page count, and current reading position.
+  - **Quick Page Update Form:** Updates confirmed reading progress with automated status transitions:
     - Setting current page equal to total pages auto-completes the book (`100%`).
     - Updating partial progress on a queued book auto-transitions status to `Reading`.
     - Resetting current page to 0 returns status to `To Read`.
-    - Strict validation rejecting invalid or out-of-bounds page numbers.
+    - Strict server-side validation rejecting negative, decimal, or out-of-bounds page numbers.
   - Responsive metadata grid (Category, Author, Total Pages, Rating, Date Added) and personal reading notes.
 - **Add & Edit Book Management:**
-  - Unified form with live cover image preview container and interactive 5-star rating selector.
+  - Unified form with live cover image preview container, interactive 5-star rating selector, and multipart PDF document uploader.
+  - Automatic page count population when uploading a PDF.
+  - PDF document replacement and removal controls with automatic filesystem cleanup.
 - **Delete Confirmation Dialog:**
-  - Accessible dark confirmation modal with focus trapping and cancel dismiss.
-- **Category Management & Protection:**
+  - Accessible dark confirmation modal with focus trapping, cancel dismiss, and safe cascading file cleanup (deletes associated PDF and cover files from disk).
+- **Category Management & Protection (Inside Settings):**
+  - *Location:* Category management is centrally housed within **Settings** (`/settings`), keeping navigation focused.
   - Add custom categories with case-insensitive duplicate prevention.
   - Rename custom categories via modal dialog.
   - Safe category deletion: all associated books are automatically and safely reassigned to `Uncategorized`.
@@ -47,19 +61,20 @@
   - Full catalog backup exported as timestamped JSON file.
   - Sample Data Reset to restore pristine 24-book demonstration baseline.
   - Persistent default library view (`grid` / `list`) and default sorting order.
-- **Responsive Layout:**
-  - Desktop: 240px sidebar with 64px collapsible icon rail.
+- **Responsive Layout & Sidebar Rail:**
+  - Desktop: 220px sidebar with 64px collapsible icon rail (pre-painted to prevent layout shift).
   - Mobile (< 768px): Sticky mobile header with slide-over navigation drawer.
 
 ---
 
 ## 3. Technology Stack
 
-- **Backend Runtime:** Node.js (v18.0+)
+- **Backend Runtime:** Node.js (v18.0+, tested on v24.18.0)
 - **Server Framework:** Express 4.x
 - **Template Engine:** EJS (`express-ejs-layouts`)
-- **Database Engine:** SQLite 3 via `better-sqlite3` v12.x
+- **Database Engine:** SQLite 3 via `better-sqlite3` v13.x
 - **Database Mode:** Write-Ahead Logging (`PRAGMA journal_mode = WAL`), Foreign Keys enabled (`PRAGMA foreign_keys = ON`)
+- **PDF Processing & Rendering:** `multer` (multipart upload), `pdf-to-img` / `pdfjs-dist` (pure JS cover extraction and page counting), Mozilla PDF.js v4 (client canvas reader)
 - **Frontend / Styling:** Vanilla ES6+ JavaScript, CSS Custom Properties (Design Tokens), Google Fonts (`Inter`, `IBM Plex Sans Arabic`), Material Symbols
 - **Testing:** Node.js built-in test runner (`node:test`, `node:assert`), Playwright Chromium for end-to-end browser verification
 
@@ -70,19 +85,20 @@
 ```
 Kutubi/
 ├── controllers/          # Route controller layer (handles HTTP requests/responses)
-│   ├── books.controller.js
-│   ├── categories.controller.js
-│   ├── dashboard.controller.js
-│   ├── library.controller.js
-│   ├── profile.controller.js
-│   └── settings.controller.js
-├── db/                   # Database connection, DDL schema & seeder
-│   ├── database.js       # SQLite connection manager with WAL mode
+│   ├── books.controller.js       # CRUD, progress update, PDF streaming & reader
+│   ├── categories.controller.js  # Category creation, renaming & safe deletion
+│   ├── dashboard.controller.js   # Live metrics & recent books
+│   ├── library.controller.js     # Library grid/list view & filter query parsing
+│   ├── profile.controller.js     # Profile details & milestone statistics
+│   └── settings.controller.js    # Preferences, backup export & sample reset
+├── db/                   # Database connection, DDL schema, migrations & seeder
+│   ├── database.js       # SQLite connection manager, WAL mode & migrations
 │   ├── schema.sql        # Database schema definitions & indexes
 │   └── seed.js           # 24 sample books & 5 categories seeder
-├── middleware/           # Centralized Express error & 404 handlers
-│   ├── error-handler.js
-│   └── not-found.js
+├── middleware/           # Centralized Express middleware
+│   ├── error-handler.js  # Global error handling
+│   ├── not-found.js      # 404 handler
+│   └── upload.js         # Multer multipart upload with 50 MB limit
 ├── public/               # Public static assets
 │   ├── css/
 │   │   ├── tokens.css    # Strict grayscale design tokens
@@ -93,23 +109,29 @@ Kutubi/
 │       ├── modal.js      # Accessible confirmation modal dialogs
 │       └── toast.js      # Floating feedback toast utility
 ├── routes/               # Express modular router definitions
-│   ├── books.routes.js
-│   ├── categories.routes.js
-│   ├── dashboard.routes.js
-│   ├── library.routes.js
-│   ├── profile.routes.js
-│   └── settings.routes.js
+│   ├── books.routes.js      # /books routes (details, form, edit, read, pdf)
+│   ├── categories.routes.js # /categories routes (inside settings)
+│   ├── dashboard.routes.js  # / route
+│   ├── library.routes.js    # /library route
+│   ├── profile.routes.js    # /profile route
+│   └── settings.routes.js   # /settings routes
 ├── services/             # Business logic & SQL query execution layer
-│   ├── books.service.js
-│   ├── categories.service.js
-│   ├── dashboard.service.js
-│   ├── profile.service.js
-│   └── settings.service.js
-├── tests/                # Automated unit & integration test suite (32 tests)
+│   ├── books.service.js      # Book CRUD, reading progress & PDF relations
+│   ├── categories.service.js # Category queries, renames & safety checks
+│   ├── dashboard.service.js  # Live SQLite aggregations
+│   ├── pdf.service.js        # Magic byte validation, cover extraction & cleanup
+│   ├── profile.service.js    # Dynamic profile stats & initials logic
+│   └── settings.service.js   # Settings persistence, export & reset
+├── storage/              # Persistent document storage outside public root
+│   ├── covers/           # Generated PDF first-page cover thumbnails (.png)
+│   ├── pdfs/             # Uploaded PDF document files (.pdf)
+│   └── temp/             # Temporary processing files
+├── tests/                # Automated unit & integration test suite (36 tests)
 │   ├── books.test.js
 │   ├── categories.test.js
 │   ├── dashboard.test.js
 │   ├── database.test.js
+│   ├── pdf.test.js
 │   ├── progress.test.js
 │   └── settings-profile.test.js
 ├── utils/                # Formatting, input validation & cover helpers
@@ -118,10 +140,27 @@ Kutubi/
 │   └── validation.js
 ├── views/                # Server-rendered EJS templates
 │   ├── layout.ejs        # Master layout shell
-│   ├── pages/            # Page templates (Dashboard, Library, Book Details, Form, Settings, Profile)
-│   └── partials/         # Modular partials (Sidebar, Header, Modals, Scripts, Toasts)
+│   ├── pages/            # Page templates
+│   │   ├── book-details.ejs
+│   │   ├── book-form.ejs
+│   │   ├── dashboard.ejs
+│   │   ├── delete-confirmation.ejs
+│   │   ├── error.ejs
+│   │   ├── library.ejs
+│   │   ├── pdf-reader.ejs
+│   │   ├── profile.ejs
+│   │   └── settings.ejs
+│   └── partials/         # Modular partials
+│       ├── head.ejs
+│       ├── header.ejs
+│       ├── mobile-nav.ejs
+│       ├── modals.ejs
+│       ├── scripts.ejs
+│       ├── sidebar.ejs
+│       └── toasts.ejs
 ├── data/                 # SQLite storage directory (.gitkeep tracked; .db files ignored)
 ├── package.json          # Dependencies, scripts & project metadata
+├── package-lock.json     # Deterministic lockfile (with gypfile: false)
 └── server.js             # Main Express server entrypoint
 ```
 
@@ -129,11 +168,12 @@ Kutubi/
 
 ## 5. Database Schema & Relationships
 
-The database is defined in `db/schema.sql` and initialized automatically on first startup:
+The database is defined in `db/schema.sql` and initialized automatically on first startup. Automatic versioned migrations ensure schema evolution with zero data loss:
 
 ```
 ┌─────────────────────────────────┐
 │           categories            │
+│  (Managed in /settings)         │
 ├─────────────────────────────────┤
 │ id (PK, INTEGER AUTOINCREMENT)  │
 │ name (TEXT UNIQUE, NOCASE)      │
@@ -154,7 +194,13 @@ The database is defined in `db/schema.sql` and initialized automatically on firs
 │        Completed)               │
 │ total_pages (INTEGER >= 1)      │
 │ current_page (INTEGER >= 0)     │
-│ cover_url (TEXT DEFAULT '')     │
+│ last_read_page (INTEGER >= 1)   │ <── PDF Reader current view position
+│ cover_url (TEXT DEFAULT '')     │ <── Manual URL override
+│ cover_image (TEXT DEFAULT '')   │ <── Auto-extracted PDF cover path
+│ pdf_path (TEXT DEFAULT '')      │ <── Internal filesystem storage path
+│ pdf_filename (TEXT DEFAULT '')  │ <── Original client filename
+│ pdf_size (INTEGER DEFAULT 0)    │ <── File size in bytes
+│ pdf_page_count (INTEGER DEFAULT)│ <── Detected document page count
 │ rating (INTEGER: 1 to 5 / NULL) │
 │ description (TEXT DEFAULT '')   │
 │ date_added (TEXT NOT NULL)      │
@@ -183,10 +229,12 @@ Kutubi initializes automatically with **exactly 24 realistic sample books** acro
 - **Self-Development (3 books):** Atomic Habits, Deep Work, Show Your Work!.
 - **Uncategorized (2 books):** Thinking in Systems, Sapiens.
 
-### Status Distribution:
+### Initial Baseline Status Distribution:
 - **Currently Reading:** 3 books
 - **Completed:** 14 books (58%)
 - **To Read:** 7 books
+
+*(Note: Live metrics on the dashboard, profile, and library reflect actual database counts dynamically at all times).*
 
 ---
 
@@ -210,6 +258,7 @@ Kutubi initializes automatically with **exactly 24 realistic sample books** acro
    # or for reproducible clean install:
    npm ci
    ```
+   > **Note on `npm ci`:** `better-sqlite3` includes official prebuilt binaries. The lockfile is configured with `"gypfile": false` to ensure clean, instant installation on any machine without requiring Python or Visual Studio C++ build tools.
 
 3. **Start the application:**
    ```bash
@@ -221,7 +270,7 @@ Kutubi initializes automatically with **exactly 24 realistic sample books** acro
    ```text
    http://localhost:3000
    ```
-   *(The database is automatically created and seeded at `data/kutubi.db` on first run).*
+   *(The database is automatically created and seeded at `data/kutubi.db` on first run. Upload directories `storage/pdfs/`, `storage/covers/`, and `storage/temp/` are also initialized).*
 
 5. **Health Check Endpoint:**
    ```text
@@ -239,43 +288,61 @@ Kutubi includes a complete automated test suite using the Node.js native test ru
 npm test
 ```
 
-### Test Coverage Summary (32 Automated Tests):
+### Test Coverage Summary (36 Automated Tests across 7 Suites):
 - **Database Initialization & Schema Integrity:** Foreign keys, WAL pragma, table constraints, singleton enforcement, seed count accuracy (5 tests).
 - **Books Service & CRUD:** Full search (English and Arabic), status/category filtering, multi-field sorting, book creation, updates, and deletion (8 tests).
 - **Reading Progress Logic:** Auto-transitions to `Completed` on max pages, transitions to `Reading` on partial progress, reset to `To Read` on 0 pages, and strict out-of-bounds page rejection (5 tests).
 - **Categories Service & Safety:** Category listing, book counts, case-insensitive duplicate prevention, rename, `Uncategorized` system protection, and safe reassignment upon custom category deletion (5 tests).
 - **Dashboard Service:** Live SQLite aggregations, currently reading retrieval, recently added queries, and zero-books division-by-zero protection (4 tests).
+- **In-App PDF Service & Document Operations:** Magic byte signature validation, rejection of corrupt/spoofed files, 3-page rendering & first-page thumbnail generation, and database attachment persistence (4 tests).
 - **Settings & Profile:** Preferences persistence, JSON backup export, factory sample data reset, profile updates, and Unicode avatar initials generation rules (5 tests).
 
 ---
 
 ## 9. Evaluation & Demonstration Script
 
-For a quick 3-minute university summer training project evaluation:
+For a comprehensive university summer training project evaluation:
 
-1. **Dashboard Overview:** Open `http://localhost:3000/`. Highlight the 4 live metric cards (24 books, 3 reading, 14 completed [58%], 7 to read) and the 3 active reading cards with progress bars.
+1. **Dashboard Overview:** Open `http://localhost:3000/`.
+   - Highlight the 4 dynamic metric cards calculated live from SQLite (Total Books, Currently Reading, Completed with rounded percentage, and To Read).
+   - Point out the active "Currently Reading" cards with progress bars and "Recently Added" books with `PDF` badges.
 2. **Bilingual Search & Filtering:** Click **My Library**.
-   - Filter by **Status: Reading** (shows 3 books).
-   - Filter by **Category: Arabic Literature** (shows 6 books).
-   - Search for **"غرناطة"** (shows *ثلاثية غرناطة*).
-   - Search for **"Pragmatic"** (shows *The Pragmatic Programmer* with its fallback typographic cover).
-3. **Reading Progress Auto-Transition:** Click on *Clean Architecture* (To Read, 0/352 pages).
-   - Enter `150` $\to$ click Update $\to$ book immediately transitions to `Reading` with progress bar at 43%.
-   - Enter `352` $\to$ click Update $\to$ book auto-completes to `Completed` (100%).
-4. **Add Book with Validation:** Click **Add Book**.
-   - Attempt to submit empty form $\to$ observe red validation feedback.
-   - Enter a title and author $\to$ select category $\to$ observe live cover preview container $\to$ submit.
-5. **Safe Category Deletion:** Navigate to **Settings**.
+   - Filter by **Status: Reading** or **Status: Completed**.
+   - Filter by **Category: Arabic Literature**.
+   - Search for an Arabic title like **"غرناطة"** (returns *ثلاثية غرناطة*).
+   - Search for an English title like **"Pragmatic"** (returns *The Pragmatic Programmer*).
+   - Switch between **Grid View** and **List View** to showcase layout versatility.
+3. **In-App PDF Reader & Document Reading Experience:**
+   - Click on any book with an attached PDF (e.g. *The Pragmatic Programmer*).
+   - Click the prominent **Read Book** button to launch the reader at `/books/:id/read`.
+   - **Navigate:** Use Next/Previous buttons or arrow keys to flip pages; enter a number in the page input and press Enter to jump directly to a page.
+   - **Zoom & View:** Use Zoom In (+), Zoom Out (-), Fit Width, and Fit Page controls. Toggle Fullscreen.
+   - **Mark as Read:** Click **Mark Current Page as Read** in the top toolbar to sync your active page position to your confirmed reading progress. Notice the status bar updating and the completion toast appearing.
+   - **Persistence:** Close or refresh the reader. Reopen it to show that it automatically resumes at the exact last read page (`last_read_page`).
+4. **PDF Upload & Automatic Cover Extraction:**
+   - Click **Add Book**.
+   - Fill in Title and Author, select Category.
+   - Attach a PDF file from your computer. Notice how the page count can automatically be determined and an automatic first-page cover thumbnail is generated.
+   - Submit the book and observe it appear in My Library with its generated cover.
+5. **Reading Progress Auto-Transition:**
+   - Open a book in `To Read` status (0 pages read).
+   - Enter a partial page number $\to$ click Update $\to$ book immediately transitions to `Reading`.
+   - Enter the maximum page count $\to$ click Update $\to$ book auto-completes to `Completed` (`100%`).
+6. **Category Management & Protection (in Settings):**
+   - Navigate to **Settings** $\to$ scroll to Categories section.
    - Add a custom category (e.g. `Philosophy`).
    - Click Delete on `Philosophy` $\to$ confirm in modal $\to$ explain that any books assigned to it are safely reassigned to `Uncategorized`.
-   - Show that `Uncategorized` has no delete button (protected system category).
-6. **Reader Profile & Dynamic Initials:** Navigate to **Profile**.
-   - Type `"Sarah Jenkins"` $\to$ initials avatar live-updates to `"SJ"`.
+   - Note that `Uncategorized` is protected from rename and delete actions.
+7. **Reader Profile & Dynamic Initials:**
+   - Navigate to **Profile**.
+   - Type an English name like `"Sarah Jenkins"` $\to$ initials avatar live-updates to `"SJ"`.
    - Type an Arabic name like `"ابن خلدون"` $\to$ initials avatar live-updates to `"اخ"`.
-7. **JSON Backup Export:** In Settings, click **Export Library (JSON)** to demonstrate complete data portability.
+   - Point out the calculated milestone counters (Books Completed, Pages Read, Favorite Category).
+8. **Data Portability:**
+   - In Settings, click **Export Library (JSON)** to download a complete backup of the catalog.
 
 ---
 
 ## 10. License
 
-Developed as a Summer Training Graduation Project. Released under the MIT License.
+Developed as a University Summer Training Graduation Project. Released under the MIT License.

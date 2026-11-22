@@ -13,6 +13,7 @@ const {
   renderBookCover,
   renderListThumbnail,
   renderTypographicCover,
+  getEffectiveCoverUrl,
   isArabic,
   escapeHtml
 } = require('./utils/covers');
@@ -54,6 +55,8 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
 app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
+app.use('/storage/covers', express.static(path.join(__dirname, 'storage', 'covers')));
+app.use('/vendor/pdfjs', express.static(path.join(__dirname, 'node_modules', 'pdfjs-dist', 'build')));
 
 // Global locals for all EJS templates
 app.use((req, res, next) => {
@@ -68,6 +71,7 @@ app.use((req, res, next) => {
   res.locals.renderBookCover = renderBookCover;
   res.locals.renderListThumbnail = renderListThumbnail;
   res.locals.renderTypographicCover = renderTypographicCover;
+  res.locals.getEffectiveCoverUrl = getEffectiveCoverUrl;
   res.locals.isArabic = isArabic;
   res.locals.escapeHtml = escapeHtml;
   res.locals.formatDate = formatDate;

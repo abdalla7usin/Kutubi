@@ -42,30 +42,26 @@
 
         if (collapsed) {
           sidebar.classList.add('collapsed');
-          sidebar.classList.remove('w-60');
-          sidebar.classList.add('w-16');
           sidebar.classList.add('overflow-hidden');
+          document.documentElement.classList.add('sidebar-is-collapsed');
           localStorage.setItem('kutubi_sidebar_collapsed_v1', 'true');
         } else {
           sidebar.classList.remove('collapsed');
-          sidebar.classList.remove('w-16');
-          sidebar.classList.add('w-60');
+          document.documentElement.classList.remove('sidebar-is-collapsed');
           localStorage.setItem('kutubi_sidebar_collapsed_v1', 'false');
         }
       }
 
-      // Initial state: default is expanded (w-60), collapse only if explicitly stored as 'true'
+      // Initial state: default is expanded (220px), collapse only if explicitly stored as 'true'
       const isCollapsed = localStorage.getItem('kutubi_sidebar_collapsed_v1') === 'true';
       if (isCollapsed) {
         sidebar.classList.add('collapsed');
-        sidebar.classList.remove('w-60');
-        sidebar.classList.add('w-16');
         sidebar.classList.add('overflow-hidden');
+        document.documentElement.classList.add('sidebar-is-collapsed');
       } else {
         sidebar.classList.remove('collapsed');
-        sidebar.classList.remove('w-16');
-        sidebar.classList.add('w-60');
         sidebar.classList.remove('overflow-hidden');
+        document.documentElement.classList.remove('sidebar-is-collapsed');
       }
 
       if (collapseBtn) {

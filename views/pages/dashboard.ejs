@@ -60,9 +60,10 @@
           <% const dir = isArabic(book.title) ? 'rtl' : 'ltr'; %>
           <a href="/books/<%= book.id %>" class="card card-interactive p-lg flex gap-lg h-full">
             <div class="w-[68px] aspect-[2/3] rounded-cover overflow-hidden border border-border bg-background shrink-0 book-cover-container">
-              <% if (book.coverUrl) { %>
+              <% const effectiveCover = getEffectiveCoverUrl(book); %>
+              <% if (effectiveCover) { %>
                 <img
-                  src="<%= book.coverUrl %>"
+                  src="<%= effectiveCover %>"
                   alt="<%= book.title %> cover"
                   class="w-full h-full object-cover"
                   loading="lazy"

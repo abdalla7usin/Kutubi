@@ -69,4 +69,13 @@
   <!-- Project Design System & Component Stylesheets -->
   <link rel="stylesheet" href="/css/tokens.css" />
   <link rel="stylesheet" href="/css/styles.css" />
+
+  <!-- Immediate pre-paint sidebar state restoration to prevent layout shift -->
+  <script>
+    try {
+      if (localStorage.getItem('kutubi_sidebar_collapsed_v1') === 'true') {
+        document.documentElement.classList.add('sidebar-is-collapsed');
+      }
+    } catch (e) {}
+  </script>
 </head>

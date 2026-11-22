@@ -8,6 +8,7 @@ const { getDb } = require('../db/database');
 const { validateBookInput, validateProgressInput } = require('../utils/validation');
 const { formatDate } = require('../utils/formatting');
 const categoriesService = require('./categories.service');
+const { cleanupPdfFiles } = require('./pdf.service');
 
 class BooksService {
   /**
@@ -35,6 +36,12 @@ class BooksService {
         b.cover_url AS coverUrl,
         b.rating,
         b.description,
+        b.pdf_path AS pdfPath,
+        b.pdf_filename AS pdfFilename,
+        b.pdf_size AS pdfSize,
+        b.pdf_page_count AS pdfPageCount,
+        b.cover_image AS coverImage,
+        b.last_read_page AS lastReadPage,
         b.date_added AS dateAdded,
         b.created_at AS createdAt,
         b.updated_at AS updatedAt
@@ -112,6 +119,12 @@ class BooksService {
         b.cover_url AS coverUrl,
         b.rating,
         b.description,
+        b.pdf_path AS pdfPath,
+        b.pdf_filename AS pdfFilename,
+        b.pdf_size AS pdfSize,
+        b.pdf_page_count AS pdfPageCount,
+        b.cover_image AS coverImage,
+        b.last_read_page AS lastReadPage,
         b.date_added AS dateAdded,
         b.created_at AS createdAt,
         b.updated_at AS updatedAt
@@ -175,8 +188,9 @@ class BooksService {
     const info = db.prepare(`
       INSERT INTO books (
         title, author, category_id, status, total_pages, current_page,
-        cover_url, rating, description, date_added, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        cover_url, rating, description, pdf_path, pdf_filename, pdf_size,
+        pdf_page_count, cover_image, last_read_page, date_added, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       normalized.title,
       normalized.author,
@@ -187,6 +201,12 @@ class BooksService {
       normalized.coverUrl || '',
       normalized.rating,
       normalized.description || '',
+      inputData.pdfPath || '',
+      inputData.pdfFilename || '',
+      inputData.pdfSize || 0,
+      inputData.pdfPageCount || 0,
+      inputData.coverImage || '',
+      inputData.lastReadPage || 1,
       dateAdded,
       nowIso,
       nowIso
@@ -241,6 +261,36 @@ class BooksService {
       finalStatus = 'Reading';
     }
 
+    // Handle PDF metadata updates
+    let pdfPath = existing.pdfPath || '';
+    let pdfFilename = existing.pdfFilename || '';
+    let pdfSize = existing.pdfSize || 0;
+    let pdfPageCount = existing.pdfPageCount || 0;
+    let coverImage = existing.coverImage || '';
+    let lastReadPage = existing.lastReadPage || 1;
+
+    if (inputData.removePdf === true || inputData.removePdf === 'true' || inputData.removePdf === '1') {
+      // User explicitly requested to remove attached PDF
+      cleanupPdfFiles(existing.pdfPath, existing.coverImage);
+      pdfPath = '';
+      pdfFilename = '';
+      pdfSize = 0;
+      pdfPageCount = 0;
+      coverImage = '';
+      lastReadPage = 1;
+    } else if (inputData.pdfPath) {
+      // User uploaded a replacement PDF: clean up old files if different
+      if (existing.pdfPath && existing.pdfPath !== inputData.pdfPath) {
+        cleanupPdfFiles(existing.pdfPath, existing.coverImage);
+      }
+      pdfPath = inputData.pdfPath;
+      pdfFilename = inputData.pdfFilename || '';
+      pdfSize = inputData.pdfSize || 0;
+      pdfPageCount = inputData.pdfPageCount || 0;
+      coverImage = inputData.coverImage || '';
+      lastReadPage = 1;
+    }
+
     const nowIso = new Date().toISOString();
 
     db.prepare(`
@@ -254,6 +304,12 @@ class BooksService {
           cover_url = ?,
           rating = ?,
           description = ?,
+          pdf_path = ?,
+          pdf_filename = ?,
+          pdf_size = ?,
+          pdf_page_count = ?,
+          cover_image = ?,
+          last_read_page = ?,
           updated_at = ?
       WHERE id = ?
     `).run(
@@ -266,6 +322,12 @@ class BooksService {
       normalized.coverUrl || '',
       normalized.rating,
       normalized.description || '',
+      pdfPath,
+      pdfFilename,
+      pdfSize,
+      pdfPageCount,
+      coverImage,
+      lastReadPage,
       nowIso,
       id
     );
@@ -323,17 +385,57 @@ class BooksService {
   }
 
   /**
-   * Delete book by ID
+   * Update the last opened page position for the in-app PDF reader
+   * (Does not alter confirmed reading progress or status)
+   * @param {number|string} id
+   * @param {number|string} pageNum
+   * @param {import('better-sqlite3').Database} [dbInstance]
+   * @returns {{ success: boolean, lastReadPage?: number, notFound?: boolean, error?: string }}
+   */
+  updateReadPosition(id, pageNum, dbInstance) {
+    const db = dbInstance || getDb();
+    const book = this.getBookById(id, db);
+    if (!book) {
+      return { success: false, notFound: true, error: 'Book not found' };
+    }
+
+    const page = parseInt(pageNum, 10);
+    if (isNaN(page) || page < 1) {
+      return { success: false, error: 'Invalid page number' };
+    }
+
+    const nowIso = new Date().toISOString();
+    db.prepare(`
+      UPDATE books
+      SET last_read_page = ?,
+          updated_at = ?
+      WHERE id = ?
+    `).run(page, nowIso, id);
+
+    return { success: true, lastReadPage: page };
+  }
+
+  /**
+   * Delete book by ID and clean up associated storage files
    * @param {number|string} id
    * @param {import('better-sqlite3').Database} [dbInstance]
    * @returns {{ success: boolean, notFound?: boolean }}
    */
   deleteBook(id, dbInstance) {
     const db = dbInstance || getDb();
+    const book = this.getBookById(id, db);
+    if (!book) {
+      return { success: false, notFound: true };
+    }
+
     const result = db.prepare('DELETE FROM books WHERE id = ?').run(id);
     if (result.changes === 0) {
       return { success: false, notFound: true };
     }
+
+    // Safely remove associated PDF and generated cover thumbnail
+    cleanupPdfFiles(book.pdfPath, book.coverImage);
+
     return { success: true };
   }
 }
