@@ -5,12 +5,139 @@
  * - Statuses: Reading (3), Completed (14), To Read (7) = 24
  */
 
+const fs = require('fs');
+const path = require('path');
+
+const STORAGE_ROOT = path.join(__dirname, '..', 'storage');
+const PDFS_DIR = path.join(STORAGE_ROOT, 'pdfs');
+const COVERS_DIR = path.join(STORAGE_ROOT, 'covers');
+const STARTER_DIR = path.join(STORAGE_ROOT, 'starter');
+
 const INITIAL_CATEGORIES = [
   { name: 'Engineering', isSystem: 0 },
   { name: 'Arabic Literature', isSystem: 0 },
   { name: 'Fiction & Sci-Fi', isSystem: 0 },
   { name: 'Self-Development', isSystem: 0 },
   { name: 'Uncategorized', isSystem: 1 }
+];
+
+/**
+ * 8 Realistic Starter Books for Genuinely Fresh Installations:
+ * Demonstrates:
+ * - English and Arabic titles
+ * - Distinct authors
+ * - All 5 default categories
+ * - All reading statuses: Reading (3), Completed (3), To Read (2)
+ * - Diverse page counts (4 to 688) & progress values
+ * - Ratings (4 & 5 stars) and rich descriptions / reading notes
+ * - Both attached in-app PDF with extracted cover and SVG typographic covers
+ */
+const STARTER_BOOKS = [
+  // 1. Engineering - Completed (464 pages, 100%)
+  {
+    title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
+    author: 'Robert C. Martin',
+    category: 'Engineering',
+    status: 'Completed',
+    totalPages: 464,
+    currentPage: 464,
+    rating: 5,
+    coverUrl: '',
+    dateAdded: 'Oct 15, 2026',
+    notes: 'A foundational text on software craftsmanship. Emphasizes meaningful naming, single-responsibility functions, and disciplined test-driven refactoring.'
+  },
+  // 2. Arabic Literature - Reading (504 pages, 240 read = 48%)
+  {
+    title: 'ثلاثية غرناطة',
+    author: 'رضوى عاشور',
+    category: 'Arabic Literature',
+    status: 'Reading',
+    totalPages: 504,
+    currentPage: 240,
+    rating: 5,
+    coverUrl: '',
+    dateAdded: 'Oct 20, 2026',
+    notes: 'ملحمة أندلسية استثنائية تؤرخ لسقوط غرناطة ومحنة الموريسكيين عبر ثلاثة أجيال. سردية شعرية غنية تجسد مقاومة النسيان وحفظ المخطوطات والذاكرة الثقافية.'
+  },
+  // 3. Fiction & Sci-Fi - Completed (688 pages, 100%)
+  {
+    title: 'Dune',
+    author: 'Frank Herbert',
+    category: 'Fiction & Sci-Fi',
+    status: 'Completed',
+    totalPages: 688,
+    currentPage: 688,
+    rating: 5,
+    coverUrl: '',
+    dateAdded: 'Oct 28, 2026',
+    notes: 'A masterwork of world-building, planetary ecology, politics, and destiny on Arrakis. The spice must flow.'
+  },
+  // 4. Self-Development - Reading (320 pages, 180 read = 56%)
+  {
+    title: 'Atomic Habits',
+    author: 'James Clear',
+    category: 'Self-Development',
+    status: 'Reading',
+    totalPages: 320,
+    currentPage: 180,
+    rating: 4,
+    coverUrl: '',
+    dateAdded: 'Nov 02, 2026',
+    notes: 'An actionable framework for small daily changes that compound into massive results over time. Key focus on identity-based habits and friction reduction.'
+  },
+  // 5. Uncategorized - Reading (with attached starter guide PDF! 4 pages, 2 read = 50%)
+  {
+    title: 'Kutubi Quick Start Guide',
+    author: 'Kutubi Team',
+    category: 'Uncategorized',
+    status: 'Reading',
+    totalPages: 4,
+    currentPage: 2,
+    rating: 5,
+    coverUrl: '',
+    dateAdded: 'Nov 10, 2026',
+    notes: 'Welcome to Kutubi (كتبي)! This starter guide demonstrates the in-app PDF document reader, live page rendering, cover thumbnail extraction, and dual progress tracking.',
+    isStarterPdf: true
+  },
+  // 6. Arabic Literature - Completed (620 pages, 100%)
+  {
+    title: 'مقدمة ابن خلدون',
+    author: 'ابن خلدون',
+    category: 'Arabic Literature',
+    status: 'Completed',
+    totalPages: 620,
+    currentPage: 620,
+    rating: 5,
+    coverUrl: '',
+    dateAdded: 'Nov 12, 2026',
+    notes: 'المؤلف التأسيسي لعلم الاجتماع وفلسفة العمران البشري ودراسة طبائع الدول والمدنية والحضارات.'
+  },
+  // 7. Engineering - To Read (616 pages, 0%)
+  {
+    title: 'Designing Data-Intensive Applications',
+    author: 'Martin Kleppmann',
+    category: 'Engineering',
+    status: 'To Read',
+    totalPages: 616,
+    currentPage: 0,
+    rating: 4,
+    coverUrl: '',
+    dateAdded: 'Nov 15, 2026',
+    notes: 'Deep dive into data systems architecture: reliable distributed transactions, partitioning, consensus algorithms, and stream processing.'
+  },
+  // 8. Fiction & Sci-Fi - To Read (128 pages, 0%)
+  {
+    title: 'The Metamorphosis',
+    author: 'Franz Kafka',
+    category: 'Fiction & Sci-Fi',
+    status: 'To Read',
+    totalPages: 128,
+    currentPage: 0,
+    rating: 4,
+    coverUrl: '',
+    dateAdded: 'Nov 18, 2026',
+    notes: 'A profound novella exploring modern alienation, familial obligation, and existential transformation through Gregor Samsa.'
+  }
 ];
 
 const INITIAL_BOOKS = [
@@ -332,12 +459,6 @@ function seedDefaultCategories(db) {
     for (const cat of INITIAL_CATEGORIES) {
       insertCat.run(cat.name, cat.isSystem, now, now);
     }
-
-    db.prepare(`
-      INSERT INTO app_metadata (key, value)
-      VALUES ('initialized', '1')
-      ON CONFLICT(key) DO UPDATE SET value = '1'
-    `).run();
   });
 
   seedTransaction();
@@ -351,6 +472,9 @@ function seedSampleBooksForTests(db) {
   seedDefaultCategories(db);
 
   const seedTransaction = db.transaction(() => {
+    // Clear any starter books so test suite fixtures have exactly 24 books
+    db.prepare('DELETE FROM books').run();
+
     const now = new Date().toISOString();
 
     // Map category names to IDs
@@ -400,10 +524,116 @@ function seedSampleBooksForTests(db) {
   seedTransaction();
 }
 
+/**
+ * Seed 8 starter books on genuinely fresh database installations only.
+ * Sets 'starter_books_seeded' marker in app_metadata so restarts never re-seed deleted books.
+ * @param {import('better-sqlite3').Database} db
+ */
+function seedStarterBooksIfFresh(db) {
+  // 1. Ensure storage directories exist
+  [PDFS_DIR, COVERS_DIR].forEach(dir => {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  });
+
+  const now = new Date().toISOString();
+
+  // 2. Prepare starter guide PDF & Cover if present in storage/starter
+  let starterPdfName = '';
+  let starterCoverName = '';
+  let starterPdfSize = 1430;
+
+  const starterPdfSource = path.join(STARTER_DIR, 'kutubi-starter-guide.pdf');
+  const starterCoverSource = path.join(STARTER_DIR, 'kutubi-starter-guide.png');
+
+  if (fs.existsSync(starterPdfSource)) {
+    starterPdfName = 'starter-guide.pdf';
+    fs.copyFileSync(starterPdfSource, path.join(PDFS_DIR, starterPdfName));
+    try {
+      starterPdfSize = fs.statSync(path.join(PDFS_DIR, starterPdfName)).size;
+    } catch {}
+  }
+
+  if (fs.existsSync(starterCoverSource)) {
+    starterCoverName = 'starter-guide.png';
+    fs.copyFileSync(starterCoverSource, path.join(COVERS_DIR, starterCoverName));
+  }
+
+  // 3. Map categories
+  const categoryRows = db.prepare('SELECT id, name FROM categories').all();
+  const categoryMap = new Map();
+  for (const row of categoryRows) {
+    categoryMap.set(row.name.toLowerCase(), row.id);
+  }
+
+  const insertBook = db.prepare(`
+    INSERT INTO books (
+      title, author, category_id, status, total_pages, current_page,
+      cover_url, rating, description, pdf_path, pdf_filename, pdf_size,
+      pdf_page_count, cover_image, last_read_page, idempotency_key, date_added, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  const seedTransaction = db.transaction(() => {
+    for (let i = 0; i < STARTER_BOOKS.length; i++) {
+      const b = STARTER_BOOKS[i];
+      const categoryId = categoryMap.get(b.category.toLowerCase()) || categoryMap.get('uncategorized');
+      const createdAt = new Date(Date.now() - (STARTER_BOOKS.length - i) * 60000).toISOString();
+
+      let pdfPath = '';
+      let pdfFilename = '';
+      let pdfSize = 0;
+      let pdfPageCount = 0;
+      let coverImage = '';
+      let lastReadPage = 1;
+
+      if (b.isStarterPdf && starterPdfName) {
+        pdfPath = starterPdfName;
+        pdfFilename = 'kutubi-starter-guide.pdf';
+        pdfSize = starterPdfSize;
+        pdfPageCount = 4;
+        coverImage = starterCoverName;
+        lastReadPage = b.currentPage || 1;
+      }
+
+      insertBook.run(
+        b.title,
+        b.author,
+        categoryId,
+        b.status,
+        b.totalPages,
+        b.currentPage,
+        b.coverUrl || '',
+        b.rating,
+        b.notes,
+        pdfPath,
+        pdfFilename,
+        pdfSize,
+        pdfPageCount,
+        coverImage,
+        lastReadPage,
+        `starter-book-${i + 1}`,
+        b.dateAdded,
+        createdAt,
+        now
+      );
+    }
+
+    db.prepare(`
+      INSERT INTO app_metadata (key, value)
+      VALUES ('starter_books_seeded', '1')
+      ON CONFLICT(key) DO UPDATE SET value = '1'
+    `).run();
+  });
+
+  seedTransaction();
+}
+
 module.exports = {
   INITIAL_CATEGORIES,
   INITIAL_BOOKS,
+  STARTER_BOOKS,
   seedDefaultCategories,
+  seedStarterBooksIfFresh,
   seedSampleBooksForTests,
   seedInitialData: seedDefaultCategories
 };

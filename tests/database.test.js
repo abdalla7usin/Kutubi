@@ -26,11 +26,11 @@ describe('Database Initialization & Schema Integrity', () => {
     assert.ok(tables.includes('app_metadata'), 'app_metadata table exists');
   });
 
-  it('should initialize exactly 0 books and 5 default categories on fresh initialization', () => {
+  it('should initialize exactly 8 starter books and 5 default categories on fresh installation', () => {
     const bookCount = db.prepare('SELECT COUNT(*) AS total FROM books').get().total;
     const catCount = db.prepare('SELECT COUNT(*) AS total FROM categories').get().total;
 
-    assert.strictEqual(bookCount, 0, 'Fresh database starts with exactly 0 books');
+    assert.strictEqual(bookCount, 8, 'Fresh database starts with exactly 8 starter books');
     assert.strictEqual(catCount, 5, 'Exactly 5 default categories initialized');
   });
 

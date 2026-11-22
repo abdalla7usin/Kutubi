@@ -99,6 +99,9 @@ function validateBookInput(data) {
   // Description / Notes (optional, trimmed)
   normalized.description = (data.description || data.notes || '').trim();
 
+  // Idempotency Key (optional, trimmed)
+  normalized.idempotencyKey = (data.idempotencyKey || '').trim();
+
   return {
     isValid: Object.keys(errors).length === 0,
     errors,

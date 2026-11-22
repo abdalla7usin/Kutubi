@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs');
+const crypto = require('crypto');
 const booksService = require('../services/books.service');
 const categoriesService = require('../services/categories.service');
 const pdfService = require('../services/pdf.service');
@@ -12,6 +13,7 @@ const { calculatePercentage } = require('../utils/formatting');
 function getNewBookForm(req, res, next) {
   try {
     const categories = categoriesService.getAllCategories();
+    const idempotencyKey = crypto.randomUUID();
     res.render('pages/book-form', {
       title: 'Add Book',
       activeNav: 'library',
@@ -20,6 +22,7 @@ function getNewBookForm(req, res, next) {
       categories,
       errors: {},
       formData: {},
+      idempotencyKey,
       toast: req.query.toast,
       error: req.query.error
     });
@@ -42,6 +45,7 @@ async function createBook(req, res, next) {
         categories,
         errors: { pdfFile: req.uploadError },
         formData: req.body,
+        idempotencyKey: req.body.idempotencyKey || crypto.randomUUID(),
         toast: null,
         error: req.uploadError
       });
@@ -67,6 +71,7 @@ async function createBook(req, res, next) {
           categories,
           errors: { pdfFile: err.message },
           formData: req.body,
+          idempotencyKey: req.body.idempotencyKey || crypto.randomUUID(),
           toast: null,
           error: err.message
         });
@@ -94,6 +99,7 @@ async function createBook(req, res, next) {
         categories,
         errors: result.errors || {},
         formData: req.body,
+        idempotencyKey: req.body.idempotencyKey || crypto.randomUUID(),
         toast: null,
         error: Object.values(result.errors || {})[0] || 'Please fix the errors below.'
       });

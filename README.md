@@ -93,7 +93,7 @@ Kutubi/
 ├── db/                   # Database connection, DDL schema, migrations & seeder
 │   ├── database.js       # SQLite connection manager, WAL mode & migrations
 │   ├── schema.sql        # Database schema definitions & indexes
-│   └── seed.js           # 5 default categories seeder & test fixtures
+│   └── seed.js           # 8 starter books, 5 default categories seeder & test fixtures
 ├── middleware/           # Centralized Express middleware
 │   ├── error-handler.js  # Global error handling
 │   ├── not-found.js      # 404 handler
@@ -125,14 +125,15 @@ Kutubi/
 │   ├── covers/           # Generated PDF first-page cover thumbnails (.png)
 │   ├── pdfs/             # Uploaded PDF document files (.pdf)
 │   └── temp/             # Temporary processing files
-├── tests/                # Automated unit & integration test suite (34 tests)
+├── tests/                # Automated unit & integration test suite (42 tests across 8 suites)
 │   ├── books.test.js
 │   ├── categories.test.js
 │   ├── dashboard.test.js
 │   ├── database.test.js
 │   ├── pdf.test.js
 │   ├── progress.test.js
-│   └── settings-profile.test.js
+│   ├── settings-profile.test.js
+│   └── starter-and-idempotency.test.js
 ├── utils/                # Formatting, input validation & cover helpers
 │   ├── covers.js
 │   ├── formatting.js
@@ -269,7 +270,7 @@ Kutubi initializes automatically with **exactly 24 realistic sample books** acro
    ```text
    http://localhost:3000
    ```
-   *(The database is automatically created and initialized at `data/kutubi.db` on first run with 5 default categories and 0 books, ready for your personal collection. Upload directories `storage/pdfs/`, `storage/covers/`, and `storage/temp/` are also initialized).*
+   *(A genuinely fresh installation automatically initializes the database at `data/kutubi.db` with exactly **8 realistic starter books** (covering English & Arabic titles, all 5 default categories, diverse reading statuses, and an attached demonstration PDF document with an extracted cover) alongside the 5 default categories. A persistent `starter_books_seeded` marker in `app_metadata` ensures starter books are seeded only once—subsequent server restarts preserve all modifications and never repopulate books if deleted).*
 
 5. **Health Check Endpoint:**
    ```text
@@ -287,12 +288,13 @@ Kutubi includes a complete automated test suite using the Node.js native test ru
 npm test
 ```
 
-### Test Coverage Summary (34 Automated Tests across 7 Suites):
-- **Database Initialization & Schema Integrity:** Foreign keys, WAL pragma, table constraints, singleton enforcement, fresh 0-book baseline initialization (4 tests).
+### Test Coverage Summary (42 Automated Tests across 8 Suites):
+- **Starter Books First-Run Seeding & Idempotency Protection:** Fresh 8-book initialization, restart persistence, deletion without repopulation, personal book addition persistence, duplicate submission protection via idempotency tokens, and support for distinct intentional submissions with identical titles (7 tests).
+- **Database Initialization & Schema Integrity:** Foreign keys, WAL pragma, table constraints, singleton enforcement, fresh starter initialization (4 tests).
 - **Books Service & CRUD:** Full search (English and Arabic), status/category filtering, multi-field sorting, book creation, updates, and deletion (8 tests).
 - **Reading Progress Logic:** Auto-transitions to `Completed` on max pages, transitions to `Reading` on partial progress, reset to `To Read` on 0 pages, and strict out-of-bounds page rejection (5 tests).
 - **Categories Service & Safety:** Category listing, book counts, case-insensitive duplicate prevention, rename, `Uncategorized` system protection, and safe reassignment upon custom category deletion (5 tests).
-- **Dashboard Service:** Live SQLite aggregations, currently reading retrieval, recently added queries, and zero-books division-by-zero protection (4 tests).
+- **Dashboard Service:** Live SQLite aggregations, currently reading retrieval, recently added queries, and zero-books division-by-zero protection (5 tests).
 - **In-App PDF Service & Document Operations:** Magic byte signature validation, rejection of corrupt/spoofed files, 3-page rendering & first-page thumbnail generation, and database attachment persistence (4 tests).
 - **Settings & Profile:** Preferences persistence, JSON backup export, profile updates, and Unicode avatar initials generation rules (4 tests).
 

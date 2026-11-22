@@ -33,26 +33,19 @@ describe('Settings & Profile Persistence and Features', () => {
   });
 
   it('should export valid JSON backup containing all books and categories', () => {
-    const backupEmpty = settingsService.exportLibraryJson(db);
+    const backup = settingsService.exportLibraryJson(db);
 
-    assert.strictEqual(backupEmpty.app, 'Kutubi');
-    assert.strictEqual(backupEmpty.version, '1.0.0');
-    assert.ok(backupEmpty.exportedAt);
+    assert.strictEqual(backup.app, 'Kutubi');
+    assert.strictEqual(backup.version, '1.0.0');
+    assert.ok(backup.exportedAt);
+    assert.strictEqual(backup.books.length, 8);
+    assert.strictEqual(backup.categories.length, 5);
+
+    // After deleting all books
+    db.prepare('DELETE FROM books').run();
+    const backupEmpty = settingsService.exportLibraryJson(db);
     assert.strictEqual(backupEmpty.books.length, 0);
     assert.strictEqual(backupEmpty.categories.length, 5);
-
-    // After adding a book
-    booksService.createBook({
-      title: 'Operating Systems',
-      author: 'Remzi',
-      category: 'Engineering',
-      totalPages: 500,
-      status: 'Reading'
-    }, db);
-
-    const backupWithBook = settingsService.exportLibraryJson(db);
-    assert.strictEqual(backupWithBook.books.length, 1);
-    assert.strictEqual(backupWithBook.categories.length, 5);
   });
 
   it('should update profile and calculate dynamic milestone statistics and initials', () => {

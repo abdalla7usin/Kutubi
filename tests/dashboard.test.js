@@ -16,7 +16,19 @@ describe('Dashboard Live Metrics & Section Queries', () => {
     closeDb();
   });
 
-  it('should handle fresh zero-books state gracefully without NaN or division by zero', () => {
+  it('should calculate live metrics for starter books on fresh install', () => {
+    const data = dashboardService.getDashboardData(db);
+    assert.strictEqual(data.metrics.totalBooks, 8);
+    assert.strictEqual(data.metrics.categoriesCount, 5);
+    assert.strictEqual(data.metrics.reading, 3);
+    assert.strictEqual(data.metrics.completed, 3);
+    assert.strictEqual(data.metrics.toRead, 2);
+    assert.strictEqual(data.metrics.completedPercent, 38); // Math.round(3 / 8 * 100) = 38
+    assert.strictEqual(data.currentlyReading.length, 3);
+  });
+
+  it('should handle zero-books state gracefully without NaN or division by zero', () => {
+    db.prepare('DELETE FROM books').run();
     const data = dashboardService.getDashboardData(db);
     assert.strictEqual(data.metrics.totalBooks, 0);
     assert.strictEqual(data.metrics.categoriesCount, 5);

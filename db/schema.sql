@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS books (
   pdf_page_count INTEGER DEFAULT 0,
   cover_image TEXT DEFAULT '',
   last_read_page INTEGER DEFAULT 1,
+  idempotency_key TEXT,
   date_added TEXT NOT NULL,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL

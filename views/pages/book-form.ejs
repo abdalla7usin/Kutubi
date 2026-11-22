@@ -38,6 +38,9 @@
     class="card card-padded flex flex-col gap-6"
     novalidate
   >
+    <% if (!isEdit) { %>
+      <input type="hidden" name="idempotencyKey" id="book-idempotency-key" value="<%= typeof idempotencyKey !== 'undefined' ? idempotencyKey : '' %>" />
+    <% } %>
     <!-- Title Input -->
     <label class="form-group">
       <span class="form-label">Title <span class="text-danger">*</span></span>
@@ -361,6 +364,19 @@
 
       if (hasError) {
         e.preventDefault();
+      } else {
+        if (form.dataset.submitting === 'true') {
+          e.preventDefault();
+          return false;
+        }
+        form.dataset.submitting = 'true';
+        const submitBtn = document.getElementById('save-book-btn');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.classList.add('opacity-70', 'pointer-events-none');
+          const btnText = submitBtn.querySelector('span');
+          if (btnText) btnText.textContent = 'Saving...';
+        }
       }
     });
   });

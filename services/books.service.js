@@ -151,6 +151,22 @@ class BooksService {
 
     const { normalized } = validation;
 
+    // Check for idempotency key to prevent accidental duplicate submissions
+    const idempotencyKey = (normalized.idempotencyKey || '').trim();
+    if (idempotencyKey) {
+      const existing = db.prepare('SELECT id FROM books WHERE idempotency_key = ?').get(idempotencyKey);
+      if (existing) {
+        if (inputData.pdfPath) {
+          cleanupPdfFiles(inputData.pdfPath, inputData.coverImage);
+        }
+        return {
+          success: true,
+          book: this.getBookById(existing.id, db),
+          isDuplicatePrevented: true
+        };
+      }
+    }
+
     // Resolve Category ID
     let categoryId = normalized.categoryId;
     if (!categoryId && inputData.category) {
@@ -185,32 +201,51 @@ class BooksService {
     const nowIso = now.toISOString();
     const dateAdded = formatDate(now);
 
-    const info = db.prepare(`
-      INSERT INTO books (
-        title, author, category_id, status, total_pages, current_page,
-        cover_url, rating, description, pdf_path, pdf_filename, pdf_size,
-        pdf_page_count, cover_image, last_read_page, date_added, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(
-      normalized.title,
-      normalized.author,
-      categoryId,
-      finalStatus,
-      totalPages,
-      finalCurrentPage,
-      normalized.coverUrl || '',
-      normalized.rating,
-      normalized.description || '',
-      inputData.pdfPath || '',
-      inputData.pdfFilename || '',
-      inputData.pdfSize || 0,
-      inputData.pdfPageCount || 0,
-      inputData.coverImage || '',
-      inputData.lastReadPage || 1,
-      dateAdded,
-      nowIso,
-      nowIso
-    );
+    let info;
+    try {
+      info = db.prepare(`
+        INSERT INTO books (
+          title, author, category_id, status, total_pages, current_page,
+          cover_url, rating, description, pdf_path, pdf_filename, pdf_size,
+          pdf_page_count, cover_image, last_read_page, idempotency_key, date_added, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        normalized.title,
+        normalized.author,
+        categoryId,
+        finalStatus,
+        totalPages,
+        finalCurrentPage,
+        normalized.coverUrl || '',
+        normalized.rating,
+        normalized.description || '',
+        inputData.pdfPath || '',
+        inputData.pdfFilename || '',
+        inputData.pdfSize || 0,
+        inputData.pdfPageCount || 0,
+        inputData.coverImage || '',
+        inputData.lastReadPage || 1,
+        idempotencyKey || null,
+        dateAdded,
+        nowIso,
+        nowIso
+      );
+    } catch (err) {
+      if (err.code === 'SQLITE_CONSTRAINT_UNIQUE' && idempotencyKey) {
+        if (inputData.pdfPath) {
+          cleanupPdfFiles(inputData.pdfPath, inputData.coverImage);
+        }
+        const existing = db.prepare('SELECT id FROM books WHERE idempotency_key = ?').get(idempotencyKey);
+        if (existing) {
+          return {
+            success: true,
+            book: this.getBookById(existing.id, db),
+            isDuplicatePrevented: true
+          };
+        }
+      }
+      throw err;
+    }
 
     const createdBook = this.getBookById(info.lastInsertRowid, db);
     return { success: true, book: createdBook };

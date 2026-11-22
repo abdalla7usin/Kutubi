@@ -36,6 +36,10 @@ function runMigrations(db) {
   if (!columns.includes('last_read_page')) {
     db.exec("ALTER TABLE books ADD COLUMN last_read_page INTEGER DEFAULT 1");
   }
+  if (!columns.includes('idempotency_key')) {
+    db.exec("ALTER TABLE books ADD COLUMN idempotency_key TEXT DEFAULT ''");
+  }
+  db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_books_idempotency_key ON books(idempotency_key) WHERE idempotency_key IS NOT NULL AND idempotency_key != ''");
 }
 
 /**
@@ -88,12 +92,26 @@ function initDatabase(customPath) {
     `).run(now);
   }
 
-  // Check if initial default categories are initialized (never seeds sample books)
-  const seedMeta = db.prepare("SELECT value FROM app_metadata WHERE key = 'initialized'").get()
-    || db.prepare("SELECT value FROM app_metadata WHERE key = 'seeded'").get();
-  if (!seedMeta) {
-    const { seedDefaultCategories } = require('./seed');
-    seedDefaultCategories(db);
+  // Default categories singleton
+  const { seedDefaultCategories, seedStarterBooksIfFresh } = require('./seed');
+  seedDefaultCategories(db);
+
+  // Check if starter books should be seeded (only on genuinely fresh databases)
+  const starterMeta = db.prepare("SELECT value FROM app_metadata WHERE key = 'starter_books_seeded'").get();
+  if (!starterMeta) {
+    // Check if this is an existing database with legacy 'seeded' or 'initialized' marker
+    const legacyMeta = db.prepare("SELECT value FROM app_metadata WHERE key = 'seeded' OR key = 'initialized'").get();
+    if (legacyMeta) {
+      // Existing database already initialized: mark starter_books_seeded without inserting starter books
+      db.prepare(`
+        INSERT INTO app_metadata (key, value)
+        VALUES ('starter_books_seeded', '1')
+        ON CONFLICT(key) DO UPDATE SET value = '1'
+      `).run();
+    } else {
+      // Genuinely fresh installation! Seed the 8 starter books
+      seedStarterBooksIfFresh(db);
+    }
   }
 
   dbInstance = db;

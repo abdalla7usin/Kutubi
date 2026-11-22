@@ -17,14 +17,15 @@ describe('Categories Management & System Protection', () => {
   });
 
   it('should list all categories with accurate book counts', () => {
-    // 1. In fresh empty database, all 5 categories have 0 books
+    // 1. In fresh starter database, all 5 categories have starter book counts
     const initialCats = categoriesService.getAllCategories(db);
     assert.strictEqual(initialCats.length, 5);
-    for (const cat of initialCats) {
-      assert.strictEqual(cat.bookCount, 0);
-    }
+    const starterEng = initialCats.find(c => c.name === 'Engineering');
+    assert.strictEqual(starterEng.bookCount, 2);
+    const starterArabic = initialCats.find(c => c.name === 'Arabic Literature');
+    assert.strictEqual(starterArabic.bookCount, 2);
 
-    // 2. With fixture data populated, book counts reflect category distribution
+    // 2. With 24 fixture data populated, book counts reflect sample distribution
     seedSampleBooksForTests(db);
     const categories = categoriesService.getAllCategories(db);
     assert.strictEqual(categories.length, 5);
