@@ -1,0 +1,30 @@
+# Kutubi - Vercel Deployment Ignore
+# Ensures zero sensitive local files or personal databases are ever uploaded
+
+.git
+node_modules
+.env*
+.vercel
+
+# Local SQLite databases, backups, snapshots
+data/
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+*.bak
+
+# Local storage (personal PDFs, covers, temp uploads)
+storage/
+storage/pdfs/
+storage/covers/
+storage/temp/
+
+# Test suites and development scratch files
+tests/
+scratch/
+coverage/
+.nyc_output/
+*.log
+verify_app.py
+test_*.py
